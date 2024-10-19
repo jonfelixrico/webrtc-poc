@@ -1,6 +1,6 @@
-import { fn } from '@storybook/test';
+import { fn } from '@storybook/test'
 
-import MyHeader from './Header.vue';
+import MyHeader from './Header.vue'
 
 export default {
   title: 'Example/Header',
@@ -17,7 +17,7 @@ export default {
       // Story args can be spread into the returned object
       return {
         ...args,
-      };
+      }
     },
     // Then, the spread values can be accessed directly in the template
     template: '<my-header :user="user" />',
@@ -31,7 +31,7 @@ export default {
     onLogout: fn(),
     onCreateAccount: fn(),
   },
-};
+}
 
 export const LoggedIn = {
   args: {
@@ -39,10 +39,10 @@ export const LoggedIn = {
       name: 'Jane Doe',
     },
   },
-};
+}
 
 export const LoggedOut = {
   args: {
     user: null,
   },
-};
+}
