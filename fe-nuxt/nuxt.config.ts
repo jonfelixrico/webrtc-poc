@@ -36,4 +36,16 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
+
+  nitro: {
+    devProxy: {
+      // Proxy to the BE
+      '/be/': {
+        target: 'http://localhost:3050/',
+        ws: true,
+        changeOrigin: true,
+        prependPath: false,
+      },
+    },
+  },
 })
