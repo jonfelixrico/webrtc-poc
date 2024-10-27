@@ -35,3 +35,23 @@ export function useSocket(): AppSocket | undefined {
     connected: readonly(connected),
   })
 }
+
+export function onAppSocketConnect(
+  appSocket: AppSocket,
+  handler: (socket: Socket) => void,
+) {
+  watch(
+    appSocket,
+    (as) => {
+      if (!as?.connected) {
+        return
+      }
+
+      handler(as.socket)
+    },
+    {
+      deep: true,
+      immediate: true,
+    },
+  )
+}
