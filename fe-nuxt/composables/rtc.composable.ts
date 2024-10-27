@@ -1,9 +1,9 @@
 import {
-  IOffer,
+  type IOffer,
   useSignalingService,
-} from 'src/composables/signaling.composable'
-import { useWebRtcStore } from 'src/stores/web-rtc.store'
-import { onMounted, ref, Ref, toValue, watch } from 'vue'
+} from '~/composables/signaling.composable'
+import { useWebRtcStore } from '~/store/web-rtc.store'
+import { onMounted, ref, type Ref, toValue, watch } from 'vue'
 
 const ICE_SERVERS: RTCIceServer[] = [
   { urls: 'stun:stun.l.google.com:19302' },
@@ -28,8 +28,8 @@ export function useOutgoingRtc() {
     const offer = await conn.createOffer()
 
     // TODO impl a way to clean this up
-    svc.listenForAnswer((offer) => {
-      conn.setRemoteDescription(offer)
+    svc.listenForAnswer(({ rtcOffer }) => {
+      conn.setRemoteDescription(rtcOffer)
     })
 
     await conn.setLocalDescription(offer)
@@ -75,7 +75,7 @@ export function useIncomingRtc() {
 }
 
 export function useMediaStreamFromConnection(
-  conn: RTCPeerConnection | Ref<RTCPeerConnection>
+  conn: RTCPeerConnection | Ref<RTCPeerConnection>,
 ) {
   const mediaStream = ref<MediaStream | null>(null)
 
@@ -102,6 +102,6 @@ export function useMediaStreamFromConnection(
     },
     {
       immediate: true,
-    }
+    },
   )
 }
