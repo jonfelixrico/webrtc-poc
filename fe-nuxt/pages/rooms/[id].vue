@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { useSocket } from '~/composables/socket.composable'
-import { useRtcJoinHandler } from '~/composables/rtc-signaling.composable'
+import {
+  useRtcJoinHandler,
+  useRtcOfferListener,
+} from '~/composables/rtc-signaling.composable'
 import { computed, definePageMeta } from '#imports'
 
 definePageMeta({
@@ -19,6 +22,7 @@ if (import.meta.client) {
     appSocket,
     computed(() => String(route.params.id)),
   )
+  useRtcOfferListener(appSocket)
 }
 </script>
 
