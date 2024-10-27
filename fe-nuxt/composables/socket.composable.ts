@@ -1,14 +1,22 @@
 import { io, type Socket } from 'socket.io-client'
-import { markRaw, onBeforeMount, reactive, readonly, ref, watch } from 'vue'
+import {
+  markRaw,
+  onBeforeMount,
+  reactive,
+  readonly,
+  ref,
+  toValue,
+  watch,
+} from 'vue'
 
 export interface AppSocket {
   socket: Socket
   connected: boolean
 }
 
-export function useSocket(): AppSocket | undefined {
+export function useSocket(): AppSocket | null {
   if (!import.meta.client) {
-    return
+    return null
   }
 
   const socket = io(`ws://${window.location.host}`, {
@@ -38,11 +46,11 @@ export function useSocket(): AppSocket | undefined {
 }
 
 export function onAppSocketConnect(
-  appSocket: AppSocket,
+  appSocket: AppSocket | null,
   handler: (socket: Socket) => void,
 ) {
   watch(
-    appSocket,
+    () => toValue(appSocket),
     (appSock) => {
       if (!appSock?.connected) {
         return
