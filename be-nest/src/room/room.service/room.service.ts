@@ -15,4 +15,8 @@ export class RoomService {
   list() {
     return Array.from(this.rooms).sort()
   }
+
+  exists(id: string) {
+    return this.rooms.has(id)
+  }
 }
