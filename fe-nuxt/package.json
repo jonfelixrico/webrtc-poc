@@ -14,8 +14,10 @@
     "@nuxt/eslint": "^0.6.0",
     "@nuxt/ui": "^2.18.7",
     "@nuxtjs/i18n": "^8.5.5",
+    "@pinia/nuxt": "^0.5.5",
     "nanoid": "^5.0.7",
     "nuxt": "^3.13.2",
+    "pinia": "^2.2.4",
     "vue": "latest",
     "vue-router": "latest"
   },
