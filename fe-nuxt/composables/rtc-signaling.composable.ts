@@ -55,5 +55,25 @@ export function useRtcJoinHandler(
 }
 
 export function useRtcOfferListener(appSocket: AppSocket | null) {
-  onAppSocketConnect(appSocket, (sock) => {})
+  const store = useWebRtcStore()
+
+  onAppSocketConnect(appSocket, (sock) => {
+    sock.on(
+      'offer_accepted',
+      ({
+        clientId,
+        rtcSession,
+      }: {
+        clientId: string
+        rtcSession: RTCSessionDescriptionInit
+      }) => {
+        const conn = store.$state.peerConnections[clientId]
+        if (!conn) {
+          return
+        }
+
+        conn.setRemoteDescription(rtcSession)
+      },
+    )
+  })
 }
