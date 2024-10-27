@@ -15,4 +15,8 @@ export class RoomService {
   checkIfExists(id: string) {
     return this.rooms.has(id)
   }
+
+  exists(id: string) {
+    return this.rooms.has(id)
+  }
 }
