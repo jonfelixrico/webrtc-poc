@@ -1,6 +1,7 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets'
@@ -8,11 +9,35 @@ import { type Socket } from 'socket.io'
 
 @WebSocketGateway()
 export class RoomWsGateway {
+  private roomMembers: Record<string, Set<string>> = {}
+  private getMembers(roomId: string) {
+    return Array.from(this.roomMembers[roomId] ?? [])
+  }
+  private addMember(roomId: string, socket: Socket) {
+    let roomObj = this.roomMembers[roomId]
+    if (!roomObj) {
+      roomObj = new Set()
+      this.roomMembers[roomId] = roomObj
+    }
+
+    roomObj.add(socket.id)
+  }
+
   @SubscribeMessage('join')
   async handleRoomJoin(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() payload: string,
+    @ConnectedSocket() socket: Socket,
+    @MessageBody() payload: { roomId: string },
   ) {
-    await client.join(payload)
+    await socket.join(payload.roomId)
+    this.addMember(payload.roomId, socket)
+
+    socket.broadcast // broadcast to all room members except this one
+      .to(payload.roomId)
+      .emit('user_joined', { clientId: socket.id })
+
+    // broadcast to all room members, including this one
+    socket.to(payload.roomId).emit('user_list_synced', {
+      clientIds: this.getMembers(payload.roomId),
+    })
   }
 }
