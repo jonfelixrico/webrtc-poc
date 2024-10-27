@@ -48,7 +48,7 @@ export function useRtcJoinHandler(
   onAppSocketConnect(appSocket, (sock) => {
     const rid = toValue(roomId)
     sock.emit('join', {
-      roomdId: rid,
+      roomId: rid,
     })
     logger.debug('Emitted join to room %s', rid)
 
