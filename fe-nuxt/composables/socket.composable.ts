@@ -1,6 +1,11 @@
-import { io } from 'socket.io-client'
+import { io, type Socket } from 'socket.io-client'
 
-export function useSocket() {
+export interface AppSocket {
+  socket: Socket
+  connected: boolean
+}
+
+export function useSocket(): AppSocket | undefined {
   if (!import.meta.client) {
     return
   }
@@ -20,7 +25,10 @@ export function useSocket() {
   socket.once('connect', () => {
     connected.value = true
   })
-  socket.connect()
+
+  onBeforeMount(() => {
+    socket.connect()
+  })
 
   return reactive({
     socket: markRaw(socket),
