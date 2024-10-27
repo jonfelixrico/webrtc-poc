@@ -12,7 +12,7 @@ export class RoomService {
     return id
   }
 
-  exists(id: string) {
+  checkIfExists(id: string) {
     return this.rooms.has(id)
   }
 }

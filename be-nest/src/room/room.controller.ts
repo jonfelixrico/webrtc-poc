@@ -14,7 +14,7 @@ export class RoomController {
 
   @Get(':id')
   checkIfExists(@Param('id') id: string) {
-    if (this.svc.exists(id)) {
+    if (this.svc.checkIfExists(id)) {
       return
     }
 
