@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxtjs/i18n',
     ['@pinia/nuxt', { disableVuex: true }],
+    '@vueuse/nuxt',
   ],
 
   i18n: {
