@@ -5,7 +5,18 @@ import {
   useRtcJoinHandler,
   useRtcOfferListener,
 } from '~/composables/rtc-signaling.composable'
-import { computed, definePageMeta } from '#imports'
+import {
+  computed,
+  definePageMeta,
+  markRaw,
+  onBeforeMount,
+  onMounted,
+  toValue,
+  watch,
+} from '#imports'
+import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
+import { useMediaStreamStore } from '~/store/media-stream.store'
+import { useDevicesList, useUserMedia } from '@vueuse/core'
 
 definePageMeta({
   validate: (route) =>
@@ -14,7 +25,10 @@ definePageMeta({
       .then(() => true)
       .catch(() => false),
 })
+
 const route = useRoute()
+
+const mediaStreamStore = useMediaStreamStore()
 
 if (import.meta.client) {
   const appSocket = useSocket()
@@ -23,11 +37,50 @@ if (import.meta.client) {
     computed(() => String(route.params.id)),
   )
   useRtcOfferListener(appSocket)
+
+  const { videoInputs, audioInputs } = useDevicesList({
+    requestPermissions: true,
+    constraints: {
+      audio: true,
+      video: true,
+    },
+  })
+
+  const cam = computed(() => toValue(videoInputs)[0]?.deviceId)
+  const mic = computed(() => toValue(audioInputs)[0]?.deviceId)
+
+  const { stream, start } = useUserMedia({
+    constraints: {
+      video: { deviceId: toValue(cam) },
+      audio: { deviceId: toValue(mic) },
+    },
+  })
+  onMounted(() => {
+    start().catch((e) => console.error(e))
+  })
+
+  watch(stream, (stream) => {
+    mediaStreamStore.$state.mediaStream = stream ? markRaw(stream) : null
+    console.log(stream)
+  })
 }
 </script>
 
 <template>
-  <div>
-    {{ route.params.id }}
+  <div class="flex flex-row">
+    <div class="flex-1">
+      <ClientOnly>
+        <CMediaStreamRenderer
+          v-if="mediaStreamStore.$state.mediaStream"
+          :media-stream="mediaStreamStore.$state.mediaStream"
+          :width="400"
+          :height="400"
+        />
+      </ClientOnly>
+    </div>
+
+    <div class="flex-1">
+      <!-- TODO add content -->
+    </div>
   </div>
 </template>
