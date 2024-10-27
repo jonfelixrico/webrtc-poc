@@ -4,8 +4,9 @@ import {
   OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets'
-import { type Socket } from 'socket.io'
+import { Server, type Socket } from 'socket.io'
 
 @WebSocketGateway()
 export class RoomWsGateway {
@@ -23,6 +24,9 @@ export class RoomWsGateway {
     roomObj.add(socket.id)
   }
 
+  @WebSocketServer()
+  private server: Server
+
   @SubscribeMessage('join')
   async handleJoin(
     @ConnectedSocket() socket: Socket,
@@ -34,9 +38,8 @@ export class RoomWsGateway {
     socket.broadcast // broadcast to all room members except this one
       .to(roomId)
       .emit('user_joined', { clientId: socket.id, roomId })
-
     // broadcast to all room members, including this one
-    socket.to(roomId).emit('user_list_synced', {
+    this.server.to(roomId).emit('user_list_synced', {
       clientIds: this.getMembers(roomId),
       roomId,
     })
@@ -81,7 +84,7 @@ export class RoomWsGateway {
   ) {
     // TODO add checking to see if client really is part of the room
 
-    socket.to(clientId).emit('offer_acepted', {
+    socket.to(clientId).emit('offer_accepted', {
       clientId: socket.id,
       rtcSession,
       roomId,
