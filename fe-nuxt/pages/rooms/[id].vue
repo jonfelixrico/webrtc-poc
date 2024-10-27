@@ -2,6 +2,7 @@
 definePageMeta({
   validate: (route) =>
     $fetch(`/be/room/${route.params.id}`)
+      // TODO add error-specific handling
       .then(() => true)
       .catch(() => false),
 })
