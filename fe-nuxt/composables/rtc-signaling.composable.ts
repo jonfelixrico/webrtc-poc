@@ -1,4 +1,7 @@
-import type { AppSocket } from '~/composables/socket.composable'
+import {
+  onAppSocketConnect,
+  type AppSocket,
+} from '~/composables/socket.composable'
 
 export function useRtcJoinHandler(appSocket: AppSocket) {
   onAppSocketConnect(appSocket, (sock) => {})
