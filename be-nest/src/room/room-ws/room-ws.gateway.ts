@@ -46,6 +46,9 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   @WebSocketServer()
   private server: Server
 
+  @WebSocketServer()
+  private server: Server
+
   @SubscribeMessage('join')
   async handleJoin(
     @ConnectedSocket() socket: Socket,
