@@ -1,4 +1,5 @@
 import { io, type Socket } from 'socket.io-client'
+import { markRaw, onBeforeMount, reactive, readonly, ref, watch } from 'vue'
 
 export interface AppSocket {
   socket: Socket
@@ -42,12 +43,12 @@ export function onAppSocketConnect(
 ) {
   watch(
     appSocket,
-    (as) => {
-      if (!as?.connected) {
+    (appSock) => {
+      if (!appSock?.connected) {
         return
       }
 
-      handler(as.socket)
+      handler(appSock.socket)
     },
     {
       deep: true,
