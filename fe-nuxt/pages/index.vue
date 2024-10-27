@@ -4,21 +4,15 @@ const router = useRouter()
 
 function goToRoom(roomId: string) {
   router.push({
-    name: 'rooms-id',
-    params: {
-      id: roomId,
-    },
+    path: `/rooms/${roomId}`,
   })
 }
 
 async function createRoom() {
   // TODO proxy the BE to be under /be
-  const { roomId } = await $fetch<{ roomId: string }>(
-    'http://localhost:3050/rooms',
-    {
-      method: 'POST',
-    },
-  )
+  const { roomId } = await $fetch<{ roomId: string }>('/be/room', {
+    method: 'POST',
+  })
 
   goToRoom(roomId)
 }
