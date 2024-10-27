@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useCallerId } from 'src/composables/caller-id.composable'
 import { ref } from 'vue'
 
 const callerId = useCallerId()
@@ -10,9 +9,9 @@ const targerCallerId = ref()
   <q-page>
     {{ callerId }}
 
-    <q-form @submit.prevent>
-      <q-input v-model="targerCallerId" />
-      <q-btn type="submit">Call</q-btn>
-    </q-form>
+    <form @submit.prevent>
+      <UInput v-model="targerCallerId" />
+      <UButton type="submit">Call</UButton>
+    </form>
   </q-page>
 </template>
