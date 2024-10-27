@@ -19,15 +19,16 @@ const props = defineProps({
 
 const divRef = useTemplateRef('div')
 watch(
-  () => props.mediaStream,
-  (stream) => {
-    const el = toValue(divRef)
-
+  [() => props.mediaStream, divRef],
+  ([stream, el]) => {
     if (!el || !stream) {
       return
     }
 
     el.srcObject = stream
+  },
+  {
+    immediate: true,
   },
 )
 
@@ -42,5 +43,5 @@ const dimsStyle = computed(() => {
 </script>
 
 <template>
-  <video ref="div" :style="dimsStyle" />
+  <video ref="div" :style="dimsStyle" autoplay :controls="false" />
 </template>
