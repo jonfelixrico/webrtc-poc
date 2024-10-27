@@ -62,23 +62,37 @@ if (import.meta.client) {
     start().catch((e) => console.error(e))
   })
 
-  watch(stream, (stream) => {
-    mediaStreamStore.$state.mediaStream = stream ? markRaw(stream) : null
-  })
+  watch(
+    stream,
+    (stream) => {
+      mediaStreamStore.$state.mediaStream = stream ? markRaw(stream) : null
+    },
+    {
+      immediate: true,
+    },
+  )
 
-  watch([stream, connections], ([newStream, newConns]) => {
-    if (!newStream) {
-      return
-    }
+  watch(
+    [stream, connections],
+    ([newStream, newConns]) => {
+      if (!newStream) {
+        return
+      }
 
-    for (const key in newConns) {
-      const conn = newConns[key]
+      for (const key in newConns) {
+        const conn = newConns[key]
 
-      newStream.getTracks().forEach((track) => {
-        conn.addTrack(track, newStream)
-      })
-    }
-  })
+        newStream.getTracks().forEach((track) => {
+          conn.addTrack(track, newStream)
+        })
+
+        console.debug('added tracks to %s', key)
+      }
+    },
+    {
+      immediate: true,
+    },
+  )
 }
 </script>
 
