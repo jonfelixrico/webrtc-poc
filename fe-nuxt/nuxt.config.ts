@@ -39,12 +39,23 @@ export default defineNuxtConfig({
 
   nitro: {
     devProxy: {
-      // Proxy to the BE
+      // This is intended to be a client-side proxy to the BE
       '/be/': {
         target: 'http://localhost:3050/',
         ws: true,
         changeOrigin: true,
         prependPath: false,
+      },
+    },
+
+    routeRules: {
+      /**
+       * This is intended to be a server-side proxy to teh BE.
+       * If we only have devProxy, we'll keep on getting 404s if its the server who's trying
+       * to access /be.
+       */
+      '/be/**': {
+        proxy: 'http://localhost:3050/**',
       },
     },
   },
