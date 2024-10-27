@@ -9,7 +9,6 @@ import {
   computed,
   definePageMeta,
   markRaw,
-  onBeforeMount,
   onMounted,
   toValue,
   watch,
@@ -65,7 +64,20 @@ if (import.meta.client) {
 
   watch(stream, (stream) => {
     mediaStreamStore.$state.mediaStream = stream ? markRaw(stream) : null
-    console.log(stream)
+  })
+
+  watch([stream, connections], ([newStream, newConns]) => {
+    if (!newStream) {
+      return
+    }
+
+    for (const key in newConns) {
+      const conn = newConns[key]
+
+      newStream.getTracks().forEach((track) => {
+        conn.addTrack(track, newStream)
+      })
+    }
   })
 }
 </script>
@@ -85,14 +97,17 @@ if (import.meta.client) {
 
     <div class="flex-1 flex flex-col">
       <template v-for="(connection, key) in connections" :key="key">
-        <CPeerConnectionStreamWrapper v-slot="{ mediaStream }" :connection>
-          <CMediaStreamRenderer
-            v-if="mediaStream"
-            :media-stream="mediaStream"
-            :width="400"
-            :height="400"
-          />
-        </CPeerConnectionStreamWrapper>
+        <div>
+          {{ key }}
+          <CPeerConnectionStreamWrapper v-slot="{ mediaStream }" :connection>
+            <CMediaStreamRenderer
+              v-if="mediaStream"
+              :media-stream="mediaStream"
+              :width="400"
+              :height="400"
+            />
+          </CPeerConnectionStreamWrapper>
+        </div>
       </template>
     </div>
   </div>
