@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed, PropType, toValue, useTemplateRef, watch } from 'vue'
-
 const props = defineProps({
   mediaStream: {
     type: Object as PropType<MediaStream>,
@@ -28,7 +26,7 @@ watch(
     }
 
     el.srcObject = stream
-  }
+  },
 )
 
 const dimsStyle = computed(() => {
