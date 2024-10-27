@@ -24,7 +24,7 @@ export class RoomWsGateway {
   }
 
   @SubscribeMessage('join')
-  async handleRoomJoin(
+  async handleJoin(
     @ConnectedSocket() socket: Socket,
     @MessageBody() payload: { roomId: string },
   ) {
