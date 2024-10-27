@@ -26,18 +26,21 @@ export class RoomWsGateway {
   @SubscribeMessage('join')
   async handleJoin(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() payload: { roomId: string },
+    @MessageBody() { roomId }: { roomId: string },
   ) {
-    await socket.join(payload.roomId)
-    this.addMember(payload.roomId, socket)
+    await socket.join(roomId)
+    this.addMember(roomId, socket)
 
     socket.broadcast // broadcast to all room members except this one
-      .to(payload.roomId)
-      .emit('user_joined', { clientId: socket.id })
+      .to(roomId)
+      .emit('user_joined', { clientId: socket.id, roomId })
 
     // broadcast to all room members, including this one
-    socket.to(payload.roomId).emit('user_list_synced', {
-      clientIds: this.getMembers(payload.roomId),
+    socket.to(roomId).emit('user_list_synced', {
+      clientIds: this.getMembers(roomId),
+      roomId,
+    })
+  }
     })
   }
 }
