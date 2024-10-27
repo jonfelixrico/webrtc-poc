@@ -1,11 +1,10 @@
-import { useQuasar } from 'quasar'
+import { useSessionStorage } from '@vueuse/core'
+import { nanoid } from 'nanoid'
 
 export function useCallerId() {
-  const { sessionStorage } = useQuasar()
+  if (import.meta.server) {
+    return ref('<caller-id>')
+  }
 
-  /*
-   * No need to wrap with any reactivity stuff since this is only
-   * set once per tab. No mutations are expected.
-   */
-  return sessionStorage.getItem('callerId')
+  return useSessionStorage('callerId', nanoid())
 }
