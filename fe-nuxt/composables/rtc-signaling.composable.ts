@@ -1,5 +1,6 @@
 import type { Socket } from 'socket.io-client'
 import { markRaw, toValue, type MaybeRef } from 'vue'
+import { useLogger } from '~/composables/logger.composable'
 import {
   onAppSocketConnect,
   type AppSocket,
@@ -24,6 +25,7 @@ export function useRtcJoinHandler(
   roomId: MaybeRef<string>,
 ) {
   const store = useWebRtcStore()
+  const logger = useLogger()
 
   async function sendOffer(clientId: string, socket: Socket) {
     const conn = new RTCPeerConnection({
@@ -39,14 +41,23 @@ export function useRtcJoinHandler(
     })
 
     store.$state.peerConnections[clientId] = markRaw(conn)
+
+    logger.debug('Sent an offer to client %s', clientId)
   }
 
   onAppSocketConnect(appSocket, (sock) => {
+    const rid = toValue(roomId)
     sock.emit('join', {
-      roomdId: toValue(roomId),
+      roomdId: rid,
     })
+    logger.debug('Emitted join to room %s', rid)
 
     sock.once('user_list_synced', (payload: { clientIds: string[] }) => {
+      logger.debug(
+        'Received initial user list. %s users',
+        payload.clientIds.length,
+      )
+
       payload.clientIds
         .filter((id) => id !== sock.id)
         .forEach((id) => sendOffer(id, sock))
@@ -56,6 +67,7 @@ export function useRtcJoinHandler(
 
 export function useRtcOfferListener(appSocket: AppSocket | null) {
   const store = useWebRtcStore()
+  const logger = useLogger()
 
   onAppSocketConnect(appSocket, (sock) => {
     sock.on(
@@ -69,10 +81,12 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
       }) => {
         const conn = store.$state.peerConnections[clientId]
         if (!conn) {
+          logger.warn('Received ack from %s but no conn was found', clientId)
           return
         }
 
         conn.setRemoteDescription(rtcSession)
+        logger.info('Completed handshake with client %s', clientId)
       },
     )
 
@@ -88,23 +102,31 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
         roomId: string
       }) => {
         if (store.$state.peerConnections[clientId]) {
+          logger.warn(
+            'Received offer from client %s but a conn already exists',
+            clientId,
+          )
           return
         }
+
+        logger.info('Received offer from client %s', clientId)
 
         const conn = new RTCPeerConnection({
           iceServers: ICE_SERVERS,
         })
 
-        const offer = await conn.createOffer()
-        await conn.setLocalDescription(offer)
         await conn.setRemoteDescription(rtcSession)
+        const answer = await conn.createAnswer()
+        await conn.setLocalDescription(answer)
 
         store.$state.peerConnections[clientId] = conn
         sock.emit('accept_offer', {
           roomId,
-          rtcSession: offer,
+          rtcSession: answer,
           clientId,
         })
+
+        logger.info('Sent offer acceptance to client %s', clientId)
       },
     )
   })

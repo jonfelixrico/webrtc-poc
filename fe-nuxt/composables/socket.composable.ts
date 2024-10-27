@@ -8,6 +8,7 @@ import {
   toValue,
   watch,
 } from 'vue'
+import { useLogger } from '~/composables/logger.composable'
 
 export interface AppSocket {
   socket: Socket
@@ -18,6 +19,8 @@ export function useSocket(): AppSocket | null {
   if (!import.meta.client) {
     return null
   }
+
+  const logger = useLogger()
 
   const socket = io(`ws://${window.location.host}`, {
     /*
@@ -33,10 +36,12 @@ export function useSocket(): AppSocket | null {
   const connected = ref(socket.connected)
   socket.once('connect', () => {
     connected.value = true
+    logger.info('Your client id is %s', socket.id)
   })
 
   onBeforeMount(() => {
     socket.connect()
+    logger.debug('Attempted conn for socket.io')
   })
 
   return reactive({
