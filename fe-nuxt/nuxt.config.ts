@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/i18n', '@vueuse/nuxt'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/i18n'],
 
   i18n: {
     locales: [
