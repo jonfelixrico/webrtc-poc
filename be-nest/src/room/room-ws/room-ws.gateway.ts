@@ -41,6 +41,50 @@ export class RoomWsGateway {
       roomId,
     })
   }
+
+  @SubscribeMessage('send_offer')
+  async handleSendOffer(
+    @MessageBody()
+    {
+      clientId,
+      roomId,
+      rtcSession,
+    }: {
+      roomId: string
+      clientId: string
+      rtcSession: Record<string, unknown>
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    // TODO add checking to see if client really is part of the room
+
+    socket.to(clientId).emit('offer_sent', {
+      clientId: socket.id,
+      rtcSession,
+      roomId,
+    })
+  }
+
+  @SubscribeMessage('accept_offer')
+  async handleAcceptOffer(
+    @MessageBody()
+    {
+      clientId,
+      roomId,
+      rtcSession,
+    }: {
+      roomId: string
+      clientId: string
+      rtcSession: Record<string, unknown>
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    // TODO add checking to see if client really is part of the room
+
+    socket.to(clientId).emit('offer_acepted', {
+      clientId: socket.id,
+      rtcSession,
+      roomId,
     })
   }
 }
