@@ -75,5 +75,37 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
         conn.setRemoteDescription(rtcSession)
       },
     )
+
+    sock.on(
+      'offer_sent',
+      async ({
+        clientId,
+        rtcSession,
+        roomId,
+      }: {
+        clientId: string
+        rtcSession: RTCSessionDescriptionInit
+        roomId: string
+      }) => {
+        if (store.$state.peerConnections[clientId]) {
+          return
+        }
+
+        const conn = new RTCPeerConnection({
+          iceServers: ICE_SERVERS,
+        })
+
+        const offer = await conn.createOffer()
+        await conn.setLocalDescription(offer)
+        await conn.setRemoteDescription(rtcSession)
+
+        store.$state.peerConnections[clientId] = conn
+        sock.emit('accept_offer', {
+          roomId,
+          rtcSession: offer,
+          clientId,
+        })
+      },
+    )
   })
 }
