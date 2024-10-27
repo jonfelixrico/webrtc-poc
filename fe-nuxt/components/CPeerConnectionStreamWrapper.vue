@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useLogger } from '~/composables/logger.composable'
 import { markRaw, onBeforeUnmount, ref, watch, type PropType } from 'vue'
 
 const props = defineProps({
@@ -7,6 +8,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const logger = useLogger()
 
 const mediaStream = ref<MediaStream | null>(null)
 function setMediaStream(stream: MediaStream | null) {
@@ -33,11 +36,11 @@ watch(
   (newConn, oldConn) => {
     if (oldConn) {
       oldConn.removeEventListener('track', handleTrackEvt)
-    } else if (!oldConn && newConn) {
-      const receivers = newConn.getReceivers()
-      if (receivers.length) {
-        setMediaStream(new MediaStream(receivers.map((r) => r.track)))
-      }
+    }
+
+    const receivers = newConn.getReceivers()
+    if (receivers.length) {
+      setMediaStream(new MediaStream(receivers.map((r) => r.track)))
     }
 
     newConn.addEventListener('track', handleTrackEvt)
