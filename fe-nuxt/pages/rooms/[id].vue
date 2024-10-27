@@ -17,6 +17,8 @@ import {
 import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useDevicesList, useUserMedia } from '@vueuse/core'
+import { useWebRtcStore } from '~/store/web-rtc.store'
+import CPeerConnectionStreamWrapper from '~/components/CPeerConnectionStreamWrapper.vue'
 
 definePageMeta({
   validate: (route) =>
@@ -29,6 +31,8 @@ definePageMeta({
 const route = useRoute()
 
 const mediaStreamStore = useMediaStreamStore()
+const connStore = useWebRtcStore()
+const connections = computed(() => connStore.$state.peerConnections)
 
 if (import.meta.client) {
   const appSocket = useSocket()
@@ -79,8 +83,17 @@ if (import.meta.client) {
       </ClientOnly>
     </div>
 
-    <div class="flex-1">
-      <!-- TODO add content -->
+    <div class="flex-1 flex flex-col">
+      <template v-for="(connection, key) in connections" :key="key">
+        <CPeerConnectionStreamWrapper v-slot="{ mediaStream }" :connection>
+          <CMediaStreamRenderer
+            v-if="mediaStream"
+            :media-stream="mediaStream"
+            :width="400"
+            :height="400"
+          />
+        </CPeerConnectionStreamWrapper>
+      </template>
     </div>
   </div>
 </template>
