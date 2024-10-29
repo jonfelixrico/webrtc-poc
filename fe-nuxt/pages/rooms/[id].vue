@@ -55,21 +55,19 @@ if (import.meta.client) {
   )
   useRtcOfferListener(appSocket)
 
-  const { videoInputs, audioInputs } = useDevicesList({
+  const { videoInputs } = useDevicesList({
     requestPermissions: true,
     constraints: {
-      audio: true,
+      audio: false,
       video: true,
     },
   })
 
   const cam = computed(() => toValue(videoInputs)[0]?.deviceId)
-  const mic = computed(() => toValue(audioInputs)[0]?.deviceId)
 
   const { stream, start } = useUserMedia({
     constraints: {
       video: { deviceId: toValue(cam) },
-      audio: { deviceId: toValue(mic) },
     },
   })
   onMounted(() => {
