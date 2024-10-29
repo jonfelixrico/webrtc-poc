@@ -1,7 +1,9 @@
+import { Logger } from '@nestjs/common'
 import {
   ConnectedSocket,
   MessageBody,
   OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -9,7 +11,9 @@ import {
 import { Server, type Socket } from 'socket.io'
 
 @WebSocketGateway()
-export class RoomWsGateway {
+export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
+  constructor(private logger: Logger) {}
+
   private roomMembers: Record<string, Set<string>> = {}
   private getMembers(roomId: string) {
     return Array.from(this.roomMembers[roomId] ?? [])
@@ -22,6 +26,21 @@ export class RoomWsGateway {
     }
 
     roomObj.add(socket.id)
+  }
+  private purgeMemberships(socket: Socket) {
+    for (const roomId in this.roomMembers) {
+      const set = this.roomMembers[roomId]
+      set.delete(socket.id)
+    }
+  }
+
+  handleDisconnect(client: Socket) {
+    this.purgeMemberships(client)
+    this.logger.debug('Client %s has disconnected', client.id)
+  }
+
+  handleConnection(client: Socket) {
+    this.logger.debug('Client % has established connection', client.id)
   }
 
   @WebSocketServer()
