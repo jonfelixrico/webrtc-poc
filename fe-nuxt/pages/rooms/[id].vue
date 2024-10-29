@@ -31,7 +31,21 @@ const route = useRoute()
 
 const mediaStreamStore = useMediaStreamStore()
 const connStore = useWebRtcStore()
-const connections = computed(() => connStore.$state.peerConnections)
+const connections = computed(() => {
+  const conns: RTCPeerConnection[] = []
+
+  for (const key in connStore.$state.connections) {
+    const { connection, isConnected } = connStore.$state.connections[key]
+
+    if (!isConnected) {
+      continue
+    }
+
+    conns.push(connection)
+  }
+
+  return conns
+})
 
 if (import.meta.client) {
   const appSocket = useSocket()
