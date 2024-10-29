@@ -6,6 +6,7 @@ import {
   type AppSocket,
 } from '~/composables/socket.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
+import { makeConnectionReactive } from '~/utils/rtc.util'
 
 const ICE_SERVERS: RTCIceServer[] = [
   { urls: 'stun:stun.l.google.com:19302' },
@@ -40,7 +41,7 @@ export function useRtcJoinHandler(
       rtcSession: offer,
     })
 
-    store.$state.peerConnections[clientId] = markRaw(conn)
+    store.$state.connections[clientId] = makeConnectionReactive(conn)
 
     logger.debug('Sent an offer to client %s', clientId)
   }
@@ -79,7 +80,7 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
         clientId: string
         rtcSession: RTCSessionDescriptionInit
       }) => {
-        const conn = store.$state.peerConnections[clientId]
+        const conn = store.$state.connections[clientId]?.connection
         if (!conn) {
           logger.warn('Received ack from %s but no conn was found', clientId)
           return
@@ -101,7 +102,7 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
         rtcSession: RTCSessionDescriptionInit
         roomId: string
       }) => {
-        if (store.$state.peerConnections[clientId]) {
+        if (store.$state.connections[clientId]) {
           logger.warn(
             'Received offer from client %s but a conn already exists',
             clientId,
@@ -119,7 +120,7 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
         const answer = await conn.createAnswer()
         await conn.setLocalDescription(answer)
 
-        store.$state.peerConnections[clientId] = conn
+        store.$state.connections[clientId] = makeConnectionReactive(conn)
         sock.emit('accept_offer', {
           roomId,
           rtcSession: answer,
