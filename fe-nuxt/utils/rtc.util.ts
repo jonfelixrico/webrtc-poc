@@ -1,19 +1,20 @@
-import { markRaw, reactive, readonly, ref } from 'vue'
+import { markRaw, reactive, ref } from 'vue'
 
 export function makeConnectionReactive(conn: RTCPeerConnection) {
-  const isConnected = ref(false)
+  const connectionState = ref<RTCPeerConnection['connectionState']>('new')
 
   function handleStateChange() {
-    isConnected.value = conn.connectionState === 'connected'
+    const state = conn.connectionState
+    connectionState.value = state
 
-    if (conn.connectionState === 'closed') {
+    if (state === 'closed') {
       conn.removeEventListener('connectionstatechange', handleStateChange)
     }
   }
   conn.addEventListener('connectionstatechange', handleStateChange)
 
   return reactive({
-    isConnected: readonly(isConnected),
+    connectionState,
     connection: markRaw(conn),
   })
 }

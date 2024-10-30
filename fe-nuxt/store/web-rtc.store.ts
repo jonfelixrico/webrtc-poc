@@ -4,7 +4,7 @@ export interface WebRtcStore {
   connections: Record<
     string,
     {
-      isConnected: boolean
+      connectionState: RTCPeerConnection['connectionState']
       connection: RTCPeerConnection
     }
   >
