@@ -26,26 +26,20 @@ export function useRtcJoinHandler(
   async function sendOffer(clientId: string, socket: Socket) {
     const conn = new RTCPeerConnection({
       iceServers: ICE_SERVERS,
+      iceTransportPolicy: 'relay',
     })
 
-    const offer = await conn.createOffer()
-    await conn.setLocalDescription(offer)
+    store.$state.connections[clientId] = makeConnectionReactive(conn)
 
+    const offer = await conn.createOffer({
+      offerToReceiveAudio: true,
+      offerToReceiveVideo: false,
+    })
+    await conn.setLocalDescription(offer)
     socket.emit('send_offer', {
       clientId,
       rtcSession: offer,
     })
-
-    conn.addEventListener('icecandidate', (event) => {
-      logger.debug('Sent ice candidate to client %s', clientId)
-      socket.emit('send_ice_candidate', {
-        clientId,
-        roomId,
-        iceCandidate: event.candidate,
-      })
-    })
-
-    store.$state.connections[clientId] = makeConnectionReactive(conn)
 
     logger.debug('Sent an offer to client %s', clientId)
   }
@@ -74,15 +68,17 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
   const store = useWebRtcStore()
   const logger = useLogger()
 
-  onAppSocketConnect(appSocket, (sock) => {
-    sock.on(
+  onAppSocketConnect(appSocket, (socket) => {
+    socket.on(
       'offer_accepted',
       ({
         clientId,
         rtcSession,
+        roomId,
       }: {
         clientId: string
         rtcSession: RTCSessionDescriptionInit
+        roomId: string
       }) => {
         const conn = store.$state.connections[clientId]?.connection
         if (!conn) {
@@ -90,12 +86,23 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
           return
         }
 
+        conn.addEventListener('icecandidate', (event) => {
+          logger.debug('Sent ice candidate to client %s', clientId)
+          socket.emit('send_ice_candidate', {
+            clientId,
+            roomId,
+            iceCandidate: event.candidate,
+          })
+        })
+
+        store.$state.connections[clientId] = makeConnectionReactive(conn)
+
         conn.setRemoteDescription(new RTCSessionDescription(rtcSession))
         logger.info('Completed handshake with client %s', clientId)
       },
     )
 
-    sock.on(
+    socket.on(
       'offer_sent',
       async ({
         clientId,
@@ -118,14 +125,15 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
 
         const conn = new RTCPeerConnection({
           iceServers: ICE_SERVERS,
+          iceTransportPolicy: 'relay',
         })
+        store.$state.connections[clientId] = makeConnectionReactive(conn)
 
         await conn.setRemoteDescription(new RTCSessionDescription(rtcSession))
         const answer = await conn.createAnswer()
         await conn.setLocalDescription(answer)
 
-        store.$state.connections[clientId] = makeConnectionReactive(conn)
-        sock.emit('accept_offer', {
+        socket.emit('accept_offer', {
           roomId,
           rtcSession: answer,
           clientId,
@@ -135,7 +143,7 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
       },
     )
 
-    sock.on(
+    socket.on(
       'ice_candidate_sent',
       async ({
         clientId,
@@ -155,7 +163,7 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
 
         logger.debug('Incoming ice candidate from client %s...', clientId)
         try {
-          await conn.addIceCandidate(new RTCIceCandidate(iceCandidate))
+          await conn.addIceCandidate(iceCandidate)
           logger.info('Added ice candidate from client %s', clientId)
         } catch (e) {
           logger.warn('Failed adding ice candidate from client %s', clientId)
