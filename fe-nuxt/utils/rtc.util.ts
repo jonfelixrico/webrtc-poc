@@ -31,9 +31,21 @@ export function makeConnectionReactive(conn: RTCPeerConnection) {
     handleIceGatheringStateChange,
   )
 
+  const iceCandidates = ref<RTCIceCandidate[]>([])
+  conn.addEventListener('icecandidate', ({ candidate }) => {
+    if (!candidate) {
+      return
+    }
+
+    console.log('Found candidate %s', candidate.sdpMid)
+
+    iceCandidates.value.push(markRaw(candidate))
+  })
+
   return reactive({
     connectionState,
     iceGatheringState,
     connection: markRaw(conn),
+    iceCandidates,
   })
 }
