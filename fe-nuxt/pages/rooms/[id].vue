@@ -31,21 +31,7 @@ const route = useRoute()
 
 const mediaStreamStore = useMediaStreamStore()
 const connStore = useWebRtcStore()
-const connections = computed(() => {
-  const conns: RTCPeerConnection[] = []
-
-  for (const key in connStore.$state.connections) {
-    const { connection, isConnected } = connStore.$state.connections[key]
-
-    if (!isConnected) {
-      continue
-    }
-
-    conns.push(connection)
-  }
-
-  return conns
-})
+const connections = computed(() => connStore.$state.connections)
 
 if (import.meta.client) {
   const appSocket = useSocket()
@@ -95,7 +81,7 @@ if (import.meta.client) {
         const conn = newConns[key]
 
         newStream.getTracks().forEach((track) => {
-          conn.addTrack(track, newStream)
+          conn.connection.addTrack(track, newStream)
         })
 
         console.debug('added tracks to %s', key)
@@ -122,10 +108,17 @@ if (import.meta.client) {
     </div>
 
     <div class="flex-1 flex flex-col">
-      <template v-for="(connection, key) in connections" :key="key">
+      <template
+        v-for="({ connection, connectionState }, key) in connections"
+        :key="key"
+      >
         <div>
-          {{ key }}
-          <CPeerConnectionStreamWrapper v-slot="{ mediaStream }" :connection>
+          {{ key }} {{ connectionState }}
+          <CPeerConnectionStreamWrapper
+            v-if="connection"
+            v-slot="{ mediaStream }"
+            :connection
+          >
             <CMediaStreamRenderer
               v-if="mediaStream"
               :media-stream="mediaStream"
