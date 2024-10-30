@@ -22,7 +22,8 @@ export function useSocket(): AppSocket | null {
 
   const logger = useLogger()
 
-  const socket = io(`ws://${window.location.host}`, {
+  const isSecure = window.location.protocol.startsWith('https')
+  const socket = io(`${isSecure ? 'wss' : 'ws'}://${window.location.host}`, {
     /*
      * Adding /be to the URL above doesn't work. Looks like it only accepts
      * protocol + host, so we're specifying /be here.
