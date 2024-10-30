@@ -81,7 +81,7 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
           return
         }
 
-        conn.setRemoteDescription(rtcSession)
+        conn.setRemoteDescription(new RTCSessionDescription(rtcSession))
         logger.info('Completed handshake with client %s', clientId)
       },
     )
@@ -111,7 +111,7 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
           iceServers: ICE_SERVERS,
         })
 
-        await conn.setRemoteDescription(rtcSession)
+        await conn.setRemoteDescription(new RTCSessionDescription(rtcSession))
         const answer = await conn.createAnswer()
         await conn.setLocalDescription(answer)
 
