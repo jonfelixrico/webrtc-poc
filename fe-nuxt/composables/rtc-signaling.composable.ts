@@ -36,6 +36,15 @@ export function useRtcJoinHandler(
       rtcSession: offer,
     })
 
+    conn.addEventListener('icecandidate', (event) => {
+      logger.debug('Sent ice candidate to client %s', clientId)
+      socket.emit('send_ice_candidate', {
+        clientId,
+        roomId,
+        iceCandidate: event.candidate,
+      })
+    })
+
     store.$state.connections[clientId] = makeConnectionReactive(conn)
 
     logger.debug('Sent an offer to client %s', clientId)
@@ -123,6 +132,34 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
         })
 
         logger.info('Sent offer acceptance to client %s', clientId)
+      },
+    )
+
+    sock.on(
+      'ice_candidate_sent',
+      async ({
+        clientId,
+        iceCandidate,
+      }: {
+        clientId: string
+        iceCandidate: RTCIceCandidateInit
+        roomId: string
+      }) => {
+        const conn = store.$state.connections[clientId]?.connection
+        if (!conn) {
+          logger.warn(
+            'Received ice candidate from client %s but no connection was found',
+            clientId,
+          )
+        }
+
+        logger.debug('Incoming ice candidate from client %s...', clientId)
+        try {
+          await conn.addIceCandidate(new RTCIceCandidate(iceCandidate))
+          logger.info('Added ice candidate from client %s', clientId)
+        } catch (e) {
+          logger.warn('Failed adding ice candidate from client %s', clientId)
+        }
       },
     )
   })
