@@ -7,6 +7,7 @@ export interface WebRtcStore {
       connectionState: RTCPeerConnection['connectionState']
       connection: RTCPeerConnection
       iceGatheringState: RTCPeerConnection['iceGatheringState']
+      iceCandidates: RTCIceCandidate[]
     }
   >
 }
