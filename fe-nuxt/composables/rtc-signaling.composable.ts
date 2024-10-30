@@ -1,5 +1,5 @@
 import type { Socket } from 'socket.io-client'
-import { markRaw, toValue, type MaybeRef } from 'vue'
+import { markRaw, toValue, watch, type MaybeRef } from 'vue'
 import { useLogger } from '~/composables/logger.composable'
 import {
   onAppSocketConnect,
@@ -10,7 +10,7 @@ import { makeConnectionReactive } from '~/utils/rtc.util'
 
 const ICE_SERVERS: RTCIceServer[] = [
   {
-    urls: 'turn:coturn.jfrapps.com:3478',
+    urls: 'turn:coturn.jfrapps.com:3478?transport=udp',
     username: 'turn',
     credential: 'turn',
   },
@@ -29,7 +29,8 @@ export function useRtcJoinHandler(
       iceTransportPolicy: 'relay',
     })
 
-    store.$state.connections[clientId] = makeConnectionReactive(conn)
+    const reactiveConn = makeConnectionReactive(conn)
+    store.$state.connections[clientId] = reactiveConn
 
     const offer = await conn.createOffer({
       offerToReceiveAudio: true,
@@ -80,25 +81,40 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
         rtcSession: RTCSessionDescriptionInit
         roomId: string
       }) => {
-        const conn = store.$state.connections[clientId]?.connection
-        if (!conn) {
+        const reactiveConn = store.$state.connections[clientId]
+        if (!reactiveConn) {
           logger.warn('Received ack from %s but no conn was found', clientId)
           return
         }
 
-        conn.addEventListener('icecandidate', (event) => {
-          logger.debug('Sent ice candidate to client %s', clientId)
-          socket.emit('send_ice_candidate', {
-            clientId,
-            roomId,
-            iceCandidate: event.candidate,
-          })
-        })
-
-        store.$state.connections[clientId] = makeConnectionReactive(conn)
-
-        conn.setRemoteDescription(new RTCSessionDescription(rtcSession))
+        reactiveConn.connection.setRemoteDescription(
+          new RTCSessionDescription(rtcSession),
+        )
         logger.info('Completed handshake with client %s', clientId)
+
+        const sent = new Set<RTCIceCandidate>()
+        watch(
+          () => reactiveConn.iceCandidates,
+          (candidates) => {
+            for (const candidate of candidates) {
+              if (sent.has(candidate)) {
+                continue
+              }
+
+              socket.emit('send_ice_candidate', {
+                clientId,
+                roomId,
+                iceCandidate: candidate,
+              })
+              sent.add(candidate)
+              logger.debug('Sent ice candidate to client %s', clientId)
+            }
+          },
+          {
+            deep: true,
+            immediate: true,
+          },
+        )
       },
     )
 
@@ -127,11 +143,36 @@ export function useRtcOfferListener(appSocket: AppSocket | null) {
           iceServers: ICE_SERVERS,
           iceTransportPolicy: 'relay',
         })
-        store.$state.connections[clientId] = makeConnectionReactive(conn)
+        const reactiveConn = makeConnectionReactive(conn)
+        store.$state.connections[clientId] = reactiveConn
 
         await conn.setRemoteDescription(new RTCSessionDescription(rtcSession))
         const answer = await conn.createAnswer()
         await conn.setLocalDescription(answer)
+
+        const sent = new Set<RTCIceCandidate>()
+        watch(
+          () => reactiveConn.iceCandidates,
+          (candidates) => {
+            for (const candidate of candidates) {
+              if (sent.has(candidate)) {
+                continue
+              }
+
+              socket.emit('send_ice_candidate', {
+                clientId,
+                roomId,
+                iceCandidate: candidate,
+              })
+              sent.add(candidate)
+              logger.debug('Sent ice candidate to client %s', clientId)
+            }
+          },
+          {
+            deep: true,
+            immediate: true,
+          },
+        )
 
         socket.emit('accept_offer', {
           roomId,
