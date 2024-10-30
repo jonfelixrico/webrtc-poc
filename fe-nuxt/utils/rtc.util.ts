@@ -13,8 +13,27 @@ export function makeConnectionReactive(conn: RTCPeerConnection) {
   }
   conn.addEventListener('connectionstatechange', handleStateChange)
 
+  const iceGatheringState = ref<RTCPeerConnection['iceGatheringState']>('new')
+
+  function handleIceGatheringStateChange() {
+    const state = conn.iceGatheringState
+    iceGatheringState.value = state
+
+    if (state === 'complete') {
+      conn.removeEventListener(
+        'icegatheringstatechange',
+        handleIceGatheringStateChange,
+      )
+    }
+  }
+  conn.addEventListener(
+    'icegatheringstatechange',
+    handleIceGatheringStateChange,
+  )
+
   return reactive({
     connectionState,
+    iceGatheringState,
     connection: markRaw(conn),
   })
 }
