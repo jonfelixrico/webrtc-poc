@@ -69,28 +69,6 @@ if (import.meta.client) {
       immediate: true,
     },
   )
-
-  watch(
-    [stream, connections],
-    ([newStream, newConns]) => {
-      if (!newStream) {
-        return
-      }
-
-      for (const key in newConns) {
-        const conn = newConns[key]
-
-        newStream.getTracks().forEach((track) => {
-          conn.connection.addTrack(track, newStream)
-        })
-
-        console.debug('added tracks to %s', key)
-      }
-    },
-    {
-      immediate: true,
-    },
-  )
 }
 </script>
 
@@ -109,11 +87,13 @@ if (import.meta.client) {
 
     <div class="flex-1 flex flex-col">
       <template
-        v-for="({ connection, connectionState }, key) in connections"
+        v-for="(
+          { connection, connectionState, iceGatheringState }, key
+        ) in connections"
         :key="key"
       >
         <div>
-          {{ key }} {{ connectionState }}
+          {{ key }} {{ connectionState }} {{ iceGatheringState }}
           <CPeerConnectionStreamWrapper
             v-if="connection"
             v-slot="{ mediaStream }"
