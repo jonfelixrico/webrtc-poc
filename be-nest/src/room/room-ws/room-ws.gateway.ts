@@ -109,4 +109,27 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       roomId,
     })
   }
+
+  // TODO include in the documentation
+  @SubscribeMessage('send_ice_candidate')
+  async handleSendIceCandidate(
+    @MessageBody()
+    {
+      clientId,
+      roomId,
+      iceCandidate,
+    }: {
+      clientId: string
+      roomId: string
+      iceCandidate: Record<string, unknown>
+    },
+
+    @ConnectedSocket() socket: Socket,
+  ) {
+    socket.to(clientId).emit('ice_candidate_sent', {
+      roomId,
+      iceCandidate,
+      clientId: socket.id,
+    })
+  }
 }
