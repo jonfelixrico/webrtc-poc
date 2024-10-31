@@ -7,7 +7,7 @@ import {
 import {
   useIceCandidateHandlers,
   useNegotiationHandlers,
-} from '~/composables/rtc-signaling-v2.composable'
+} from '~/composables/rtc-signaling-individual.composable'
 
 const props = defineProps({
   peerConnection: {
@@ -26,3 +26,5 @@ useIceCandidateHandlers(props.peerConnection, props.peerClientId)
 useStreamSender(props.peerConnection)
 useStreamReceiver(props.peerConnection, props.peerClientId)
 </script>
+
+<template></template>
