@@ -87,8 +87,6 @@ export function useIceCandidateHandlers(
   const logger = useLogger()
   const socket = useSocketFromStore()
 
-  const candidates = new Set<RTCIceCandidate>()
-
   onSocketEvent(
     'ice_candidate_sent',
     async ({
@@ -112,35 +110,57 @@ export function useIceCandidateHandlers(
     },
   )
 
-  onSocketEvent('offer_accepted', ({ clientId }: { clientId: string }) => {
+  const candidates = new Set<RTCIceCandidate>()
+  let emitCandidates = false
+
+  function handleRemoteAck({ clientId }: { clientId: string }) {
     if (clientId !== peerClientId) {
       return
     }
-  })
 
-  onSocketEvent('offer_sent', ({ clientId }: { clientId: string }) => {
-    if (clientId !== peerClientId) {
+    if (emitCandidates) {
+      logger.warn(
+        'Strange state. handleRemoteAck is triggered but emitCandidates is already true',
+      )
       return
     }
-  })
 
-  function storeCandidate({ candidate }: RTCPeerConnectionIceEvent) {
+    for (const candidate of candidates) {
+      toValue(socket).emit('send_ice_candidate', {
+        clientId: peerClientId,
+        iceCandidate: candidate,
+      })
+    }
+    emitCandidates = true
+  }
+  onSocketEvent('offer_accepted', handleRemoteAck)
+  onSocketEvent('offer_sent', handleRemoteAck)
+
+  function handleCandidateFound({ candidate }: RTCPeerConnectionIceEvent) {
     if (!candidate) {
       return
     }
 
+    if (emitCandidates) {
+      toValue(socket).emit('send_ice_candidate', {
+        clientId: peerClientId,
+        iceCandidate: candidate,
+      })
+    }
+
     candidates.add(candidate)
   }
-  peerConnection.addEventListener('icecandidate', storeCandidate)
+  peerConnection.addEventListener('icecandidate', handleCandidateFound)
   onBeforeUnmount(() => {
-    peerConnection.removeEventListener('icecandidate', storeCandidate)
+    peerConnection.removeEventListener('icecandidate', handleCandidateFound)
   })
 
-  function clearCandidates() {
+  function handleReset() {
     candidates.clear()
+    emitCandidates = false
   }
-  peerConnection.addEventListener('negotiationneeded', clearCandidates)
+  peerConnection.addEventListener('negotiationneeded', handleReset)
   onBeforeUnmount(() => {
-    peerConnection.removeEventListener('negotiationneeded', clearCandidates)
+    peerConnection.removeEventListener('negotiationneeded', handleReset)
   })
 }
