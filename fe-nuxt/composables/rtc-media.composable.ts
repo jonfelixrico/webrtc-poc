@@ -1,6 +1,7 @@
-import { watch } from 'vue'
+import { onBeforeUnmount, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
+import { useWebRtcStore } from '~/store/web-rtc.store'
 
 export function useStreamSender(peerConnection: RTCPeerConnection) {
   const { $state } = useMediaStreamStore()
@@ -22,4 +23,21 @@ export function useStreamSender(peerConnection: RTCPeerConnection) {
       }
     },
   )
+}
+
+export function useStreamReceiver(
+  peerConnection: RTCPeerConnection,
+  peerClientId: string,
+) {
+  const store = useWebRtcStore()
+
+  function addTrackToStore(track: RTCTrackEvent) {
+    store.$state.streams[peerClientId] = track.streams[0] ?? null
+  }
+
+  peerConnection.addEventListener('track', addTrackToStore)
+
+  onBeforeUnmount(() => {
+    peerConnection.removeEventListener('track', addTrackToStore)
+  })
 }
