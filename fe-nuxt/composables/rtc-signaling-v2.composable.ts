@@ -32,7 +32,6 @@ export function useNegotiationHandlers(
     }: {
       clientId: string
       rtcSession: RTCSessionDescriptionInit
-      roomId: string
     }) => {
       if (clientId !== toValue(peerClientId)) {
         return
@@ -50,11 +49,9 @@ export function useNegotiationHandlers(
     async ({
       clientId,
       rtcSession,
-      roomId,
     }: {
       clientId: string
       rtcSession: RTCSessionDescriptionInit
-      roomId: string
     }) => {
       if (clientId !== toValue(peerClientId)) {
         return
@@ -74,7 +71,6 @@ export function useNegotiationHandlers(
       await conn.setLocalDescription(answer)
 
       toValue(socket).emit('accept_offer', {
-        roomId,
         rtcSession: answer,
         clientId,
       })
@@ -101,7 +97,6 @@ export function useIceCandidateHandlers(
     }: {
       clientId: string
       iceCandidate: RTCIceCandidateInit
-      roomId: string
     }) => {
       if (clientId !== peerClientId) {
         return
