@@ -69,10 +69,8 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     @MessageBody()
     {
       clientId,
-      roomId,
       rtcSession,
     }: {
-      roomId: string
       clientId: string
       rtcSession: Record<string, unknown>
     },
@@ -83,7 +81,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     socket.to(clientId).emit('offer_sent', {
       clientId: socket.id,
       rtcSession,
-      roomId,
     })
   }
 
@@ -92,10 +89,8 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     @MessageBody()
     {
       clientId,
-      roomId,
       rtcSession,
     }: {
-      roomId: string
       clientId: string
       rtcSession: Record<string, unknown>
     },
@@ -106,7 +101,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     socket.to(clientId).emit('offer_accepted', {
       clientId: socket.id,
       rtcSession,
-      roomId,
     })
   }
 
@@ -116,18 +110,15 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     @MessageBody()
     {
       clientId,
-      roomId,
       iceCandidate,
     }: {
       clientId: string
-      roomId: string
       iceCandidate: Record<string, unknown>
     },
 
     @ConnectedSocket() socket: Socket,
   ) {
     socket.to(clientId).emit('ice_candidate_sent', {
-      roomId,
       iceCandidate,
       clientId: socket.id,
     })
