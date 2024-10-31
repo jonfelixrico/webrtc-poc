@@ -36,7 +36,6 @@ const connObj = computed({
 
 onSocketEvent(
   'offer_accepted',
-
   ({
     clientId,
     rtcSession,
@@ -45,8 +44,11 @@ onSocketEvent(
     rtcSession: RTCSessionDescriptionInit
     roomId: string
   }) => {
-    const { peerConnection } = props
+    if (clientId !== props.peerClientId) {
+      return
+    }
 
+    const { peerConnection } = props
     peerConnection.setRemoteDescription(new RTCSessionDescription(rtcSession))
     logger.info('Completed handshake with client %s', clientId)
   },
@@ -63,6 +65,10 @@ onSocketEvent(
     rtcSession: RTCSessionDescriptionInit
     roomId: string
   }) => {
+    if (clientId !== props.peerClientId) {
+      return
+    }
+
     logger.info('Received offer from client %s', clientId)
 
     const conn = new RTCPeerConnection({
@@ -96,6 +102,10 @@ onSocketEvent(
     iceCandidate: RTCIceCandidateInit
     roomId: string
   }) => {
+    if (clientId !== props.peerClientId) {
+      return
+    }
+
     const { peerConnection } = props
 
     logger.debug('Incoming ice candidate from client %s...', clientId)
