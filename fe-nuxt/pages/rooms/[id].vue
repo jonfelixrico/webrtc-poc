@@ -1,10 +1,5 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { useSocket } from '~/composables/socket.composable'
-import {
-  useRtcJoinHandler,
-  useRtcOfferListener,
-} from '~/composables/rtc-signaling.composable'
 import {
   computed,
   definePageMeta,
@@ -17,7 +12,11 @@ import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useDevicesList, useUserMedia } from '@vueuse/core'
 import { useWebRtcStore } from '~/store/web-rtc.store'
-import CPeerConnectionStreamWrapper from '~/components/CPeerConnectionStreamWrapper.vue'
+import { useJoinHandler } from '~/composables/rtc-bl.composables'
+import { useLogger } from '~/composables/logger.composable'
+import CPeerConnectionManager from '~/components/CPeerConnectionManager.vue'
+import { useSocketInit } from '~/composables/socket-v2.composable'
+import { useNewOfferListener } from '~/composables/rtc-signaling-v2.composable'
 
 definePageMeta({
   validate: (route) =>
@@ -32,14 +31,13 @@ const route = useRoute()
 const mediaStreamStore = useMediaStreamStore()
 const connStore = useWebRtcStore()
 const connections = computed(() => connStore.$state.connections)
+const streams = computed(() => connStore.$state.streams)
+const logger = useLogger()
 
 if (import.meta.client) {
-  const appSocket = useSocket()
-  useRtcJoinHandler(
-    appSocket,
-    computed(() => String(route.params.id)),
-  )
-  useRtcOfferListener(appSocket)
+  useSocketInit()
+  useJoinHandler(String(route.params.id))
+  useNewOfferListener()
 
   const { videoInputs } = useDevicesList({
     requestPermissions: true,
@@ -57,9 +55,8 @@ if (import.meta.client) {
     },
   })
   onMounted(() => {
-    start().catch((e) => console.error(e))
+    start().catch((e) => logger.error(e))
   })
-
   watch(
     stream,
     (stream) => {
@@ -83,29 +80,35 @@ if (import.meta.client) {
           :height="400"
         />
       </ClientOnly>
+
+      <CPeerConnectionManager
+        v-for="({ connection }, clientId) in connections"
+        :key="clientId"
+        :peer-client-id="clientId"
+        :peer-connection="connection"
+      />
     </div>
 
     <div class="flex-1 flex flex-col">
-      <template
+      <div
         v-for="(
-          { connection, connectionState, iceGatheringState }, key
+          { connectionState, iceGatheringState }, clientId
         ) in connections"
-        :key="key"
+        :key="clientId"
       >
+        {{ clientId }}
+        {{ connectionState }}
+        {{ iceGatheringState }}
+      </div>
+
+      <template v-for="(stream, clientId) in streams" :key="clientId">
         <div>
-          {{ key }} {{ connectionState }} {{ iceGatheringState }}
-          <CPeerConnectionStreamWrapper
-            v-if="connection"
-            v-slot="{ mediaStream }"
-            :connection
-          >
-            <CMediaStreamRenderer
-              v-if="mediaStream"
-              :media-stream="mediaStream"
-              :width="400"
-              :height="400"
-            />
-          </CPeerConnectionStreamWrapper>
+          {{ clientId }}
+          <CMediaStreamRenderer
+            :media-stream="stream"
+            :width="400"
+            :height="400"
+          />
         </div>
       </template>
     </div>

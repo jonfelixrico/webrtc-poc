@@ -5,23 +5,13 @@ import {
   onSocketEvent,
   useSocketFromStore,
 } from '~/composables/socket-v2.composable'
-import { useWebRtcStore } from '~/store/web-rtc.store'
 
 export function useNegotiationHandlers(
   peerConnection: RTCPeerConnection,
   peerClientId: string,
 ) {
   const logger = useLogger()
-  const store = useWebRtcStore()
   const socket = useSocketFromStore()
-
-  const connObj = computed({
-    get: () => store.$state.connections[peerClientId],
-
-    set: (val) => {
-      store.$state.connections[peerClientId] = val
-    },
-  })
 
   onSocketEvent(
     'offer_accepted',
@@ -90,6 +80,8 @@ export function useIceCandidateHandlers(
   const logger = useLogger()
   const socket = useSocketFromStore()
 
+  logger.debug('Started candidate handler for client %s', peerClientId)
+
   onSocketEvent(
     'ice_candidate_sent',
     async ({
@@ -129,11 +121,13 @@ export function useIceCandidateHandlers(
     }
 
     for (const candidate of candidates) {
+      logger.debug('Sent candidate to client %s', clientId)
       toValue(socket).emit('send_ice_candidate', {
         clientId: peerClientId,
         iceCandidate: candidate,
       })
     }
+    logger.debug('Initial sending done')
     emitCandidates = true
   }
   onSocketEvent('offer_accepted', handleRemoteAck)
@@ -143,6 +137,8 @@ export function useIceCandidateHandlers(
     if (!candidate) {
       return
     }
+
+    logger.debug('Obtained candidate')
 
     if (emitCandidates) {
       toValue(socket).emit('send_ice_candidate', {
@@ -159,6 +155,8 @@ export function useIceCandidateHandlers(
   })
 
   function handleReset() {
+    logger.debug('Negotiationneeded detected')
+
     candidates.clear()
     emitCandidates = false
   }

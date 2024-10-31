@@ -18,11 +18,10 @@ export function useCreateConnection() {
       iceServers: ICE_SERVERS,
       iceTransportPolicy: 'relay',
     })
-
-    await sendOffer(conn, peerClientId)
-
     const reactiveConn = makeConnectionReactive(conn)
     store.$state.connections[peerClientId] = reactiveConn
+
+    await sendOffer(conn, peerClientId)
   }
 
   return createConnection
@@ -57,31 +56,33 @@ export function useNewOfferListener() {
         iceServers: ICE_SERVERS,
         iceTransportPolicy: 'relay',
       })
+      const reactiveConn = makeConnectionReactive(conn)
+      store.$state.connections[clientId] = reactiveConn
 
       function emitCandidate({ candidate }: RTCPeerConnectionIceEvent) {
         toValue(socket).emit('send_ice_candidate', {
           clientId,
           iceCandidate: candidate,
         })
+
+        logger.debug('Sent ice candidate to client %s', clientId)
+
+        if (conn.iceGatheringState === 'complete') {
+          logger.debug('Ice gathering is complete, removing listener')
+          conn.removeEventListener('icecandidate', emitCandidate)
+        }
       }
       conn.addEventListener('icecandidate', emitCandidate)
 
-      try {
-        await conn.setRemoteDescription(new RTCSessionDescription(rtcSession))
-        const answer = await conn.createAnswer()
-        await conn.setLocalDescription(answer)
+      await conn.setRemoteDescription(new RTCSessionDescription(rtcSession))
+      const answer = await conn.createAnswer()
+      await conn.setLocalDescription(answer)
 
-        toValue(socket).emit('accept_offer', {
-          rtcSession: answer,
-          clientId,
-        })
-        logger.info('Sent offer acceptance to client %s', clientId)
-
-        const reactiveConn = makeConnectionReactive(conn)
-        store.$state.connections[clientId] = reactiveConn
-      } finally {
-        conn.removeEventListener('icecandidate', emitCandidate)
-      }
+      toValue(socket).emit('accept_offer', {
+        rtcSession: answer,
+        clientId,
+      })
+      logger.info('Sent offer acceptance to client %s', clientId)
     },
   )
 }
