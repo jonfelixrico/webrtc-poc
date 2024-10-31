@@ -1,8 +1,9 @@
 import { io, type Socket } from 'socket.io-client'
-import { markRaw, ref } from 'vue'
+import { computed, markRaw, onBeforeMount, ref, toRef, watch } from 'vue'
 import { useLogger } from '~/composables/logger.composable'
+import { useSocketStore } from '~/store/socket.store'
 
-export function useSocketCreate() {
+function useSocketCreate() {
   const logger = useLogger()
   const socketRef = ref<Socket | null>(null)
 
@@ -31,4 +32,28 @@ export function useSocketCreate() {
     socket: socketRef,
     connect,
   }
+}
+
+export function useSocketInit() {
+  const store = useSocketStore()
+  const { connect, socket } = useSocketCreate()
+
+  onBeforeMount(() => {
+    connect()
+  })
+
+  watch(socket, (socket) => {
+    if (!socket) {
+      store.$state.socket = null
+      return
+    }
+
+    store.$state.socket = markRaw(socket)
+  })
+}
+
+export function useSocketFromStore() {
+  const { $state } = useSocketStore()
+
+  return computed(() => $state.socket)
 }
