@@ -3,10 +3,10 @@ import {
   computed,
   markRaw,
   onBeforeMount,
+  onBeforeUnmount,
   ref,
   toValue,
   watch,
-  type MaybeRef,
   type Ref,
 } from 'vue'
 import { useLogger } from '~/composables/logger.composable'
@@ -67,20 +67,50 @@ export function useSocketFromStore() {
   return computed(() => $state.socket as Socket)
 }
 
-export function onSocketAvailable(handler: MaybeRef<(socket: Socket) => void>) {
+export function onSocketAvailable(handler: (socket: Socket) => void) {
   const socket = useSocketFromStore()
 
   watch(
-    [socket, () => toValue(handler)],
-    ([nSocket, nHandler]) => {
-      if (!nSocket) {
+    socket,
+    (socket) => {
+      if (!socket) {
         return
       }
 
-      nHandler(nSocket)
+      handler(socket)
     },
     {
       immediate: true,
     },
   )
+}
+
+export function onSocketEvent(
+  event: string,
+  handler: (...args: unknown[]) => void,
+) {
+  const socket = useSocketFromStore()
+
+  watch(
+    socket,
+    (nSocket, oSocket) => {
+      if (nSocket) {
+        nSocket.on(event, handler)
+      }
+
+      if (oSocket) {
+        oSocket.off(event, handler)
+      }
+    },
+    {
+      immediate: true,
+    },
+  )
+
+  onBeforeUnmount(() => {
+    const vSocket = toValue(socket)
+    if (vSocket) {
+      vSocket.off(event, handler)
+    }
+  })
 }
