@@ -13,7 +13,7 @@ export interface WebRtcStore {
 
   streams: Record<string, MediaStream>
 
-  politeMap: Record<string, boolean>
+  unpoliteMap: Record<string, boolean>
 }
 
 export const useWebRtcStore = defineStore('webRtc', {
@@ -21,6 +21,6 @@ export const useWebRtcStore = defineStore('webRtc', {
     ({
       connections: {},
       streams: {},
-      politeMap: {},
+      unpoliteMap: {},
     }) as WebRtcStore,
 })
