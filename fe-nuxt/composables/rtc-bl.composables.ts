@@ -1,8 +1,8 @@
-import { useLogger, type MaybeRef } from '#imports'
+import { useLogger } from '#imports'
 import { useCreateConnection } from '~/composables/rtc-signaling-v2.composable'
 import { onSocketAvailable } from '~/composables/socket-v2.composable'
 
-export function useJoinHandler(roomId: MaybeRef<string>) {
+export function useJoinHandler(roomId: string) {
   const logger = useLogger()
 
   const createConnection = useCreateConnection()
