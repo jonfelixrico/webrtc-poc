@@ -47,6 +47,7 @@ export function useNewOfferListener() {
       rtcSession: RTCSessionDescriptionInit
     }) => {
       if (toValue(existingClientIds).has(clientId)) {
+        // Reaching this point means that the offer_event probably is for a re-negotiation
         return
       }
 
