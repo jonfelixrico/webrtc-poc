@@ -7,6 +7,7 @@ import { useLogger } from '~/composables/logger.composable'
 import { ICE_SERVERS } from '~/typings/ice-servers.const'
 import { makeConnectionReactive } from '#imports'
 import { useWebRtcStore } from '~/store/web-rtc.store'
+import type { Socket } from 'socket.io-client'
 
 export function useNegotiationHandlers(
   peerConnection: Ref<RTCPeerConnection>,
@@ -163,4 +164,34 @@ export function useIceCandidateHandlers(
   onBeforeUnmount(() => {
     peerConnection.removeEventListener('negotiationneeded', handleReset)
   })
+}
+
+export function useSendOffer() {
+  const store = useWebRtcStore()
+  const logger = useLogger()
+  const socket = useSocketFromStore()
+
+  async function sendOffer(clientId: string) {
+    const conn = new RTCPeerConnection({
+      iceServers: ICE_SERVERS,
+      iceTransportPolicy: 'relay',
+    })
+
+    const reactiveConn = makeConnectionReactive(conn)
+    store.$state.connections[clientId] = reactiveConn
+
+    const offer = await conn.createOffer({
+      offerToReceiveAudio: true,
+      offerToReceiveVideo: true,
+    })
+    await conn.setLocalDescription(offer)
+    toValue(socket).emit('send_offer', {
+      clientId,
+      rtcSession: offer,
+    })
+
+    logger.debug('Sent an offer to client %s', clientId)
+  }
+
+  return sendOffer
 }
