@@ -17,10 +17,14 @@ export function useStreamSender(peerConnection: RTCPeerConnection) {
       for (const track of stream.getTracks()) {
         try {
           peerConnection.addTrack(track, stream)
+          logger.debug('Added track to conn')
         } catch (e) {
           logger.warn('Error encountered while adding track %s', track.id, e)
         }
       }
+    },
+    {
+      immediate: true,
     },
   )
 }
@@ -30,6 +34,7 @@ export function useStreamReceiver(
   peerClientId: string,
 ) {
   const store = useWebRtcStore()
+  const logger = useLogger()
 
   function addTrackToStore(track: RTCTrackEvent) {
     const [firstTrack] = track.streams
@@ -39,6 +44,7 @@ export function useStreamReceiver(
       return
     }
 
+    logger.debug('Added track from %s', peerClientId)
     store.$state.streams[peerClientId] = markRaw(firstTrack)
   }
 
