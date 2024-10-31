@@ -34,7 +34,7 @@ export function useRtcJoinHandler(
 
     const offer = await conn.createOffer({
       offerToReceiveAudio: true,
-      offerToReceiveVideo: false,
+      offerToReceiveVideo: true,
     })
     await conn.setLocalDescription(offer)
     socket.emit('send_offer', {
