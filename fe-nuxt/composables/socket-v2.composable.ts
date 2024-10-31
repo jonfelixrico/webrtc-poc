@@ -1,5 +1,14 @@
 import { io, type Socket } from 'socket.io-client'
-import { computed, markRaw, onBeforeMount, ref, toRef, watch } from 'vue'
+import {
+  computed,
+  markRaw,
+  onBeforeMount,
+  ref,
+  toValue,
+  watch,
+  type MaybeRef,
+  type Ref,
+} from 'vue'
 import { useLogger } from '~/composables/logger.composable'
 import { useSocketStore } from '~/store/socket.store'
 
@@ -29,7 +38,7 @@ function useSocketCreate() {
   }
 
   return {
-    socket: socketRef,
+    socket: socketRef as Ref<Socket>,
     connect,
   }
 }
@@ -55,5 +64,23 @@ export function useSocketInit() {
 export function useSocketFromStore() {
   const { $state } = useSocketStore()
 
-  return computed(() => $state.socket)
+  return computed(() => $state.socket as Socket)
+}
+
+export function onSocketAvailable(handler: MaybeRef<(socket: Socket) => void>) {
+  const socket = useSocketFromStore()
+
+  watch(
+    [socket, () => toValue(handler)],
+    ([nSocket, nHandler]) => {
+      if (!nSocket) {
+        return
+      }
+
+      nHandler(nSocket)
+    },
+    {
+      immediate: true,
+    },
+  )
 }
