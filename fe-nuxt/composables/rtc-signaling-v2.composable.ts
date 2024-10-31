@@ -9,34 +9,46 @@ import { makeConnectionReactive } from '#imports'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 
 export function useSendOffer() {
-  const store = useWebRtcStore()
   const logger = useLogger()
   const socket = useSocketFromStore()
 
-  async function sendOffer(clientId: string) {
+  async function sendOffer(
+    peerConnection: RTCPeerConnection,
+    peerClientId: string,
+  ) {
+    const offer = await peerConnection.createOffer({
+      offerToReceiveAudio: true,
+      offerToReceiveVideo: true,
+    })
+    await peerConnection.setLocalDescription(offer)
+
+    toValue(socket).emit('send_offer', {
+      clientId: peerClientId,
+      rtcSession: offer,
+    })
+    logger.debug('Sent an offer to client %s', peerClientId)
+  }
+
+  return sendOffer
+}
+
+export function useCreateConnection() {
+  const store = useWebRtcStore()
+  const sendOffer = useSendOffer()
+
+  async function createConnection(peerClientId: string) {
     const conn = new RTCPeerConnection({
       iceServers: ICE_SERVERS,
       iceTransportPolicy: 'relay',
     })
 
+    await sendOffer(conn, peerClientId)
+
     const reactiveConn = makeConnectionReactive(conn)
-
-    const offer = await conn.createOffer({
-      offerToReceiveAudio: true,
-      offerToReceiveVideo: true,
-    })
-    await conn.setLocalDescription(offer)
-
-    toValue(socket).emit('send_offer', {
-      clientId,
-      rtcSession: offer,
-    })
-    logger.debug('Sent an offer to client %s', clientId)
-
-    store.$state.connections[clientId] = reactiveConn
+    store.$state.connections[peerClientId] = reactiveConn
   }
 
-  return sendOffer
+  return createConnection
 }
 
 export function useNegotiationHandlers(
@@ -111,7 +123,7 @@ export function useNegotiationHandlers(
   const sendOffer = useSendOffer()
   function handleNegotiationNeeded() {
     logger.info('Negotiation needed with client %s', peerClientId)
-    sendOffer(peerClientId)
+    sendOffer(peerConnection, peerClientId)
   }
   peerConnection.addEventListener('negotiationneeded', handleNegotiationNeeded)
   peerConnection.removeEventListener(
