@@ -46,9 +46,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   @WebSocketServer()
   private server: Server
 
-  @WebSocketServer()
-  private server: Server
-
   @SubscribeMessage('join')
   async handleJoin(
     @ConnectedSocket() socket: Socket,
@@ -122,29 +119,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     @ConnectedSocket() socket: Socket,
   ) {
     socket.to(clientId).emit('ice_candidate_sent', {
-      iceCandidate,
-      clientId: socket.id,
-    })
-  }
-
-  // TODO include in the documentation
-  @SubscribeMessage('send_ice_candidate')
-  async handleSendIceCandidate(
-    @MessageBody()
-    {
-      clientId,
-      roomId,
-      iceCandidate,
-    }: {
-      clientId: string
-      roomId: string
-      iceCandidate: Record<string, unknown>
-    },
-
-    @ConnectedSocket() socket: Socket,
-  ) {
-    socket.to(clientId).emit('ice_candidate_sent', {
-      roomId,
       iceCandidate,
       clientId: socket.id,
     })
