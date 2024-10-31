@@ -10,11 +10,14 @@ export interface WebRtcStore {
       iceCandidates: RTCIceCandidate[]
     }
   >
+
+  streams: Record<string, MediaStream>
 }
 
 export const useWebRtcStore = defineStore('webRtc', {
   state: () =>
     ({
       connections: {},
+      streams: {},
     }) as WebRtcStore,
 })
