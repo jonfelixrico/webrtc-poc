@@ -10,7 +10,7 @@ import { useWebRtcStore } from '~/store/web-rtc.store'
 import { useSendOffer } from '~/composables/rtc-signaling-commons.composable'
 
 export function useCreateConnection() {
-  const store = useWebRtcStore()
+  const { $state } = useWebRtcStore()
   const sendOffer = useSendOffer()
 
   async function createConnection(peerClientId: string) {
@@ -19,7 +19,8 @@ export function useCreateConnection() {
       iceTransportPolicy: 'relay',
     })
     const reactiveConn = makeConnectionReactive(conn)
-    store.$state.connections[peerClientId] = reactiveConn
+    $state.connections[peerClientId] = reactiveConn
+    $state.unpoliteMap[peerClientId] = true
 
     await sendOffer(conn, peerClientId)
   }
