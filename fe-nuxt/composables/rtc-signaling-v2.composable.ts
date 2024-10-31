@@ -1,4 +1,10 @@
-import { computed, onBeforeUnmount, toValue, type Ref } from 'vue'
+import {
+  computed,
+  onBeforeUnmount,
+  toValue,
+  type MaybeRef,
+  type Ref,
+} from 'vue'
 import {
   onSocketEvent,
   useSocketFromStore,
@@ -7,21 +13,51 @@ import { useLogger } from '~/composables/logger.composable'
 import { ICE_SERVERS } from '~/typings/ice-servers.const'
 import { makeConnectionReactive } from '#imports'
 import { useWebRtcStore } from '~/store/web-rtc.store'
-import type { Socket } from 'socket.io-client'
+
+export function useSendOffer() {
+  const store = useWebRtcStore()
+  const logger = useLogger()
+  const socket = useSocketFromStore()
+
+  async function sendOffer(clientId: string) {
+    const conn = new RTCPeerConnection({
+      iceServers: ICE_SERVERS,
+      iceTransportPolicy: 'relay',
+    })
+
+    const reactiveConn = makeConnectionReactive(conn)
+
+    const offer = await conn.createOffer({
+      offerToReceiveAudio: true,
+      offerToReceiveVideo: true,
+    })
+    await conn.setLocalDescription(offer)
+
+    toValue(socket).emit('send_offer', {
+      clientId,
+      rtcSession: offer,
+    })
+    logger.debug('Sent an offer to client %s', clientId)
+
+    store.$state.connections[clientId] = reactiveConn
+  }
+
+  return sendOffer
+}
 
 export function useNegotiationHandlers(
-  peerConnection: Ref<RTCPeerConnection>,
-  peerClientId: Ref<string>,
+  peerConnection: RTCPeerConnection,
+  peerClientId: string,
 ) {
   const logger = useLogger()
   const store = useWebRtcStore()
   const socket = useSocketFromStore()
 
   const connObj = computed({
-    get: () => store.$state.connections[toValue(peerClientId)],
+    get: () => store.$state.connections[peerClientId],
 
     set: (val) => {
-      store.$state.connections[toValue(peerClientId)] = val
+      store.$state.connections[peerClientId] = val
     },
   })
 
@@ -34,13 +70,11 @@ export function useNegotiationHandlers(
       clientId: string
       rtcSession: RTCSessionDescriptionInit
     }) => {
-      if (clientId !== toValue(peerClientId)) {
+      if (clientId !== peerClientId) {
         return
       }
 
-      toValue(peerConnection).setRemoteDescription(
-        new RTCSessionDescription(rtcSession),
-      )
+      peerConnection.setRemoteDescription(new RTCSessionDescription(rtcSession))
       logger.info('Completed handshake with client %s', clientId)
     },
   )
@@ -78,6 +112,17 @@ export function useNegotiationHandlers(
 
       logger.info('Sent offer acceptance to client %s', clientId)
     },
+  )
+
+  const sendOffer = useSendOffer()
+  function handleNegotiationNeeded() {
+    logger.info('Negotiation needed with client %s', peerClientId)
+    sendOffer(peerClientId)
+  }
+  peerConnection.addEventListener('negotiationneeded', handleNegotiationNeeded)
+  peerConnection.removeEventListener(
+    'negotiationneeded',
+    handleNegotiationNeeded,
   )
 }
 
@@ -164,34 +209,4 @@ export function useIceCandidateHandlers(
   onBeforeUnmount(() => {
     peerConnection.removeEventListener('negotiationneeded', handleReset)
   })
-}
-
-export function useSendOffer() {
-  const store = useWebRtcStore()
-  const logger = useLogger()
-  const socket = useSocketFromStore()
-
-  async function sendOffer(clientId: string) {
-    const conn = new RTCPeerConnection({
-      iceServers: ICE_SERVERS,
-      iceTransportPolicy: 'relay',
-    })
-
-    const reactiveConn = makeConnectionReactive(conn)
-    store.$state.connections[clientId] = reactiveConn
-
-    const offer = await conn.createOffer({
-      offerToReceiveAudio: true,
-      offerToReceiveVideo: true,
-    })
-    await conn.setLocalDescription(offer)
-    toValue(socket).emit('send_offer', {
-      clientId,
-      rtcSession: offer,
-    })
-
-    logger.debug('Sent an offer to client %s', clientId)
-  }
-
-  return sendOffer
 }
