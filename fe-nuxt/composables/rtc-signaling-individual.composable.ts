@@ -5,6 +5,7 @@ import {
   onSocketEvent,
   useSocketFromStore,
 } from '~/composables/socket-v2.composable'
+import { useWebRtcStore } from '~/store/web-rtc.store'
 
 export function useNegotiationHandlers(
   peerConnection: RTCPeerConnection,
@@ -31,6 +32,9 @@ export function useNegotiationHandlers(
     },
   )
 
+  let isMakingOffer = false
+  const store = useWebRtcStore()
+
   onSocketEvent(
     'offer_sent',
     async ({
@@ -44,16 +48,22 @@ export function useNegotiationHandlers(
         return
       }
 
+      const offerCollision =
+        isMakingOffer || peerConnection.signalingState !== 'stable'
+      if (store.$state.unpoliteMap[peerClientId] && offerCollision) {
+        logger.info('Ignored offer from client')
+        return
+      }
+
       logger.info('Received offer from client %s', clientId)
 
       await peerConnection.setRemoteDescription(
         new RTCSessionDescription(rtcSession),
       )
-      const answer = await peerConnection.createAnswer()
-      await peerConnection.setLocalDescription(answer)
+      await peerConnection.setLocalDescription()
 
       toValue(socket).emit('accept_offer', {
-        rtcSession: answer,
+        rtcSession: peerConnection.localDescription,
         clientId,
       })
 
@@ -61,10 +71,19 @@ export function useNegotiationHandlers(
     },
   )
 
-  const sendOffer = useSendOffer()
-  function handleNegotiationNeeded() {
+  async function handleNegotiationNeeded() {
     logger.info('Negotiation needed with client %s', peerClientId)
-    sendOffer(peerConnection, peerClientId)
+
+    try {
+      isMakingOffer = true
+      await peerConnection.setLocalDescription()
+      toValue(socket).emit('send_offer', {
+        clientId: peerClientId,
+        rtcSession: peerConnection.localDescription,
+      })
+    } finally {
+      isMakingOffer = false
+    }
   }
   peerConnection.addEventListener('negotiationneeded', handleNegotiationNeeded)
   peerConnection.removeEventListener(
