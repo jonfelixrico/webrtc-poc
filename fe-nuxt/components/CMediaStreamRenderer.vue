@@ -26,6 +26,7 @@ watch(
     }
 
     el.srcObject = stream
+    el.play()
   },
   {
     immediate: true,
@@ -43,5 +44,11 @@ const dimsStyle = computed(() => {
 </script>
 
 <template>
-  <video ref="div" :style="dimsStyle" autoplay :controls="false" />
+  <video
+    ref="div"
+    :style="dimsStyle"
+    autoplay
+    :controls="false"
+    :playsinline="true"
+  />
 </template>
