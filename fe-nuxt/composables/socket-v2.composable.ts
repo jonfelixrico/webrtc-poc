@@ -67,7 +67,9 @@ export function useSocketFromStore() {
   return computed(() => $state.socket as Socket)
 }
 
-export function onSocketAvailable(handler: (socket: Socket) => void) {
+export function onSocketAvailable(
+  handler: (socket: Socket) => Promise<void> | void,
+) {
   const socket = useSocketFromStore()
 
   watch(
@@ -87,7 +89,7 @@ export function onSocketAvailable(handler: (socket: Socket) => void) {
 
 export function onSocketEvent(
   event: string,
-  handler: (...args: unknown[]) => void,
+  handler: (...args: unknown[]) => void | Promise<void>,
 ) {
   const socket = useSocketFromStore()
 
