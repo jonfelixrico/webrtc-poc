@@ -41,4 +41,8 @@ export default defineNuxtConfig({
   imports: {
     autoImport: false,
   },
+
+  eslint: {
+    checker: true,
+  },
 })

@@ -1,4 +1,4 @@
-import { computed, onBeforeUnmount, watch } from 'vue'
+import { computed, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'

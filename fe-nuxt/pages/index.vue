@@ -24,8 +24,8 @@ async function createRoom() {
 <template>
   <div class="flex flex-row gap-4 w-dvw h-dvh">
     <form
-      @submit.prevent="goToRoom(roomJoinModel)"
       class="flex-1 flex flex-row items-center justify-center gap-2"
+      @submit.prevent="goToRoom(roomJoinModel)"
     >
       <UInput v-model="roomJoinModel" />
       <UButton type="submit">Call</UButton>
