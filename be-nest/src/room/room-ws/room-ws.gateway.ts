@@ -64,6 +64,9 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     })
   }
 
+  /**
+   * @deprecated
+   */
   @SubscribeMessage('send_offer')
   async handleSendOffer(
     @MessageBody()
@@ -84,6 +87,9 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     })
   }
 
+  /**
+   * @deprecated
+   */
   @SubscribeMessage('accept_offer')
   async handleAcceptOffer(
     @MessageBody()
@@ -104,6 +110,9 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     })
   }
 
+  /**
+   * @deprecated
+   */
   // TODO include in the documentation
   @SubscribeMessage('send_ice_candidate')
   async handleSendIceCandidate(
@@ -121,6 +130,36 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     socket.to(clientId).emit('ice_candidate_sent', {
       iceCandidate,
       clientId: socket.id,
+    })
+  }
+
+  @SubscribeMessage('send_description')
+  async handleSendDescription(
+    @MessageBody()
+    payload: {
+      toClientId: string
+      description: RTCSessionDescriptionInit
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    socket.to(payload.toClientId).emit('description_sent', {
+      fromClientId: socket.id,
+      description: payload.description,
+    })
+  }
+
+  @SubscribeMessage('send_candidate')
+  async handleSendCandidate(
+    @MessageBody()
+    payload: {
+      toClientId: string
+      candidate: RTCIceCandidateInit
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    socket.to(payload.toClientId).emit('candidate_sent', {
+      fromClientId: socket.id,
+      description: payload.candidate,
     })
   }
 }
