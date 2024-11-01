@@ -31,7 +31,6 @@ const route = useRoute()
 const mediaStreamStore = useMediaStreamStore()
 const connStore = useWebRtcStore()
 const connections = computed(() => connStore.$state.connections)
-const streams = computed(() => connStore.$state.streams)
 const logger = useLogger()
 
 if (import.meta.client) {
@@ -90,27 +89,16 @@ if (import.meta.client) {
     </div>
 
     <div class="flex-1 flex flex-col">
-      <div
-        v-for="(
-          { connectionState, iceGatheringState }, clientId
-        ) in connections"
-        :key="clientId"
-      >
+      <div v-for="({ stream }, clientId) in connections" :key="clientId">
         {{ clientId }}
-        {{ connectionState }}
-        {{ iceGatheringState }}
-      </div>
 
-      <template v-for="(stream, clientId) in streams" :key="clientId">
-        <div>
-          {{ clientId }}
-          <CMediaStreamRenderer
-            :media-stream="stream"
-            :width="400"
-            :height="400"
-          />
-        </div>
-      </template>
+        <CMediaStreamRenderer
+          v-if="stream"
+          :media-stream="stream"
+          :width="400"
+          :height="400"
+        />
+      </div>
     </div>
   </div>
 </template>
