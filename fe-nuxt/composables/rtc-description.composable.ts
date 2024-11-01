@@ -22,6 +22,8 @@ export function useDescriptionHandlers() {
       fromClientId: string
       description: RTCSessionDescription
     }) => {
+      logger.debug('Description sent from client %s', fromClientId)
+
       if (!store.connections[fromClientId]) {
         store.setConnection(
           fromClientId,
@@ -72,7 +74,7 @@ export function useDescriptionHandlers() {
             fromClientId,
           )
           await connection.setLocalDescription()
-          vSocket.send('send_description', {
+          vSocket.emit('send_description', {
             toClientId: fromClientId,
             description: connection.localDescription,
           })
