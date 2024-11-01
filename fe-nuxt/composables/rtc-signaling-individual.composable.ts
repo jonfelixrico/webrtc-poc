@@ -1,4 +1,4 @@
-import { computed, onBeforeUnmount, toValue } from 'vue'
+import { computed, toValue } from 'vue'
 import { useLogger } from '~/composables/logger.composable'
 import { useAddListener } from '~/composables/rtc-signaling-commons.composable'
 import {
@@ -6,98 +6,6 @@ import {
   useSocketFromStore,
 } from '~/composables/socket-v2.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
-
-/**
- * @deprecated
- */
-export function useNegotiationHandlers(
-  peerConnection: RTCPeerConnection,
-  peerClientId: string,
-) {
-  const logger = useLogger()
-  const socket = useSocketFromStore()
-
-  const store = useWebRtcStore()
-  const connection = computed(() => store.connections[peerClientId])
-
-  const addListener = useAddListener(peerConnection)
-
-  onSocketEvent(
-    'offer_accepted',
-    ({
-      clientId,
-      rtcSession,
-    }: {
-      clientId: string
-      rtcSession: RTCSessionDescriptionInit
-    }) => {
-      if (clientId !== peerClientId) {
-        return
-      }
-
-      peerConnection.setRemoteDescription(new RTCSessionDescription(rtcSession))
-      logger.info('Completed handshake with client %s', clientId)
-    },
-  )
-
-  onSocketEvent(
-    'offer_sent',
-    async ({
-      clientId,
-      rtcSession,
-    }: {
-      clientId: string
-      rtcSession: RTCSessionDescriptionInit
-    }) => {
-      if (clientId !== toValue(peerClientId)) {
-        return
-      }
-
-      const { polite, isMakingOffer } = toValue(connection)
-      const vSocket = toValue(socket)
-
-      const offerCollision =
-        rtcSession.type === 'offer' &&
-        (isMakingOffer || peerConnection.signalingState !== 'stable')
-
-      const shouldIgnoreOffer = !polite && offerCollision
-      store.setSignalingFlag(clientId, 'shouldIgnoreOffer', shouldIgnoreOffer)
-
-      if (shouldIgnoreOffer) {
-        logger.debug('Ignored offer from client %s', clientId)
-        return
-      }
-
-      logger.info('Received offer from client %s', clientId)
-      await peerConnection.setRemoteDescription(rtcSession)
-      if (rtcSession.type === 'offer') {
-        await peerConnection.setLocalDescription()
-        vSocket.emit('accept_offer', {
-          clientId,
-          rtcSession: peerConnection.localDescription,
-        })
-      }
-
-      logger.info('Sent offer acceptance to client %s', clientId)
-    },
-  )
-
-  addListener('negotiationneeded', async () => {
-    logger.info('Negotiation needed with client %s', peerClientId)
-
-    try {
-      store.setSignalingFlag(peerClientId, 'isMakingOffer', true)
-
-      await peerConnection.setLocalDescription()
-      toValue(socket).emit('send_offer', {
-        clientId: peerClientId,
-        rtcSession: peerConnection.localDescription,
-      })
-    } finally {
-      store.setSignalingFlag(peerClientId, 'isMakingOffer', false)
-    }
-  })
-}
 
 export function useCandidateHandlers(
   peerConnection: RTCPeerConnection,
