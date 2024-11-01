@@ -20,7 +20,7 @@ export function useDescriptionHandlers() {
       description,
     }: {
       fromClientId: string
-      description: RTCSessionDescriptionInit
+      description: RTCSessionDescription
     }) => {
       if (!store.connections[fromClientId]) {
         store.setConnection(
