@@ -29,7 +29,6 @@ export interface WebRtcStore {
 export const useWebRtcStore = defineStore('webRtc', {
   state: () =>
     ({
-      streams: {},
       connections: {},
     }) as WebRtcStore,
 
