@@ -2,5 +2,4 @@
 
 ## Table of contents
 
-- [WebRTC signaling flow](/rtc)
 - [Miscallaneous](/misc)
