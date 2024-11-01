@@ -102,64 +102,60 @@ export function useIceCandidateHandlers(
 ) {
   const logger = useLogger()
   const socket = useSocketFromStore()
+  const store = useWebRtcStore()
   const addListener = useAddListener(peerConnection)
+  const connEntry = computed(() => store.$state.connections[peerClientId])
 
   logger.debug('Started candidate handler for client %s', peerClientId)
 
   onSocketEvent(
-    'ice_candidate_sent',
+    'candidate_sent',
     async ({
-      clientId,
-      iceCandidate,
+      fromClientId,
+      candidate,
     }: {
-      clientId: string
-      iceCandidate: RTCIceCandidateInit
+      fromClientId: string
+      candidate: RTCIceCandidateInit
     }) => {
-      if (clientId !== peerClientId) {
+      if (fromClientId !== peerClientId) {
         return
       }
+      const { shouldIgnoreOffer } = toValue(connEntry)
 
-      logger.debug('Incoming ice candidate from client %s...', clientId)
+      logger.debug('Incoming ice candidate from client %s...', fromClientId)
       try {
-        await peerConnection.addIceCandidate(iceCandidate)
-        logger.info('Added ice candidate from client %s', clientId)
+        await peerConnection.addIceCandidate(candidate)
+        logger.info(
+          'Added ice candidate %s from client %s',
+          candidate.sdpMid,
+          fromClientId,
+        )
       } catch (e) {
-        logger.warn('Failed adding ice candidate from client %s', clientId)
+        if (!shouldIgnoreOffer) {
+          logger.warn(
+            'Failed adding ice candidate %s from client %s',
+            candidate.sdpMid,
+            fromClientId,
+          )
+        }
       }
     },
   )
-
-  const candidates = new Set<RTCIceCandidate>()
-  function handleRemoteAck({ clientId }: { clientId: string }) {
-    if (clientId !== peerClientId) {
-      return
-    }
-
-    for (const candidate of candidates) {
-      logger.debug('Sent candidate to client %s', clientId)
-      toValue(socket).emit('send_ice_candidate', {
-        clientId: peerClientId,
-        iceCandidate: candidate,
-      })
-    }
-    logger.debug('Initial sending done')
-  }
-  onSocketEvent('offer_accepted', handleRemoteAck)
-  onSocketEvent('offer_sent', handleRemoteAck)
 
   addListener('icecandidate', ({ candidate }: RTCPeerConnectionIceEvent) => {
     if (!candidate) {
       return
     }
 
-    logger.debug('Obtained candidate')
-
-    toValue(socket).emit('send_ice_candidate', {
-      clientId: peerClientId,
-      iceCandidate: candidate,
+    toValue(socket).emit('send_candidate', {
+      toClientId: peerClientId,
+      candidate,
     })
-
-    candidates.add(candidate)
+    logger.debug(
+      'Sent candidate %s to client %s',
+      candidate.sdpMid,
+      peerClientId,
+    )
   })
 }
 
