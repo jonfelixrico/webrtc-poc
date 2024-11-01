@@ -64,81 +64,12 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     })
   }
 
-  /**
-   * @deprecated
-   */
-  @SubscribeMessage('send_offer')
-  async handleSendOffer(
-    @MessageBody()
-    {
-      clientId,
-      rtcSession,
-    }: {
-      clientId: string
-      rtcSession: Record<string, unknown>
-    },
-    @ConnectedSocket() socket: Socket,
-  ) {
-    // TODO add checking to see if client really is part of the room
-
-    socket.to(clientId).emit('offer_sent', {
-      clientId: socket.id,
-      rtcSession,
-    })
-  }
-
-  /**
-   * @deprecated
-   */
-  @SubscribeMessage('accept_offer')
-  async handleAcceptOffer(
-    @MessageBody()
-    {
-      clientId,
-      rtcSession,
-    }: {
-      clientId: string
-      rtcSession: Record<string, unknown>
-    },
-    @ConnectedSocket() socket: Socket,
-  ) {
-    // TODO add checking to see if client really is part of the room
-
-    socket.to(clientId).emit('offer_accepted', {
-      clientId: socket.id,
-      rtcSession,
-    })
-  }
-
-  /**
-   * @deprecated
-   */
-  // TODO include in the documentation
-  @SubscribeMessage('send_ice_candidate')
-  async handleSendIceCandidate(
-    @MessageBody()
-    {
-      clientId,
-      iceCandidate,
-    }: {
-      clientId: string
-      iceCandidate: Record<string, unknown>
-    },
-
-    @ConnectedSocket() socket: Socket,
-  ) {
-    socket.to(clientId).emit('ice_candidate_sent', {
-      iceCandidate,
-      clientId: socket.id,
-    })
-  }
-
   @SubscribeMessage('send_description')
   async handleSendDescription(
     @MessageBody()
     payload: {
       toClientId: string
-      description: RTCSessionDescriptionInit
+      description: RTCSessionDescription
     },
     @ConnectedSocket() socket: Socket,
   ) {
@@ -153,7 +84,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     @MessageBody()
     payload: {
       toClientId: string
-      candidate: RTCIceCandidateInit
+      candidate: RTCIceCandidate
     },
     @ConnectedSocket() socket: Socket,
   ) {
