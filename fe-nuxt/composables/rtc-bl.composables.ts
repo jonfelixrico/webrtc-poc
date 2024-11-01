@@ -1,13 +1,16 @@
-import { useLogger, useSendOffer } from '#imports'
-import { onSocketAvailable } from '~/composables/socket-v2.composable'
+import { toValue, useLogger } from '#imports'
+import {
+  onSocketAvailable,
+  useSocketFromStore,
+} from '~/composables/socket-v2.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 import { ICE_SERVERS } from '~/typings/ice-servers.const'
 
 export function useJoinHandler(roomId: string) {
   const logger = useLogger()
+  const socket = useSocketFromStore()
 
   const store = useWebRtcStore()
-  const sendOffer = useSendOffer()
 
   async function createConnection(peerClientId: string) {
     const conn = new RTCPeerConnection({
@@ -16,7 +19,18 @@ export function useJoinHandler(roomId: string) {
     })
     store.setConnection(peerClientId, conn)
 
-    await sendOffer(conn, peerClientId)
+    logger.debug('Generating offers for %s...', peerClientId)
+    const offer = await conn.createOffer({
+      offerToReceiveAudio: true,
+      offerToReceiveVideo: true,
+    })
+    await conn.setLocalDescription(offer)
+
+    toValue(socket).emit('send_description', {
+      toClientId: peerClientId,
+      description: offer,
+    })
+    logger.info('Sent an offer to client %s', peerClientId)
   }
 
   onSocketAvailable((sock) => {
@@ -25,15 +39,19 @@ export function useJoinHandler(roomId: string) {
     })
     logger.debug('Emitted join to room %s', roomId)
 
-    sock.once('user_list_synced', (payload: { clientIds: string[] }) => {
+    sock.once('user_list_synced', async (payload: { clientIds: string[] }) => {
       logger.debug(
         'Received initial user list. %s users',
         payload.clientIds.length,
       )
 
-      payload.clientIds
-        .filter((id) => id !== sock.id)
-        .forEach((id) => createConnection(id))
+      for (const clientId of payload.clientIds) {
+        if (clientId === sock.id) {
+          continue
+        }
+
+        await createConnection(clientId)
+      }
     })
   })
 }
