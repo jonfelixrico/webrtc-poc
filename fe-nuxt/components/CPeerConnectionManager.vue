@@ -23,7 +23,7 @@ const props = defineProps({
 })
 
 useCandidateHandlers(props.peerConnection, props.peerClientId)
-useStreamSender(props.peerConnection)
+useStreamSender(props.peerClientId)
 useStreamReceiver(props.peerConnection, props.peerClientId)
 useStatesListeners(props.peerConnection, props.peerClientId)
 
