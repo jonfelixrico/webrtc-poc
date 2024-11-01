@@ -1,15 +1,16 @@
-import { nextTick, toValue } from 'vue'
-import { useSocketFromStore } from '~/composables/socket-v2.composable'
+import { nextTick } from 'vue'
 import { useLogger } from '~/composables/logger.composable'
 import { ICE_SERVERS } from '~/typings/ice-servers.const'
 import { useWebRtcStore } from '~/store/web-rtc.store'
-import { onAppSocketEvent } from '~/composables/app-socket.composable'
+import {
+  onAppSocketEvent,
+  useAppSocketEmit,
+} from '~/composables/app-socket.composable'
 
 export function useDescriptionHandlers() {
   const logger = useLogger()
-  const socket = useSocketFromStore()
-
   const store = useWebRtcStore()
+  const socketEmit = useAppSocketEmit()
 
   onAppSocketEvent(
     'description_sent',
@@ -40,7 +41,6 @@ export function useDescriptionHandlers() {
 
       const { connection, isMakingOffer, polite } =
         store.connections[fromClientId]
-      const vSocket = toValue(socket)
 
       const offerCollision =
         description.type === 'offer' &&
@@ -72,9 +72,9 @@ export function useDescriptionHandlers() {
             fromClientId,
           )
           await connection.setLocalDescription()
-          vSocket.emit('send_description', {
+          socketEmit('send_description', {
             toClientId: fromClientId,
-            description: connection.localDescription,
+            description: connection.localDescription as RTCSessionDescription,
           })
           logger.debug(
             'Successfuly set local description with client %s, also did signaling',
