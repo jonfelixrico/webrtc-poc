@@ -9,6 +9,11 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets'
 import { Server, type Socket } from 'socket.io'
+import {
+  RoomWsCommandMap,
+  RoomWsCommandPayloadMap,
+  RoomWsEventPayloadMap,
+} from '@webrtcpoc/common'
 
 @WebSocketGateway()
 export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
@@ -64,20 +69,23 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     this.server.to(roomId).emit('user_list_synced', {
       clientIds: this.getMembers(roomId),
       roomId,
-    })
+    } as RoomWsEventPayloadMap['user_list_synced'])
   }
 
   @SubscribeMessage('join')
   async handleJoin(
     @ConnectedSocket() socket: Socket,
-    @MessageBody() { roomId }: { roomId: string },
+    @MessageBody() { roomId }: RoomWsCommandPayloadMap['join'],
   ) {
     await socket.join(roomId)
     this.addMember(roomId, socket)
 
     socket.broadcast // broadcast to all room members except this one
       .to(roomId)
-      .emit('user_joined', { clientId: socket.id, roomId })
+      .emit('user_joined', {
+        clientId: socket.id,
+        roomId,
+      } as RoomWsEventPayloadMap['user_joined'])
 
     this.syncUserList(roomId)
   }
@@ -85,30 +93,24 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   @SubscribeMessage('send_description')
   async handleSendDescription(
     @MessageBody()
-    payload: {
-      toClientId: string
-      description: RTCSessionDescription
-    },
+    payload: RoomWsCommandPayloadMap['send_description'],
     @ConnectedSocket() socket: Socket,
   ) {
     socket.to(payload.toClientId).emit('description_sent', {
       fromClientId: socket.id,
       description: payload.description,
-    })
+    } as RoomWsEventPayloadMap['description_sent'])
   }
 
   @SubscribeMessage('send_candidate')
   async handleSendCandidate(
     @MessageBody()
-    payload: {
-      toClientId: string
-      candidate: RTCIceCandidate
-    },
+    payload: RoomWsCommandPayloadMap['send_candidate'],
     @ConnectedSocket() socket: Socket,
   ) {
     socket.to(payload.toClientId).emit('candidate_sent', {
       fromClientId: socket.id,
       candidate: payload.candidate,
-    })
+    } as RoomWsEventPayloadMap['candidate_sent'])
   }
 }
