@@ -147,4 +147,19 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       description: payload.description,
     })
   }
+
+  @SubscribeMessage('send_candidate')
+  async handleSendCandidate(
+    @MessageBody()
+    payload: {
+      toClientId: string
+      candidate: RTCIceCandidateInit
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    socket.to(payload.toClientId).emit('candidate_sent', {
+      fromClientId: socket.id,
+      description: payload.candidate,
+    })
+  }
 }
