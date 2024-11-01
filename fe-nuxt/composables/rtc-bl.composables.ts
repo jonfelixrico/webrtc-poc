@@ -3,7 +3,6 @@ import {
   onSocketAvailable,
   useSocketFromStore,
 } from '~/composables/socket-v2.composable'
-import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 import { ICE_SERVERS } from '~/typings/ice-servers.const'
 
@@ -11,23 +10,14 @@ export function useJoinHandler(roomId: string) {
   const logger = useLogger()
   const socket = useSocketFromStore()
 
-  const rtcStore = useWebRtcStore()
-  const msStore = useMediaStreamStore()
+  const store = useWebRtcStore()
 
   async function createConnection(peerClientId: string) {
     const conn = new RTCPeerConnection({
       iceServers: ICE_SERVERS,
       iceTransportPolicy: 'relay',
     })
-
-    const stream = msStore.mediaStream
-    if (stream) {
-      for (const track of stream.getTracks()) {
-        conn.addTrack(track, stream)
-      }
-    }
-
-    rtcStore.setConnection(peerClientId, conn)
+    store.setConnection(peerClientId, conn)
     await nextTick()
 
     logger.debug('Generating offers for %s...', peerClientId)
