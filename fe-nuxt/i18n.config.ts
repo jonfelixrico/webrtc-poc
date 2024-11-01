@@ -1,3 +1,4 @@
+import { defineI18nConfig } from '#imports'
 import messages from './i18n/messages'
 
 export default defineI18nConfig(() => ({
