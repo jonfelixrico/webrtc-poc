@@ -10,7 +10,6 @@ import {
 } from '@nestjs/websockets'
 import { Server, type Socket } from 'socket.io'
 import {
-  RoomWsCommandMap,
   RoomWsCommandPayloadMap,
   RoomWsEventPayloadMap,
 } from '@webrtcpoc/common'
