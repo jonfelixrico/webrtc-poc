@@ -27,7 +27,7 @@ export interface RoomWsEventPayloadMap {
 
   description_sent: {
     fromClientId: string
-    description: RTCIceCandidate
+    description: RTCSessionDescription
   }
 
   user_list_synced: {
