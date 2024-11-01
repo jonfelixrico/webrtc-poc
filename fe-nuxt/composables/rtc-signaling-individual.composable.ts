@@ -15,6 +15,7 @@ export function useCandidateHandlers(
   const store = useWebRtcStore()
   const addListener = useAddListener(peerConnection)
   const connEntry = computed(() => store.connections[peerClientId])
+  const socketEmit = useAppSocketEmit()
 
   logger.debug('Started candidate handler for client %s', peerClientId)
 
