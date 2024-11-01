@@ -1,11 +1,11 @@
-export interface RoomWsCommandMap {
+export interface RoomWsCommandPayloadMap {
   send_candidate: {
-    toClient: string
+    toClientId: string
     candidate: RTCIceCandidate
   }
 
   send_description: {
-    toClient: string
+    toClientId: string
     description: RTCSessionDescription
   }
 
@@ -14,19 +14,19 @@ export interface RoomWsCommandMap {
   }
 }
 
-export type RoomCommandEmitFn<K extends keyof RoomWsCommandMap> = (
+export type RoomCommandEmitFn<K extends keyof RoomWsCommandPayloadMap> = (
   event: K,
-  payload: RoomWsCommandMap[K],
+  payload: RoomWsCommandPayloadMap[K],
 ) => void
 
-export interface RoomWsEventMap {
+export interface RoomWsEventPayloadMap {
   candidate_sent: {
-    fromClient: string
+    fromClientId: string
     candidate: RTCIceCandidate
   }
 
   description_sent: {
-    fromClient: string
+    fromClientId: string
     description: RTCIceCandidate
   }
 
@@ -41,11 +41,11 @@ export interface RoomWsEventMap {
   }
 }
 
-type RoomWsEventHandler<K extends keyof RoomWsEventMap> = (
-  payload: RoomWsEventMap[K],
+type RoomWsEventHandler<K extends keyof RoomWsEventPayloadMap> = (
+  payload: RoomWsEventPayloadMap[K],
 ) => void
 
-export type RoomWsEventListenFn<K extends keyof RoomWsEventMap> = (
+export type RoomWsEventListenFn<K extends keyof RoomWsEventPayloadMap> = (
   event: K,
   handler: RoomWsEventHandler<K>,
 ) => void
