@@ -28,15 +28,29 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     roomObj.add(socket.id)
   }
   private purgeMemberships(socket: Socket) {
+    const formerMemberships: string[] = []
+
     for (const roomId in this.roomMembers) {
       const set = this.roomMembers[roomId]
+
+      if (!set.has(socket.id)) {
+        continue
+      }
+
+      formerMemberships.push(roomId)
       set.delete(socket.id)
     }
+
+    return formerMemberships
   }
 
   handleDisconnect(client: Socket) {
-    this.purgeMemberships(client)
     this.logger.debug('Client %s has disconnected', client.id)
+    const formerRooms = this.purgeMemberships(client)
+
+    for (const roomId of formerRooms) {
+      this.syncUserList(roomId)
+    }
   }
 
   handleConnection(client: Socket) {
@@ -45,6 +59,13 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
   @WebSocketServer()
   private server: Server
+
+  private syncUserList(roomId: string) {
+    this.server.to(roomId).emit('user_list_synced', {
+      clientIds: this.getMembers(roomId),
+      roomId,
+    })
+  }
 
   @SubscribeMessage('join')
   async handleJoin(
@@ -57,80 +78,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     socket.broadcast // broadcast to all room members except this one
       .to(roomId)
       .emit('user_joined', { clientId: socket.id, roomId })
-    // broadcast to all room members, including this one
-    this.server.to(roomId).emit('user_list_synced', {
-      clientIds: this.getMembers(roomId),
-      roomId,
-    })
-  }
-
-  /**
-   * @deprecated
-   */
-  @SubscribeMessage('send_offer')
-  async handleSendOffer(
-    @MessageBody()
-    {
-      clientId,
-      rtcSession,
-    }: {
-      clientId: string
-      rtcSession: Record<string, unknown>
-    },
-    @ConnectedSocket() socket: Socket,
-  ) {
-    // TODO add checking to see if client really is part of the room
-
-    socket.to(clientId).emit('offer_sent', {
-      clientId: socket.id,
-      rtcSession,
-    })
-  }
-
-  /**
-   * @deprecated
-   */
-  @SubscribeMessage('accept_offer')
-  async handleAcceptOffer(
-    @MessageBody()
-    {
-      clientId,
-      rtcSession,
-    }: {
-      clientId: string
-      rtcSession: Record<string, unknown>
-    },
-    @ConnectedSocket() socket: Socket,
-  ) {
-    // TODO add checking to see if client really is part of the room
-
-    socket.to(clientId).emit('offer_accepted', {
-      clientId: socket.id,
-      rtcSession,
-    })
-  }
-
-  /**
-   * @deprecated
-   */
-  // TODO include in the documentation
-  @SubscribeMessage('send_ice_candidate')
-  async handleSendIceCandidate(
-    @MessageBody()
-    {
-      clientId,
-      iceCandidate,
-    }: {
-      clientId: string
-      iceCandidate: Record<string, unknown>
-    },
-
-    @ConnectedSocket() socket: Socket,
-  ) {
-    socket.to(clientId).emit('ice_candidate_sent', {
-      iceCandidate,
-      clientId: socket.id,
-    })
   }
 
   @SubscribeMessage('send_description')
@@ -138,7 +85,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     @MessageBody()
     payload: {
       toClientId: string
-      description: RTCSessionDescriptionInit
+      description: RTCSessionDescription
     },
     @ConnectedSocket() socket: Socket,
   ) {
@@ -153,7 +100,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     @MessageBody()
     payload: {
       toClientId: string
-      candidate: RTCIceCandidateInit
+      candidate: RTCIceCandidate
     },
     @ConnectedSocket() socket: Socket,
   ) {
