@@ -1,6 +1,4 @@
-import { onBeforeUnmount, toValue } from 'vue'
-import { useLogger } from '~/composables/logger.composable'
-import { useSocketFromStore } from '~/composables/socket-v2.composable'
+import { onBeforeUnmount } from 'vue'
 
 export function useAddListener(connection: RTCPeerConnection) {
   const unsubscribeFns: ((...args: any[]) => void)[] = []
