@@ -15,7 +15,7 @@ import { useWebRtcStore } from '~/store/web-rtc.store'
 import { useJoinHandler } from '~/composables/rtc-bl.composables'
 import { useLogger } from '~/composables/logger.composable'
 import CPeerConnectionManager from '~/components/CPeerConnectionManager.vue'
-import { useSocketInit } from '~/composables/socket-v2.composable'
+import { useSocketInit } from '~/composables/socket.composable'
 import { useDescriptionHandlers } from '~/composables/rtc-description.composable'
 
 definePageMeta({

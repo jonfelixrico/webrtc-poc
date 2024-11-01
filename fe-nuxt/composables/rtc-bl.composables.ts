@@ -1,6 +1,6 @@
 import { nextTick, useLogger } from '#imports'
 import { useAppSocketEmit } from '~/composables/app-socket.composable'
-import { onSocketAvailable } from '~/composables/socket-v2.composable'
+import { onSocketAvailable } from '~/composables/socket.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 import { ICE_SERVERS } from '~/typings/ice-servers.const'
 
