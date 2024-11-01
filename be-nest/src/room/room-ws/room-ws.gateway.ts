@@ -78,6 +78,8 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     socket.broadcast // broadcast to all room members except this one
       .to(roomId)
       .emit('user_joined', { clientId: socket.id, roomId })
+
+    this.syncUserList(roomId)
   }
 
   @SubscribeMessage('send_description')
