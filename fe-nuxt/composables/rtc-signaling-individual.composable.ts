@@ -7,6 +7,9 @@ import {
 } from '~/composables/socket-v2.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 
+/**
+ * @deprecated
+ */
 export function useNegotiationHandlers(
   peerConnection: RTCPeerConnection,
   peerClientId: string,
@@ -124,9 +127,14 @@ export function useCandidateHandlers(
 
       logger.debug('Incoming ice candidate from client %s...', fromClientId)
       try {
+        logger.debug(
+          'Adding ice candidate %s from client %s...',
+          candidate.foundation,
+          fromClientId,
+        )
         await peerConnection.addIceCandidate(candidate)
         logger.info(
-          'Added ice candidate %s from client %s',
+          'Successfully added ice candidate %s from client %s',
           candidate.foundation,
           fromClientId,
         )

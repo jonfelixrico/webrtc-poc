@@ -6,9 +6,9 @@ import {
 } from '~/composables/rtc-media.composable'
 import {
   useCandidateHandlers,
-  useNegotiationHandlers,
   useStatesListeners,
 } from '~/composables/rtc-signaling-individual.composable'
+import { useLogger } from '~/composables/logger.composable'
 
 const props = defineProps({
   peerConnection: {
@@ -26,6 +26,9 @@ useCandidateHandlers(props.peerConnection, props.peerClientId)
 useStreamSender(props.peerConnection)
 useStreamReceiver(props.peerConnection, props.peerClientId)
 useStatesListeners(props.peerConnection, props.peerClientId)
+
+const logger = useLogger()
+logger.debug('Started manager for client %s', props.peerClientId)
 </script>
 
 <template></template>
