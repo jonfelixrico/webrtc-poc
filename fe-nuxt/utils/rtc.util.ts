@@ -37,7 +37,7 @@ export function makeConnectionReactive(conn: RTCPeerConnection) {
       return
     }
 
-    console.log('Found candidate %s', candidate.sdpMid)
+    console.log('Found candidate %s', candidate.foundation)
 
     iceCandidates.value.push(markRaw(candidate))
   })
