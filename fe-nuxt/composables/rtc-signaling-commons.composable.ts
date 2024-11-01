@@ -1,4 +1,4 @@
-import { toValue } from 'vue'
+import { onBeforeUnmount, toValue } from 'vue'
 import { useLogger } from '~/composables/logger.composable'
 import { useSocketFromStore } from '~/composables/socket-v2.composable'
 
@@ -24,4 +24,15 @@ export function useSendOffer() {
   }
 
   return sendOffer
+}
+
+export function useEventListener<K extends keyof RTCPeerConnectionEventMap>(
+  connection: RTCPeerConnection,
+  event: K,
+  handler: (ev: RTCPeerConnectionEventMap[K]) => void,
+) {
+  connection.addEventListener(event, handler)
+  onBeforeUnmount(() => {
+    connection.addEventListener(event, handler)
+  })
 }
