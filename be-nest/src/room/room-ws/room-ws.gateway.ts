@@ -45,7 +45,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   }
 
   handleDisconnect(client: Socket) {
-    this.logger.debug('Client %s has disconnected', client.id)
+    this.logger.debug('Client has disconnected', client.id)
     const formerRooms = this.purgeMemberships(client)
 
     for (const roomId of formerRooms) {
@@ -54,7 +54,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   }
 
   handleConnection(client: Socket) {
-    this.logger.debug('Client % has established connection', client.id)
+    this.logger.debug('Client has established connection', client.id)
   }
 
   @WebSocketServer()
