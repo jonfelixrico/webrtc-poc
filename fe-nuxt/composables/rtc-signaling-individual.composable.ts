@@ -37,8 +37,6 @@ export function useNegotiationHandlers(
     },
   )
 
-  let isMakingOffer = false
-
   onSocketEvent(
     'offer_sent',
     async ({
@@ -52,32 +50,30 @@ export function useNegotiationHandlers(
         return
       }
 
-      if (peerConnection.signalingState === 'stable') {
-        return
-      }
+      const { polite, isMakingOffer } = toValue(connection)
+      const vSocket = toValue(socket)
 
-      const { polite } = toValue(connection)
+      const offerCollision =
+        rtcSession.type === 'offer' &&
+        (isMakingOffer || peerConnection.signalingState !== 'stable')
 
-      if (!polite) {
-        logger.info('Ignored offer from client')
+      const shouldIgnoreOffer = !polite && offerCollision
+      store.setSignalingFlag(clientId, 'shouldIgnoreOffer', shouldIgnoreOffer)
+
+      if (shouldIgnoreOffer) {
+        logger.debug('Ignored offer from client %s', clientId)
         return
       }
 
       logger.info('Received offer from client %s', clientId)
-
-      await Promise.all([
-        peerConnection.setRemoteDescription(
-          new RTCSessionDescription(rtcSession),
-        ),
-        peerConnection.setLocalDescription({
-          type: 'rollback',
-        }),
-      ])
-
-      toValue(socket).emit('accept_offer', {
-        rtcSession: peerConnection.localDescription,
-        clientId,
-      })
+      await peerConnection.setRemoteDescription(rtcSession)
+      if (rtcSession.type === 'offer') {
+        await peerConnection.setLocalDescription()
+        vSocket.emit('accept_offer', {
+          clientId,
+          rtcSession: peerConnection.localDescription,
+        })
+      }
 
       logger.info('Sent offer acceptance to client %s', clientId)
     },
@@ -87,23 +83,15 @@ export function useNegotiationHandlers(
     logger.info('Negotiation needed with client %s', peerClientId)
 
     try {
-      isMakingOffer = true
-      const offer = await peerConnection.createOffer({
-        offerToReceiveAudio: true,
-        offerToReceiveVideo: true,
-      })
+      store.setSignalingFlag(peerClientId, 'isMakingOffer', true)
 
-      if (peerConnection.signalingState != 'stable') {
-        return
-      }
-
-      await peerConnection.setLocalDescription(offer)
+      await peerConnection.setLocalDescription()
       toValue(socket).emit('send_offer', {
         clientId: peerClientId,
         rtcSession: peerConnection.localDescription,
       })
     } finally {
-      isMakingOffer = false
+      store.setSignalingFlag(peerClientId, 'isMakingOffer', false)
     }
   })
 }
@@ -142,17 +130,8 @@ export function useIceCandidateHandlers(
   )
 
   const candidates = new Set<RTCIceCandidate>()
-  let emitCandidates = false
-
   function handleRemoteAck({ clientId }: { clientId: string }) {
     if (clientId !== peerClientId) {
-      return
-    }
-
-    if (emitCandidates) {
-      logger.warn(
-        'Strange state. handleRemoteAck is triggered but emitCandidates is already true',
-      )
       return
     }
 
@@ -164,7 +143,6 @@ export function useIceCandidateHandlers(
       })
     }
     logger.debug('Initial sending done')
-    emitCandidates = true
   }
   onSocketEvent('offer_accepted', handleRemoteAck)
   onSocketEvent('offer_sent', handleRemoteAck)
@@ -176,21 +154,12 @@ export function useIceCandidateHandlers(
 
     logger.debug('Obtained candidate')
 
-    if (emitCandidates) {
-      toValue(socket).emit('send_ice_candidate', {
-        clientId: peerClientId,
-        iceCandidate: candidate,
-      })
-    }
+    toValue(socket).emit('send_ice_candidate', {
+      clientId: peerClientId,
+      iceCandidate: candidate,
+    })
 
     candidates.add(candidate)
-  })
-
-  addListener('negotiationneeded', () => {
-    logger.debug('Negotiationneeded detected')
-
-    candidates.clear()
-    emitCandidates = false
   })
 }
 
