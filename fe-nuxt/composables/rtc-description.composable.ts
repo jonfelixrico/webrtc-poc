@@ -53,7 +53,7 @@ export function useDescriptionHandlers() {
         shouldIgnoreOffer,
       )
 
-      if (!shouldIgnoreOffer) {
+      if (shouldIgnoreOffer) {
         logger.debug('Offer ignored from client %s', fromClientId)
         return
       }
