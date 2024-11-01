@@ -154,6 +154,9 @@ importers:
         specifier: latest
         version: 4.4.5(vue@3.5.12(typescript@5.6.3))
     devDependencies:
+      '@webrtcpoc/common':
+        specifier: workspace:*
+        version: link:../common
       eslint:
         specifier: ^9.13.0
         version: 9.13.0(jiti@2.4.0)
