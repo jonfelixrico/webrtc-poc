@@ -6,14 +6,12 @@ import {
 import { useLogger } from '~/composables/logger.composable'
 import { ICE_SERVERS } from '~/typings/ice-servers.const'
 import { useWebRtcStore } from '~/store/web-rtc.store'
-import { useMediaStreamStore } from '~/store/media-stream.store'
 
 export function useDescriptionHandlers() {
   const logger = useLogger()
   const socket = useSocketFromStore()
 
-  const rtcStore = useWebRtcStore()
-  const msStore = useMediaStreamStore()
+  const store = useWebRtcStore()
 
   onSocketEvent(
     'description_sent',
@@ -26,30 +24,24 @@ export function useDescriptionHandlers() {
     }) => {
       logger.debug('Description sent from client %s', fromClientId)
 
-      if (!rtcStore.connections[fromClientId]) {
-        const conn = new RTCPeerConnection({
-          iceServers: ICE_SERVERS,
-          iceTransportPolicy: 'relay',
-        })
-
-        const stream = msStore.mediaStream
-        if (stream) {
-          for (const track of stream.getTracks()) {
-            conn.addTrack(track, stream)
-          }
-        }
-
-        rtcStore.setConnection(fromClientId, conn, {
-          polite: true,
-        })
-
+      if (!store.connections[fromClientId]) {
+        store.setConnection(
+          fromClientId,
+          new RTCPeerConnection({
+            iceServers: ICE_SERVERS,
+            iceTransportPolicy: 'relay',
+          }),
+          {
+            polite: true,
+          },
+        )
         logger.info('Created connection for %s', fromClientId)
 
         await nextTick()
       }
 
       const { connection, isMakingOffer, polite } =
-        rtcStore.connections[fromClientId]
+        store.connections[fromClientId]
       const vSocket = toValue(socket)
 
       const offerCollision =
@@ -57,7 +49,7 @@ export function useDescriptionHandlers() {
         (isMakingOffer || connection.signalingState !== 'stable')
 
       const shouldIgnoreOffer = offerCollision && !polite
-      rtcStore.setSignalingFlag(
+      store.setSignalingFlag(
         fromClientId,
         'shouldIgnoreOffer',
         shouldIgnoreOffer,
