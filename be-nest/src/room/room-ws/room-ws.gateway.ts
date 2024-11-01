@@ -28,15 +28,29 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     roomObj.add(socket.id)
   }
   private purgeMemberships(socket: Socket) {
+    const formerMemberships: string[] = []
+
     for (const roomId in this.roomMembers) {
       const set = this.roomMembers[roomId]
+
+      if (!set.has(socket.id)) {
+        continue
+      }
+
+      formerMemberships.push(roomId)
       set.delete(socket.id)
     }
+
+    return formerMemberships
   }
 
   handleDisconnect(client: Socket) {
-    this.purgeMemberships(client)
     this.logger.debug('Client %s has disconnected', client.id)
+    const formerRooms = this.purgeMemberships(client)
+
+    for (const roomId of formerRooms) {
+      this.syncUserList(roomId)
+    }
   }
 
   handleConnection(client: Socket) {
@@ -45,6 +59,13 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
   @WebSocketServer()
   private server: Server
+
+  private syncUserList(roomId: string) {
+    this.server.to(roomId).emit('user_list_synced', {
+      clientIds: this.getMembers(roomId),
+      roomId,
+    })
+  }
 
   @SubscribeMessage('join')
   async handleJoin(
@@ -57,11 +78,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     socket.broadcast // broadcast to all room members except this one
       .to(roomId)
       .emit('user_joined', { clientId: socket.id, roomId })
-    // broadcast to all room members, including this one
-    this.server.to(roomId).emit('user_list_synced', {
-      clientIds: this.getMembers(roomId),
-      roomId,
-    })
   }
 
   @SubscribeMessage('send_description')
