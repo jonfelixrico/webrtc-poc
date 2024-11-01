@@ -1,5 +1,5 @@
 {
-  "name": "be-nest",
+  "name": "@webrtcpoc/be-nest",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -42,6 +42,7 @@
     "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
+    "@webrtcpoc/common": "workspace:*",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",

@@ -1,10 +1,10 @@
 import { computed, toValue } from 'vue'
+import {
+  onAppSocketEvent,
+  useAppSocketEmit,
+} from '~/composables/app-socket.composable'
 import { useLogger } from '~/composables/logger.composable'
 import { useAddListener } from '~/composables/rtc-signaling-commons.composable'
-import {
-  onSocketEvent,
-  useSocketFromStore,
-} from '~/composables/socket-v2.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 
 export function useCandidateHandlers(
@@ -12,14 +12,14 @@ export function useCandidateHandlers(
   peerClientId: string,
 ) {
   const logger = useLogger()
-  const socket = useSocketFromStore()
   const store = useWebRtcStore()
   const addListener = useAddListener(peerConnection)
   const connEntry = computed(() => store.connections[peerClientId])
+  const socketEmit = useAppSocketEmit()
 
   logger.debug('Started candidate handler for client %s', peerClientId)
 
-  onSocketEvent(
+  onAppSocketEvent(
     'candidate_sent',
     async ({
       fromClientId,
@@ -64,7 +64,7 @@ export function useCandidateHandlers(
       return
     }
 
-    toValue(socket).emit('send_candidate', {
+    socketEmit('send_candidate', {
       toClientId: peerClientId,
       candidate,
     })
@@ -122,19 +122,18 @@ export function useNegotiationNeededHandler(
 ) {
   const logger = useLogger()
   const store = useWebRtcStore()
-  const socket = useSocketFromStore()
+  const socketEmit = useAppSocketEmit()
 
   const addListener = useAddListener(peerConnection)
   addListener('negotiationneeded', async () => {
-    const vSocket = toValue(socket)
     try {
       store.setSignalingFlag(peerClientId, 'isMakingOffer', true)
 
       logger.debug('Negotiation needed with client %s', peerClientId)
       await peerConnection.setLocalDescription()
-      vSocket.emit('send_description', {
+      socketEmit('send_description', {
         toClientId: peerClientId,
-        description: peerConnection.localDescription,
+        description: peerConnection.localDescription as RTCSessionDescription,
       })
       logger.info('Sent updated offer to client %s', peerClientId)
     } catch (err) {

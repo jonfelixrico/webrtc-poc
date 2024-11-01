@@ -1,16 +1,15 @@
-import { nextTick, toValue, useLogger } from '#imports'
-import {
-  onSocketAvailable,
-  useSocketFromStore,
-} from '~/composables/socket-v2.composable'
+import { nextTick, useLogger } from '#imports'
+import { useAppSocketEmit } from '~/composables/app-socket.composable'
+import { onSocketAvailable } from '~/composables/socket.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 import { ICE_SERVERS } from '~/typings/ice-servers.const'
 
 export function useJoinHandler(roomId: string) {
   const logger = useLogger()
-  const socket = useSocketFromStore()
 
   const store = useWebRtcStore()
+
+  const socketEmit = useAppSocketEmit()
 
   async function createConnection(peerClientId: string) {
     const conn = new RTCPeerConnection({
@@ -28,15 +27,15 @@ export function useJoinHandler(roomId: string) {
       }),
     )
 
-    toValue(socket).emit('send_description', {
+    socketEmit('send_description', {
       toClientId: peerClientId,
-      description: conn.localDescription,
+      description: conn.localDescription as RTCSessionDescription,
     })
     logger.info('Sent an offer to client %s', peerClientId)
   }
 
   onSocketAvailable((sock) => {
-    sock.emit('join', {
+    socketEmit('join', {
       roomId,
     })
     logger.debug('Emitted join to room %s', roomId)
