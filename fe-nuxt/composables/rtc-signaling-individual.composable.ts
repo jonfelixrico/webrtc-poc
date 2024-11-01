@@ -96,7 +96,6 @@ export function useNegotiationHandlers(
   })
 }
 
-export function useDescriptionHandlers(
 export function useCandidateHandlers(
   peerConnection: RTCPeerConnection,
   peerClientId: string,
