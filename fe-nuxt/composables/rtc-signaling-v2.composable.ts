@@ -14,7 +14,7 @@ export function useNewOfferListener() {
   const socket = useSocketFromStore()
 
   const existingClientIds = computed(
-    () => new Set(Object.keys(store.$state.connections)),
+    () => new Set(Object.keys(store.connections)),
   )
 
   onSocketEvent(

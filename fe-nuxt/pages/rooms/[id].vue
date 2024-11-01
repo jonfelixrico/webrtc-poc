@@ -30,7 +30,7 @@ const route = useRoute()
 
 const mediaStreamStore = useMediaStreamStore()
 const connStore = useWebRtcStore()
-const connections = computed(() => connStore.$state.connections)
+const connections = computed(() => connStore.connections)
 const logger = useLogger()
 
 if (import.meta.client) {
@@ -59,7 +59,7 @@ if (import.meta.client) {
   watch(
     stream,
     (stream) => {
-      mediaStreamStore.$state.mediaStream = stream ? markRaw(stream) : null
+      mediaStreamStore.mediaStream = stream ? markRaw(stream) : null
     },
     {
       immediate: true,
@@ -83,8 +83,8 @@ if (import.meta.client) {
     <div class="flex-1">
       <ClientOnly>
         <CMediaStreamRenderer
-          v-if="mediaStreamStore.$state.mediaStream"
-          :media-stream="mediaStreamStore.$state.mediaStream"
+          v-if="mediaStreamStore.mediaStream"
+          :media-stream="mediaStreamStore.mediaStream"
           :width="400"
           :height="400"
         />

@@ -53,18 +53,18 @@ export function useSocketInit() {
 
   watch(socket, (socket) => {
     if (!socket) {
-      store.$state.socket = null
+      store.socket = null
       return
     }
 
-    store.$state.socket = markRaw(socket)
+    store.socket = markRaw(socket)
   })
 }
 
 export function useSocketFromStore() {
-  const { $state } = useSocketStore()
+  const store = useSocketStore()
 
-  return computed(() => $state.socket as Socket)
+  return computed(() => store.socket as Socket)
 }
 
 export function onSocketAvailable(
