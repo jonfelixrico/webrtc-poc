@@ -8,33 +8,18 @@ export type Connection = {
   isSettingRemoteAnswer: boolean
   isMakingOffer: boolean
   shouldIgnoreOffer: boolean
+  stream: MediaStream
 }>
 
 export interface WebRtcStore {
-  connections: Record<
-    string,
-    {
-      connectionState: RTCPeerConnection['connectionState']
-      connection: RTCPeerConnection
-      iceGatheringState: RTCPeerConnection['iceGatheringState']
-      iceCandidates: RTCIceCandidate[]
-    }
-  >
-
-  streams: Record<string, MediaStream>
-
-  unpoliteMap: Record<string, boolean>
-
-  connectionsV2: Record<string, Connection>
+  connections: Record<string, Connection>
 }
 
 export const useWebRtcStore = defineStore('webRtc', {
   state: () =>
     ({
-      connections: {},
       streams: {},
-      unpoliteMap: {},
-      connectionsV2: {},
+      connections: {},
     }) as WebRtcStore,
 
   actions: {
@@ -43,7 +28,7 @@ export const useWebRtcStore = defineStore('webRtc', {
       connection: RTCPeerConnection,
       options?: { polite?: boolean },
     ) {
-      this.connectionsV2[clientId] = {
+      this.connections[clientId] = {
         connection: markRaw(connection),
         polite: options?.polite ?? false,
       }
