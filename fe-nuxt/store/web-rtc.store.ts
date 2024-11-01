@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { markRaw } from 'vue'
+import type { MaybeFalsy } from '~/typings/util.types'
 
 export type Connection = {
   connection: RTCPeerConnection
@@ -8,7 +9,7 @@ export type Connection = {
   isSettingRemoteAnswer: boolean
   isMakingOffer: boolean
   shouldIgnoreOffer: boolean
-  stream: MediaStream
+  stream: MaybeFalsy<MediaStream>
 }>
 
 export interface WebRtcStore {
@@ -31,6 +32,19 @@ export const useWebRtcStore = defineStore('webRtc', {
       this.connections[clientId] = {
         connection: markRaw(connection),
         polite: options?.polite ?? false,
+      }
+    },
+
+    setStream(clientId: string, stream: MaybeFalsy<MediaStream>) {
+      const conn = this.connections[clientId]
+      if (!conn) {
+        return
+      }
+
+      if (!stream) {
+        conn.stream = null
+      } else {
+        conn.stream = markRaw(stream)
       }
     },
   },
