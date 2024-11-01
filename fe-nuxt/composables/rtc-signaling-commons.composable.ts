@@ -1,7 +1,7 @@
 import { onBeforeUnmount } from 'vue'
 
 export function useAddListener(connection: RTCPeerConnection) {
-  const unsubscribeFns: ((...args: any[]) => void)[] = []
+  const unsubscribeFns: ((...args: unknown[]) => void)[] = []
 
   function addListener<K extends keyof RTCPeerConnectionEventMap>(
     event: K,

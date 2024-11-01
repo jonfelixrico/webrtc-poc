@@ -32,5 +32,3 @@ useNegotiationNeededHandler(props.peerConnection, props.peerClientId)
 const logger = useLogger()
 logger.debug('Started manager for client %s', props.peerClientId)
 </script>
-
-<template></template>

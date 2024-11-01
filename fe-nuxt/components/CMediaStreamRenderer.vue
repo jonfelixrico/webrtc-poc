@@ -4,6 +4,7 @@ import { computed, useTemplateRef, watch, type PropType } from 'vue'
 const props = defineProps({
   mediaStream: {
     type: Object as PropType<MediaStream>,
+    required: true,
   },
 
   width: {

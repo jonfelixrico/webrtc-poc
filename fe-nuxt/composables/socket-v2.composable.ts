@@ -89,7 +89,7 @@ export function onSocketAvailable(
 
 export function onSocketEvent(
   event: string,
-  handler: (...args: any[]) => void | Promise<void>,
+  handler: (...args: unknown[]) => void | Promise<void>,
 ) {
   const socket = useSocketFromStore()
 
