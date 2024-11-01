@@ -132,4 +132,19 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       clientId: socket.id,
     })
   }
+
+  @SubscribeMessage('send_description')
+  async handleSendDescription(
+    @MessageBody()
+    payload: {
+      toClientId: string
+      description: RTCSessionDescriptionInit
+    },
+    @ConnectedSocket() socket: Socket,
+  ) {
+    socket.to(payload.toClientId).emit('description_sent', {
+      fromClientId: socket.id,
+      description: payload.description,
+    })
+  }
 }
