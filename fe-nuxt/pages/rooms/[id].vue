@@ -12,11 +12,11 @@ import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useDevicesList, useUserMedia } from '@vueuse/core'
 import { useWebRtcStore } from '~/store/web-rtc.store'
-import { useJoinHandler } from '~/composables/rtc-bl.composable'
+import { useJoinHandler } from '~/composables/rtc-signaling-join.composable'
 import { useLogger } from '~/composables/logger.composable'
 import CPeerConnectionManager from '~/components/CPeerConnectionManager.vue'
 import { useSocketInit } from '~/composables/socket.composable'
-import { useDescriptionHandlers } from '~/composables/rtc-description.composable'
+import { useDescriptionHandlers } from '~/composables/rtc-signaling-description.composable'
 
 definePageMeta({
   validate: (route) =>
