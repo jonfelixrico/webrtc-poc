@@ -75,6 +75,13 @@ export const useWebRtcStore = defineStore('webRtc', {
       clientId: string,
       key: K,
       value: SignalingFlags[K],
-    ) {},
+    ) {
+      const obj = this.connections[clientId]
+      if (!obj) {
+        return
+      }
+
+      obj[key] = value
+    },
   },
 })
