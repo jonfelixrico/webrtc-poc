@@ -64,6 +64,9 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     })
   }
 
+  /**
+   * @deprecated
+   */
   @SubscribeMessage('send_offer')
   async handleSendOffer(
     @MessageBody()
@@ -84,6 +87,9 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     })
   }
 
+  /**
+   * @deprecated
+   */
   @SubscribeMessage('accept_offer')
   async handleAcceptOffer(
     @MessageBody()
@@ -104,6 +110,9 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     })
   }
 
+  /**
+   * @deprecated
+   */
   // TODO include in the documentation
   @SubscribeMessage('send_ice_candidate')
   async handleSendIceCandidate(
