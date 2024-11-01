@@ -14,11 +14,6 @@ export interface RoomWsCommandPayloadMap {
   }
 }
 
-export type RoomCommandEmitFn<K extends keyof RoomWsCommandPayloadMap> = (
-  event: K,
-  payload: RoomWsCommandPayloadMap[K],
-) => any
-
 export interface RoomWsEventPayloadMap {
   candidate_sent: {
     fromClientId: string
@@ -41,11 +36,6 @@ export interface RoomWsEventPayloadMap {
   }
 }
 
-type RoomWsEventHandler<K extends keyof RoomWsEventPayloadMap> = (
+export type RoomWsEventHandler<K extends keyof RoomWsEventPayloadMap> = (
   payload: RoomWsEventPayloadMap[K],
-) => any
-
-export type RoomWsEventListenFn<K extends keyof RoomWsEventPayloadMap> = (
-  event: K,
-  handler: RoomWsEventHandler<K>,
 ) => any
