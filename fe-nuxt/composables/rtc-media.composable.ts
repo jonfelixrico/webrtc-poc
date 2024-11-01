@@ -19,25 +19,31 @@ export function useStreamSender(peerClientId: string) {
     return entry.connection
   })
 
-  watch([() => msStore.mediaStream, conn], ([stream, conn]) => {
-    if (!stream || !conn) {
-      return
-    }
-
-    for (const track of stream.getTracks()) {
-      try {
-        conn.addTrack(track, stream)
-        logger.debug('Added track %s to client %s', track.id, peerClientId)
-      } catch (e) {
-        logger.warn(
-          e,
-          'Error encountered while adding track %s for client %s',
-          track.id,
-          peerClientId,
-        )
+  watch(
+    [() => msStore.mediaStream, conn],
+    ([stream, conn]) => {
+      if (!stream || !conn) {
+        return
       }
-    }
-  })
+
+      for (const track of stream.getTracks()) {
+        try {
+          conn.addTrack(track, stream)
+          logger.debug('Added track %s to client %s', track.id, peerClientId)
+        } catch (e) {
+          logger.warn(
+            e,
+            'Error encountered while adding track %s for client %s',
+            track.id,
+            peerClientId,
+          )
+        }
+      }
+    },
+    {
+      immediate: true,
+    },
+  )
 }
 
 export function useStreamReceiver(
