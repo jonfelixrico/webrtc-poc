@@ -1,10 +1,8 @@
 import { computed, toValue } from 'vue'
+import { onAppSocketEvent } from '~/composables/app-socket.composable'
 import { useLogger } from '~/composables/logger.composable'
 import { useAddListener } from '~/composables/rtc-signaling-commons.composable'
-import {
-  onSocketEvent,
-  useSocketFromStore,
-} from '~/composables/socket-v2.composable'
+import { useSocketFromStore } from '~/composables/socket-v2.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 
 export function useCandidateHandlers(
@@ -19,7 +17,7 @@ export function useCandidateHandlers(
 
   logger.debug('Started candidate handler for client %s', peerClientId)
 
-  onSocketEvent(
+  onAppSocketEvent(
     'candidate_sent',
     async ({
       fromClientId,

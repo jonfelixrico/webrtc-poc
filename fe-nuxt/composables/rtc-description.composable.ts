@@ -1,11 +1,9 @@
 import { nextTick, toValue } from 'vue'
-import {
-  onSocketEvent,
-  useSocketFromStore,
-} from '~/composables/socket-v2.composable'
+import { useSocketFromStore } from '~/composables/socket-v2.composable'
 import { useLogger } from '~/composables/logger.composable'
 import { ICE_SERVERS } from '~/typings/ice-servers.const'
 import { useWebRtcStore } from '~/store/web-rtc.store'
+import { onAppSocketEvent } from '~/composables/app-socket.composable'
 
 export function useDescriptionHandlers() {
   const logger = useLogger()
@@ -13,7 +11,7 @@ export function useDescriptionHandlers() {
 
   const store = useWebRtcStore()
 
-  onSocketEvent(
+  onAppSocketEvent(
     'description_sent',
     async ({
       fromClientId,
