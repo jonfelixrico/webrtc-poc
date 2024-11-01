@@ -1,5 +1,6 @@
 import { computed, onBeforeUnmount, toValue } from 'vue'
 import { useLogger } from '~/composables/logger.composable'
+import { useAddListener } from '~/composables/rtc-signaling-commons.composable'
 import {
   onSocketEvent,
   useSocketFromStore,
@@ -201,4 +202,44 @@ export function useIceCandidateHandlers(
   onBeforeUnmount(() => {
     peerConnection.removeEventListener('negotiationneeded', handleReset)
   })
+}
+
+export function useStatesListeners(
+  peerConnection: RTCPeerConnection,
+  peerClientId: string,
+) {
+  const addListener = useAddListener(peerConnection)
+  const store = useWebRtcStore()
+
+  function updateStates() {
+    store.setStateValue(
+      peerClientId,
+      'connectionState',
+      peerConnection.connectionState,
+    )
+
+    store.setStateValue(
+      peerClientId,
+      'iceConnectionState',
+      peerConnection.iceConnectionState,
+    )
+
+    store.setStateValue(
+      peerClientId,
+      'iceGatheringState',
+      peerConnection.iceGatheringState,
+    )
+
+    store.setStateValue(
+      peerClientId,
+      'signalingState',
+      peerConnection.signalingState,
+    )
+  }
+
+  addListener('connectionstatechange', updateStates)
+  addListener('iceconnectionstatechange', updateStates)
+  addListener('icegatheringstatechange', updateStates)
+  addListener('signalingstatechange', updateStates)
+  updateStates()
 }
