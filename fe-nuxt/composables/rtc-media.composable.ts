@@ -4,11 +4,11 @@ import { useLogger } from '~/composables/logger.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 
 export function useStreamSender(peerConnection: RTCPeerConnection) {
-  const { $state } = useMediaStreamStore()
+  const store = useMediaStreamStore()
   const logger = useLogger()
 
   watch(
-    () => $state.mediaStream,
+    () => store.mediaStream,
     (stream) => {
       if (!stream) {
         return

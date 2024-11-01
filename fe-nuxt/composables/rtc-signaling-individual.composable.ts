@@ -15,7 +15,7 @@ export function useNegotiationHandlers(
   const socket = useSocketFromStore()
 
   const store = useWebRtcStore()
-  const connection = computed(() => store.$state.connections[peerClientId])
+  const connection = computed(() => store.connections[peerClientId])
 
   const addListener = useAddListener(peerConnection)
 
@@ -105,7 +105,7 @@ export function useCandidateHandlers(
   const socket = useSocketFromStore()
   const store = useWebRtcStore()
   const addListener = useAddListener(peerConnection)
-  const connEntry = computed(() => store.$state.connections[peerClientId])
+  const connEntry = computed(() => store.connections[peerClientId])
 
   logger.debug('Started candidate handler for client %s', peerClientId)
 
