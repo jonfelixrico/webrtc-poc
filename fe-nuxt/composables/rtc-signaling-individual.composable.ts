@@ -133,6 +133,7 @@ export function useCandidateHandlers(
       } catch (e) {
         if (!shouldIgnoreOffer) {
           logger.warn(
+            e,
             'Failed adding ice candidate %s from client %s',
             candidate.foundation,
             fromClientId,
