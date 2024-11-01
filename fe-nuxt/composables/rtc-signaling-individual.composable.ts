@@ -115,3 +115,36 @@ export function useStatesListeners(
   addListener('signalingstatechange', updateStates)
   updateStates()
 }
+
+export function useNegotiationNeededHandler(
+  peerConnection: RTCPeerConnection,
+  peerClientId: string,
+) {
+  const logger = useLogger()
+  const store = useWebRtcStore()
+  const socket = useSocketFromStore()
+
+  const addListener = useAddListener(peerConnection)
+  addListener('negotiationneeded', async () => {
+    logger.info('Negotiation needed with client %s', peerClientId)
+
+    const vSocket = toValue(socket)
+    try {
+      store.setSignalingFlag(peerClientId, 'isMakingOffer', true)
+
+      await peerConnection.setLocalDescription()
+      vSocket.emit('send_description', {
+        toClientId: peerClientId,
+        description: peerConnection.localDescription,
+      })
+    } catch (err) {
+      logger.warn(
+        'Error encountered while handling negotiation for client %s',
+        peerClientId,
+        err,
+      )
+    } finally {
+      store.setSignalingFlag(peerClientId, 'isMakingOffer', false)
+    }
+  })
+}
