@@ -1,4 +1,4 @@
 packages:
   - be-nest
   - fe-nuxt
-  - types
+  - common
