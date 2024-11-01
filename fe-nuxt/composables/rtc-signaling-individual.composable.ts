@@ -126,17 +126,17 @@ export function useNegotiationNeededHandler(
 
   const addListener = useAddListener(peerConnection)
   addListener('negotiationneeded', async () => {
-    logger.info('Negotiation needed with client %s', peerClientId)
-
     const vSocket = toValue(socket)
     try {
       store.setSignalingFlag(peerClientId, 'isMakingOffer', true)
 
+      logger.debug('Negotiation needed with client %s', peerClientId)
       await peerConnection.setLocalDescription()
       vSocket.emit('send_description', {
         toClientId: peerClientId,
         description: peerConnection.localDescription,
       })
+      logger.info('Sent updated offer to client %s', peerClientId)
     } catch (err) {
       logger.warn(
         'Error encountered while handling negotiation for client %s',
