@@ -1,32 +1,43 @@
-import { onBeforeUnmount, watch } from 'vue'
+import { computed, onBeforeUnmount, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
+import { useAddListener } from '#imports'
 
-export function useStreamSender(peerConnection: RTCPeerConnection) {
-  const store = useMediaStreamStore()
+export function useStreamSender(peerClientId: string) {
+  const msStore = useMediaStreamStore()
+  const rtcStore = useWebRtcStore()
   const logger = useLogger()
 
-  watch(
-    () => store.mediaStream,
-    (stream) => {
-      if (!stream) {
-        return
-      }
+  const conn = computed(() => {
+    const entry = rtcStore.connections[peerClientId]
 
-      for (const track of stream.getTracks()) {
-        try {
-          peerConnection.addTrack(track, stream)
-          logger.debug('Added track to conn')
-        } catch (e) {
-          logger.warn('Error encountered while adding track %s', track.id, e)
-        }
+    if (entry?.states?.connectionState !== 'connected') {
+      return
+    }
+
+    return entry.connection
+  })
+
+  watch([() => msStore.mediaStream, conn], ([stream, conn]) => {
+    if (!stream || !conn) {
+      return
+    }
+
+    for (const track of stream.getTracks()) {
+      try {
+        conn.addTrack(track, stream)
+        logger.debug('Added track %s to client %s', track.id, peerClientId)
+      } catch (e) {
+        logger.warn(
+          e,
+          'Error encountered while adding track %s for client %s',
+          track.id,
+          peerClientId,
+        )
       }
-    },
-    {
-      immediate: true,
-    },
-  )
+    }
+  })
 }
 
 export function useStreamReceiver(
@@ -34,15 +45,34 @@ export function useStreamReceiver(
   peerClientId: string,
 ) {
   const store = useWebRtcStore()
+  const logger = useLogger()
+  const addListener = useAddListener(peerConnection)
 
-  function addTrackToStore(track: RTCTrackEvent) {
-    const [firstTrack] = track.streams
-    store.setStream(peerClientId, firstTrack)
-  }
+  addListener('track', function ({ track, streams }: RTCTrackEvent) {
+    const [firstTrack] = streams
 
-  peerConnection.addEventListener('track', addTrackToStore)
+    if (!firstTrack) {
+      logger.debug('Received empty track from %s', peerClientId)
+    }
 
-  onBeforeUnmount(() => {
-    peerConnection.removeEventListener('track', addTrackToStore)
+    logger.debug(
+      'Received track %s from client %s',
+      firstTrack.id,
+      peerClientId,
+    )
+    track.addEventListener(
+      'unmute',
+      () => {
+        store.setStream(peerClientId, firstTrack)
+        logger.info(
+          'Committed track %s from client %s',
+          firstTrack.id,
+          peerClientId,
+        )
+      },
+      {
+        once: true,
+      },
+    )
   })
 }
