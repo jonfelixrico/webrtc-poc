@@ -2,6 +2,12 @@ import { defineStore } from 'pinia'
 import { markRaw } from 'vue'
 import type { MaybeFalsy } from '~/typings/util.types'
 
+type ConnectionStates = Partial<{
+  connectionState: RTCPeerConnection['connectionState']
+  signalingState: RTCPeerConnection['signalingState']
+  iceGatheringState: RTCPeerConnection['iceConnectionState']
+}>
+
 export type Connection = {
   connection: RTCPeerConnection
   polite: boolean
@@ -10,6 +16,7 @@ export type Connection = {
   isMakingOffer: boolean
   shouldIgnoreOffer: boolean
   stream: MaybeFalsy<MediaStream>
+  states: ConnectionStates
 }>
 
 export interface WebRtcStore {
