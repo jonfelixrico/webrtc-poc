@@ -1,6 +1,5 @@
 import { computed, onBeforeUnmount, toValue } from 'vue'
 import { useLogger } from '~/composables/logger.composable'
-import { useSendOffer } from '~/composables/rtc-signaling-commons.composable'
 import {
   onSocketEvent,
   useSocketFromStore,
@@ -13,6 +12,9 @@ export function useNegotiationHandlers(
 ) {
   const logger = useLogger()
   const socket = useSocketFromStore()
+
+  const store = useWebRtcStore()
+  const connection = computed(() => store.$state.connections[peerClientId])
 
   onSocketEvent(
     'offer_accepted',
@@ -33,7 +35,6 @@ export function useNegotiationHandlers(
   )
 
   let isMakingOffer = false
-  const store = useWebRtcStore()
 
   onSocketEvent(
     'offer_sent',
@@ -48,19 +49,27 @@ export function useNegotiationHandlers(
         return
       }
 
-      const offerCollision =
-        isMakingOffer || peerConnection.signalingState !== 'stable'
-      if (store.$state.unpoliteMap[peerClientId] && offerCollision) {
+      if (peerConnection.signalingState === 'stable') {
+        return
+      }
+
+      const { polite } = toValue(connection)
+
+      if (!polite) {
         logger.info('Ignored offer from client')
         return
       }
 
       logger.info('Received offer from client %s', clientId)
 
-      await peerConnection.setRemoteDescription(
-        new RTCSessionDescription(rtcSession),
-      )
-      await peerConnection.setLocalDescription()
+      await Promise.all([
+        peerConnection.setRemoteDescription(
+          new RTCSessionDescription(rtcSession),
+        ),
+        peerConnection.setLocalDescription({
+          type: 'rollback',
+        }),
+      ])
 
       toValue(socket).emit('accept_offer', {
         rtcSession: peerConnection.localDescription,
@@ -76,7 +85,16 @@ export function useNegotiationHandlers(
 
     try {
       isMakingOffer = true
-      await peerConnection.setLocalDescription()
+      const offer = await peerConnection.createOffer({
+        offerToReceiveAudio: true,
+        offerToReceiveVideo: true,
+      })
+
+      if (peerConnection.signalingState != 'stable') {
+        return
+      }
+
+      await peerConnection.setLocalDescription(offer)
       toValue(socket).emit('send_offer', {
         clientId: peerClientId,
         rtcSession: peerConnection.localDescription,
