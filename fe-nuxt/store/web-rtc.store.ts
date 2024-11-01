@@ -5,7 +5,8 @@ import type { MaybeFalsy } from '~/typings/util.types'
 interface ConnectionStates {
   connectionState: RTCPeerConnection['connectionState']
   signalingState: RTCPeerConnection['signalingState']
-  iceGatheringState: RTCPeerConnection['iceConnectionState']
+  iceGatheringState: RTCPeerConnection['iceGatheringState']
+  iceConnectionState: RTCPeerConnection['iceConnectionState']
 }
 
 export type Connection = {
