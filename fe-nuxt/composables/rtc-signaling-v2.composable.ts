@@ -1,32 +1,11 @@
-import { computed, onBeforeUnmount, toValue } from 'vue'
+import { computed, toValue } from 'vue'
 import {
   onSocketEvent,
   useSocketFromStore,
 } from '~/composables/socket-v2.composable'
 import { useLogger } from '~/composables/logger.composable'
 import { ICE_SERVERS } from '~/typings/ice-servers.const'
-import { makeConnectionReactive } from '#imports'
 import { useWebRtcStore } from '~/store/web-rtc.store'
-import { useSendOffer } from '~/composables/rtc-signaling-commons.composable'
-
-export function useCreateConnection() {
-  const { $state } = useWebRtcStore()
-  const sendOffer = useSendOffer()
-
-  async function createConnection(peerClientId: string) {
-    const conn = new RTCPeerConnection({
-      iceServers: ICE_SERVERS,
-      iceTransportPolicy: 'relay',
-    })
-    const reactiveConn = makeConnectionReactive(conn)
-    $state.connections[peerClientId] = reactiveConn
-    $state.unpoliteMap[peerClientId] = true
-
-    await sendOffer(conn, peerClientId)
-  }
-
-  return createConnection
-}
 
 export function useNewOfferListener() {
   const logger = useLogger()
@@ -58,8 +37,9 @@ export function useNewOfferListener() {
         iceServers: ICE_SERVERS,
         iceTransportPolicy: 'relay',
       })
-      const reactiveConn = makeConnectionReactive(conn)
-      store.$state.connections[clientId] = reactiveConn
+      store.setConnection(clientId, conn, {
+        polite: true,
+      })
 
       function emitCandidate({ candidate }: RTCPeerConnectionIceEvent) {
         toValue(socket).emit('send_ice_candidate', {

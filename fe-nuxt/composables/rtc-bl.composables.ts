@@ -1,11 +1,23 @@
-import { useLogger } from '#imports'
-import { useCreateConnection } from '~/composables/rtc-signaling-v2.composable'
+import { useLogger, useSendOffer } from '#imports'
 import { onSocketAvailable } from '~/composables/socket-v2.composable'
+import { useWebRtcStore } from '~/store/web-rtc.store'
+import { ICE_SERVERS } from '~/typings/ice-servers.const'
 
 export function useJoinHandler(roomId: string) {
   const logger = useLogger()
 
-  const createConnection = useCreateConnection()
+  const store = useWebRtcStore()
+  const sendOffer = useSendOffer()
+
+  async function createConnection(peerClientId: string) {
+    const conn = new RTCPeerConnection({
+      iceServers: ICE_SERVERS,
+      iceTransportPolicy: 'relay',
+    })
+    store.setConnection(peerClientId, conn)
+
+    await sendOffer(conn, peerClientId)
+  }
 
   onSocketAvailable((sock) => {
     sock.emit('join', {
