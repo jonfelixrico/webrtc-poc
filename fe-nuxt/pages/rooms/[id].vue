@@ -70,6 +70,16 @@ if (import.meta.client) {
 
 <template>
   <div class="flex flex-row">
+    <!-- Renderless section -->
+    <ClientOnly>
+      <CPeerConnectionManager
+        v-for="({ connection }, clientId) in connections"
+        :key="clientId"
+        :peer-client-id="clientId"
+        :peer-connection="connection"
+      />
+    </ClientOnly>
+
     <div class="flex-1">
       <ClientOnly>
         <CMediaStreamRenderer
@@ -79,18 +89,16 @@ if (import.meta.client) {
           :height="400"
         />
       </ClientOnly>
-
-      <CPeerConnectionManager
-        v-for="({ connection }, clientId) in connections"
-        :key="clientId"
-        :peer-client-id="clientId"
-        :peer-connection="connection"
-      />
     </div>
 
     <div class="flex-1 flex flex-col">
-      <div v-for="({ stream }, clientId) in connections" :key="clientId">
+      <div
+        v-for="({ stream, polite, states }, clientId) in connections"
+        :key="clientId"
+      >
         {{ clientId }}
+        {{ polite }}
+        {{ states }}
 
         <CMediaStreamRenderer
           v-if="stream"
