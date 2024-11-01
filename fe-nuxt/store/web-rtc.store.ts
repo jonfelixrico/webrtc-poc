@@ -2,21 +2,21 @@ import { defineStore } from 'pinia'
 import { markRaw } from 'vue'
 import type { MaybeFalsy } from '~/typings/util.types'
 
-type ConnectionStates = Partial<{
+interface ConnectionStates {
   connectionState: RTCPeerConnection['connectionState']
   signalingState: RTCPeerConnection['signalingState']
   iceGatheringState: RTCPeerConnection['iceConnectionState']
-}>
+}
 
 export type Connection = {
   connection: RTCPeerConnection
   polite: boolean
+  states: Partial<ConnectionStates>
 } & Partial<{
   isSettingRemoteAnswer: boolean
   isMakingOffer: boolean
   shouldIgnoreOffer: boolean
   stream: MaybeFalsy<MediaStream>
-  states: ConnectionStates
 }>
 
 export interface WebRtcStore {
@@ -39,6 +39,7 @@ export const useWebRtcStore = defineStore('webRtc', {
       this.connections[clientId] = {
         connection: markRaw(connection),
         polite: options?.polite ?? false,
+        states: {},
       }
     },
 
@@ -53,6 +54,19 @@ export const useWebRtcStore = defineStore('webRtc', {
       } else {
         conn.stream = markRaw(stream)
       }
+    },
+
+    setStateValue<K extends keyof ConnectionStates>(
+      clientId: string,
+      key: K,
+      value: ConnectionStates[K],
+    ) {
+      const obj = this.connections[clientId]
+      if (!obj) {
+        return
+      }
+
+      obj.states[key] = value
     },
   },
 })
