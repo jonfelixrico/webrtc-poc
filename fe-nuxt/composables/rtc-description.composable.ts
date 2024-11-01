@@ -1,4 +1,4 @@
-import { toValue } from 'vue'
+import { nextTick, toValue } from 'vue'
 import {
   onSocketEvent,
   useSocketFromStore,
@@ -34,6 +34,8 @@ export function useDescriptionHandlers() {
           },
         )
         logger.info('Created connection for %s', fromClientId)
+
+        await nextTick()
       }
 
       const { connection, isMakingOffer, polite } =
@@ -52,18 +54,32 @@ export function useDescriptionHandlers() {
       )
 
       if (!shouldIgnoreOffer) {
-        logger.debug('Offer ignored from %s', fromClientId)
+        logger.debug('Offer ignored from client %s', fromClientId)
         return
       }
 
       try {
+        logger.debug('Setting remote description with client %s...')
         await connection.setRemoteDescription(description)
+        logger.debug(
+          'Successfully set remote description with client %s',
+          fromClientId,
+        )
+
         if (description.type === 'offer') {
+          logger.debug(
+            'Setting local description with client %s...',
+            fromClientId,
+          )
           await connection.setLocalDescription()
           vSocket.send('send_description', {
             toClientId: fromClientId,
             description: connection.localDescription,
           })
+          logger.debug(
+            'Successfuly set local description with client %s, also did signaling',
+            fromClientId,
+          )
         }
       } catch (e) {
         logger.warn(

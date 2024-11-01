@@ -1,4 +1,4 @@
-import { toValue, useLogger } from '#imports'
+import { nextTick, toValue, useLogger } from '#imports'
 import {
   onSocketAvailable,
   useSocketFromStore,
@@ -18,17 +18,19 @@ export function useJoinHandler(roomId: string) {
       iceTransportPolicy: 'relay',
     })
     store.setConnection(peerClientId, conn)
+    await nextTick()
 
     logger.debug('Generating offers for %s...', peerClientId)
-    const offer = await conn.createOffer({
-      offerToReceiveAudio: true,
-      offerToReceiveVideo: true,
-    })
-    await conn.setLocalDescription(offer)
+    await conn.setLocalDescription(
+      await conn.createOffer({
+        offerToReceiveAudio: true,
+        offerToReceiveVideo: true,
+      }),
+    )
 
     toValue(socket).emit('send_description', {
       toClientId: peerClientId,
-      description: offer,
+      description: conn.localDescription,
     })
     logger.info('Sent an offer to client %s', peerClientId)
   }
