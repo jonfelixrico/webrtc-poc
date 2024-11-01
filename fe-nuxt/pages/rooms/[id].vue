@@ -17,6 +17,7 @@ import { useLogger } from '~/composables/logger.composable'
 import CPeerConnectionManager from '~/components/CPeerConnectionManager.vue'
 import { useSocketInit } from '~/composables/socket-v2.composable'
 import { useNewOfferListener } from '~/composables/rtc-signaling-v2.composable'
+import { useDescriptionHandlers } from '~/composables/rtc-description.composable'
 
 definePageMeta({
   validate: (route) =>
@@ -36,7 +37,7 @@ const logger = useLogger()
 if (import.meta.client) {
   useSocketInit()
   useJoinHandler(String(route.params.id))
-  useNewOfferListener()
+  useDescriptionHandlers()
 
   const { videoInputs } = useDevicesList({
     requestPermissions: true,
