@@ -5,7 +5,7 @@ import {
   useStreamSender,
 } from '~/composables/rtc-media.composable'
 import {
-  useIceCandidateHandlers,
+  useCandidateHandlers,
   useNegotiationHandlers,
   useStatesListeners,
 } from '~/composables/rtc-signaling-individual.composable'
@@ -23,7 +23,7 @@ const props = defineProps({
 })
 
 useNegotiationHandlers(props.peerConnection, props.peerClientId)
-useIceCandidateHandlers(props.peerConnection, props.peerClientId)
+useCandidateHandlers(props.peerConnection, props.peerClientId)
 useStreamSender(props.peerConnection)
 useStreamReceiver(props.peerConnection, props.peerClientId)
 useStatesListeners(props.peerConnection, props.peerClientId)
