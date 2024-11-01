@@ -9,16 +9,18 @@ interface ConnectionStates {
   iceConnectionState: RTCPeerConnection['iceConnectionState']
 }
 
+interface SignalingFlags {
+  isSettingRemoteAnswer: boolean
+  isMakingOffer: boolean
+  shouldIgnoreOffer: boolean
+}
+
 export type Connection = {
   connection: RTCPeerConnection
   polite: boolean
   states: Partial<ConnectionStates>
-} & Partial<{
-  isSettingRemoteAnswer: boolean
-  isMakingOffer: boolean
-  shouldIgnoreOffer: boolean
-  stream: MaybeFalsy<MediaStream>
-}>
+  stream?: MaybeFalsy<MediaStream>
+} & Partial<SignalingFlags>
 
 export interface WebRtcStore {
   connections: Record<string, Connection>
@@ -69,5 +71,11 @@ export const useWebRtcStore = defineStore('webRtc', {
 
       obj.states[key] = value
     },
+
+    setSignalingFlag<K extends keyof SignalingFlags>(
+      clientId: string,
+      key: K,
+      value: SignalingFlags[K],
+    ) {},
   },
 })
