@@ -159,7 +159,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   ) {
     socket.to(payload.toClientId).emit('candidate_sent', {
       fromClientId: socket.id,
-      description: payload.candidate,
+      candidate: payload.candidate,
     })
   }
 }
