@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toValue, useTemplateRef, watch, type PropType } from 'vue'
+import { computed, useTemplateRef, watch, type PropType } from 'vue'
 
 const props = defineProps({
   mediaStream: {
