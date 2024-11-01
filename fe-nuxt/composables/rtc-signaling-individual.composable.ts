@@ -115,7 +115,7 @@ export function useCandidateHandlers(
       candidate,
     }: {
       fromClientId: string
-      candidate: RTCIceCandidateInit
+      candidate: RTCIceCandidate
     }) => {
       if (fromClientId !== peerClientId) {
         return
@@ -127,14 +127,14 @@ export function useCandidateHandlers(
         await peerConnection.addIceCandidate(candidate)
         logger.info(
           'Added ice candidate %s from client %s',
-          candidate.sdpMid,
+          candidate.foundation,
           fromClientId,
         )
       } catch (e) {
         if (!shouldIgnoreOffer) {
           logger.warn(
             'Failed adding ice candidate %s from client %s',
-            candidate.sdpMid,
+            candidate.foundation,
             fromClientId,
           )
         }
@@ -153,7 +153,7 @@ export function useCandidateHandlers(
     })
     logger.debug(
       'Sent candidate %s to client %s',
-      candidate.sdpMid,
+      candidate.foundation,
       peerClientId,
     )
   })
