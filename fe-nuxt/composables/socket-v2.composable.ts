@@ -89,7 +89,8 @@ export function onSocketAvailable(
 
 export function onSocketEvent(
   event: string,
-  handler: (...args: unknown[]) => void | Promise<void>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handler: (...args: any[]) => void | Promise<void>,
 ) {
   const socket = useSocketFromStore()
 

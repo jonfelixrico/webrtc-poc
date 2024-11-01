@@ -1,7 +1,8 @@
 import { onBeforeUnmount } from 'vue'
 
 export function useAddListener(connection: RTCPeerConnection) {
-  const unsubscribeFns: ((...args: unknown[]) => void)[] = []
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const unsubscribeFns: ((...args: any[]) => void)[] = []
 
   function addListener<K extends keyof RTCPeerConnectionEventMap>(
     event: K,
