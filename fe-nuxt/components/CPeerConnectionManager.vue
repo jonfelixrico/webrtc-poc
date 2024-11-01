@@ -22,7 +22,6 @@ const props = defineProps({
   },
 })
 
-useNegotiationHandlers(props.peerConnection, props.peerClientId)
 useCandidateHandlers(props.peerConnection, props.peerClientId)
 useStreamSender(props.peerConnection)
 useStreamReceiver(props.peerConnection, props.peerClientId)
