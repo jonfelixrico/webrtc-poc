@@ -52,6 +52,7 @@ if (import.meta.client) {
             :media-stream="mediaStreamStore.mediaStream"
             :width="400"
             :height="400"
+            mute-audio
           />
         </ClientOnly>
       </div>
