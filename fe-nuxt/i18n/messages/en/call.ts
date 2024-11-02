@@ -1,5 +1,5 @@
 export default {
   device: {
-    noneSelected: 'No device selected',
+    noDevice: 'No device',
   },
 }
