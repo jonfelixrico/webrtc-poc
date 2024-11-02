@@ -34,6 +34,7 @@ const msStore = useMediaStreamStore()
       <CPeerConnectionRendererV2
         v-if="rtcStore.connections[id]"
         :connection="rtcStore.connections[id]"
+        class="h-full w-full"
       />
 
       <!-- TODO handle this -->
