@@ -23,9 +23,9 @@ const emit = defineEmits(['update:modelValue', 'update:enabled'])
 const { t } = useI18n()
 
 const deviceIdModel = computed({
-  get: () => props.modelValue ?? undefined, // converted to undefined to appease USelect types
+  get: () => props.modelValue || undefined, // converted to undefined to appease USelect types
   set: (value) => {
-    emit('update:modelValue', value)
+    emit('update:modelValue', value || null)
   },
 })
 
@@ -37,14 +37,14 @@ const enabledModel = computed({
 })
 
 const options = computed(() => {
-  const formatted: { value: string | null; label: string }[] =
+  const formatted: { value: string | undefined; label: string }[] =
     props.devices.map(({ deviceId, label }) => ({
       value: deviceId,
       label,
     }))
 
   formatted.push({
-    value: null,
+    value: undefined,
     label: t('call.device.noDevice'),
   })
 
