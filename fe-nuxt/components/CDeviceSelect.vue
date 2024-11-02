@@ -49,35 +49,44 @@ const options = computed(() => {
     return [item]
   })
 })
-
-const deviceStatus = computed(() => {
-  const { modelValue, enabled } = props
-
-  if (!modelValue) {
-    return 'no_device'
-  } else {
-    return enabled ? 'enabled' : 'disabled'
-  }
-})
 </script>
 
 <template>
-  <div class="flex flex-row">
+  <UButtonGroup v-if="deviceIdModel" orientation="horizontal">
+    <!-- Allow toggling of the device between enabled/disabled -->
+    <UButton
+      color="white"
+      variant="ghost"
+      @click="enabledModel = !enabledModel"
+    >
+      <slot :status="enabledModel ? 'enabled' : 'disabled'" />
+    </UButton>
+
+    <!-- Facilitates device selection -->
+    <UDropdown :items="options">
+      <UButton color="white" variant="ghost">
+        <UIcon name="i-bitcoin-icons-caret-up-filled" />
+      </UButton>
+    </UDropdown>
+  </UButtonGroup>
+
+  <!--
+    This is visually identical to the one above, except that both
+    buttons trigger the dropdown.
+  -->
+  <UDropdown v-else :items="options">
     <UButtonGroup orientation="horizontal">
-      <UButton
-        :disabled="!modelValue"
-        color="white"
-        variant="ghost"
-        @click="enabledModel = !enabledModel"
-      >
-        <slot :status="deviceStatus" />
+      <!--
+        Two buttons were still made instead of one (contains caret + content)
+        to ensure visual parity with the one above.
+      -->
+      <UButton color="white" variant="ghost">
+        <slot status="no_device" />
       </UButton>
 
-      <UDropdown :items="options">
-        <UButton color="white" variant="ghost">
-          <UIcon name="i-bitcoin-icons-caret-up-filled" />
-        </UButton>
-      </UDropdown>
+      <UButton color="white" variant="ghost">
+        <UIcon name="i-bitcoin-icons-caret-up-filled" />
+      </UButton>
     </UButtonGroup>
-  </div>
+  </UDropdown>
 </template>
