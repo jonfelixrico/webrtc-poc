@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { useResizeObserver } from '@vueuse/core'
-import { reactive, useTemplateRef } from 'vue'
+import { computed, reactive, ref, toValue, useTemplateRef } from 'vue'
 
+const width = ref(0)
+const height = computed(() => toValue(width) * 0.5)
 const dimensions = reactive({
-  width: 0,
-  height: 0,
+  width,
+  height,
 })
 
 const divRef = useTemplateRef('div')
@@ -14,14 +16,12 @@ useResizeObserver(divRef, (entries) => {
     return
   }
 
-  const { width, height } = entry.contentRect
-  dimensions.width = width
-  dimensions.height = height
+  width.value = entry.contentRect.width
 })
 </script>
 
 <template>
-  <div ref="div">
+  <div ref="div" :style="{ height: `${height}px` }">
     <slot :width="dimensions.width" :height="dimensions.height" />
   </div>
 </template>

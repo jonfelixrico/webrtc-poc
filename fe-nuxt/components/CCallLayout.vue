@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import CResizeObserverDiv from '~/components/CResizeObserverDiv.vue'
+import CCallLayoutItem from '~/components/CCallLayoutItem.vue'
 
 defineProps({
   ids: {
@@ -12,12 +12,12 @@ defineProps({
 
 <template>
   <div class="flex flex-row">
-    <CResizeObserverDiv>
+    <CCallLayoutItem>
       <slot name="self" />
-    </CResizeObserverDiv>
+    </CCallLayoutItem>
 
-    <CResizeObserverDiv v-for="id in ids" :key="id" v-slot="dimensions">
+    <CCallLayoutItem v-for="id in ids" :key="id" v-slot="dimensions">
       <slot name="peer" :dimensions />
-    </CResizeObserverDiv>
+    </CCallLayoutItem>
   </div>
 </template>
