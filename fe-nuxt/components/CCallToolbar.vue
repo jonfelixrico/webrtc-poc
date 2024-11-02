@@ -3,7 +3,7 @@ import { useDevicesList, useUserMedia } from '@vueuse/core'
 import { computed, reactive, toValue, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
-import CDeviceSelectV2 from '~/components/CDeviceSelectV2.vue'
+import CDeviceSelect from '~/components/CDeviceSelect.vue'
 
 const logger = useLogger()
 const { audioInputs, videoInputs } = useDevicesList({
@@ -66,7 +66,7 @@ watch(stream, (stream) => {
 
 <template>
   <div class="flex flex-row gap-4 justify-center p-4">
-    <CDeviceSelectV2
+    <CDeviceSelect
       v-slot="{ status }"
       v-model="audio.id"
       v-model:enabled="audio.enabled"
@@ -88,9 +88,9 @@ watch(stream, (stream) => {
           Select Mic
         </template>
       </div>
-    </CDeviceSelectV2>
+    </CDeviceSelect>
 
-    <CDeviceSelectV2
+    <CDeviceSelect
       v-slot="{ status }"
       v-model="video.id"
       v-model:enabled="video.enabled"
@@ -112,6 +112,6 @@ watch(stream, (stream) => {
           Select Camera
         </template>
       </div>
-    </CDeviceSelectV2>
+    </CDeviceSelect>
   </div>
 </template>
