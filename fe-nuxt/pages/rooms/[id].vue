@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
 import { computed, definePageMeta } from '#imports'
-import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
-import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 import CPeerConnectionManager from '~/components/CPeerConnectionManager.vue'
 import { useSocketInit } from '~/composables/socket.composable'
-import CPeerConnectionRenderer from '~/components/CPeerConnectionRenderer.vue'
 import CCallToolbar from '~/components/CCallToolbar.vue'
 import {
   useDescriptionHandlers,
   useJoinHandler,
 } from '~/composables/rtc-signaling-all.composable'
+import CCallRenderer from '~/components/CCallRenderer.vue'
 
 definePageMeta({
   validate: (route) =>
@@ -23,7 +21,6 @@ definePageMeta({
 
 const route = useRoute()
 
-const mediaStreamStore = useMediaStreamStore()
 const connStore = useWebRtcStore()
 const connections = computed(() => connStore.connections)
 
@@ -46,27 +43,9 @@ if (import.meta.client) {
       />
     </ClientOnly>
 
-    <div class="grow flex flex-row overflow-auto">
-      <div class="flex-1">
-        <ClientOnly>
-          <CMediaStreamRenderer
-            v-if="mediaStreamStore.mediaStream"
-            :media-stream="mediaStreamStore.mediaStream"
-            :width="400"
-            :height="400"
-            mute-audio
-          />
-        </ClientOnly>
-      </div>
-
-      <div class="flex-1 flex flex-col">
-        <CPeerConnectionRenderer
-          v-for="(connection, clientId) in connections"
-          :key="clientId"
-          :connection
-        />
-      </div>
-    </div>
+    <ClientOnly>
+      <CCallRenderer class="grow" />
+    </ClientOnly>
 
     <ClientOnly>
       <CCallToolbar />

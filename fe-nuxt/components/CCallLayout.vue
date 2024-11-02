@@ -12,9 +12,7 @@ const props = defineProps({
 const gridColsClass = computed(() => {
   const length = props.ids.length
 
-  if (length <= 1) {
-    return 'grid-cols-1'
-  } else if (length === 2) {
+  if (length <= 2) {
     return 'grid-cols-2'
   } else {
     return 'grid-cols-3'
