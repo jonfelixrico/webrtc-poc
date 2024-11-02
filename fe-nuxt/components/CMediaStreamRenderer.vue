@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
 import { computed, useTemplateRef, watch, type PropType } from 'vue'
 
 const props = defineProps({
@@ -7,20 +8,14 @@ const props = defineProps({
     required: true,
   },
 
-  width: {
-    type: Number,
-    required: true,
-  },
-
-  height: {
-    type: Number,
-    required: true,
-  },
+  muteAudio: Boolean,
 })
 
-const divRef = useTemplateRef('div')
+const hasVideo = computed(() => props.mediaStream?.getVideoTracks()?.length > 0)
+
+const videoRef = useTemplateRef('video')
 watch(
-  [() => props.mediaStream, divRef],
+  [() => props.mediaStream, videoRef],
   ([stream, el]) => {
     if (!el || !stream) {
       return
@@ -34,22 +29,34 @@ watch(
   },
 )
 
-const dimsStyle = computed(() => {
-  const { width, height } = props
-
-  return {
-    width: `${width}px`,
-    height: `${height}px`,
-  }
-})
+const containerRef = useTemplateRef('container')
+const dimensions = useResizeObserverValue(containerRef)
 </script>
 
 <template>
-  <video
-    ref="div"
-    :style="dimsStyle"
-    autoplay
-    :controls="false"
-    :playsinline="true"
-  />
+  <div>
+    <div v-show="hasVideo" ref="container" class="relative h-full w-full">
+      <video
+        ref="video"
+        class="absolute"
+        :style="{
+          width: `${dimensions.width}px`,
+          height: `${dimensions.height}px`,
+        }"
+        autoplay
+        :controls="false"
+        :playsinline="true"
+        :muted="muteAudio"
+      />
+    </div>
+
+    <!--
+      hasVideo being off means that the stream is audio-only.
+      This assumes that if hasVideo is off, then there must be at least audio for this
+      media stream to exist.
+    -->
+    <slot v-if="!hasVideo" name="audio-only">
+      <div class="bg-black h-full w-full" />
+    </slot>
+  </div>
 </template>
