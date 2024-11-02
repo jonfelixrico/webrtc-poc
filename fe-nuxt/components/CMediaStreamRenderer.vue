@@ -20,6 +20,8 @@ const props = defineProps({
   muteAudio: Boolean,
 })
 
+const hasVideo = computed(() => props.mediaStream?.getVideoTracks()?.length > 0)
+
 const divRef = useTemplateRef('div')
 watch(
   [() => props.mediaStream, divRef],
@@ -48,6 +50,7 @@ const dimsStyle = computed(() => {
 
 <template>
   <video
+    v-show="hasVideo"
     ref="div"
     :style="dimsStyle"
     autoplay
@@ -55,4 +58,13 @@ const dimsStyle = computed(() => {
     :playsinline="true"
     :muted="muteAudio"
   />
+
+  <!--
+    hasVideo being off means that the stream is audio-only.
+    This assumes that if hasVideo is off, then there must be at least audio for this
+    media stream to exist.
+  -->
+  <div v-if="!hasVideo" :style="dimsStyle">
+    <slot name="audio-only" />
+  </div>
 </template>
