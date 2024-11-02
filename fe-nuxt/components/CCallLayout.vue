@@ -21,7 +21,7 @@ const gridColsClass = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-row grid gap-4" :class="gridColsClass">
+  <div class="grid gap-4" :class="gridColsClass">
     <CCallLayoutItem
       v-for="id in ids"
       :key="id"

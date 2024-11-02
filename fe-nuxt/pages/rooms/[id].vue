@@ -43,9 +43,11 @@ if (import.meta.client) {
       />
     </ClientOnly>
 
-    <ClientOnly>
-      <CCallRenderer class="grow" />
-    </ClientOnly>
+    <div class="grow overflow-auto">
+      <ClientOnly>
+        <CCallRenderer />
+      </ClientOnly>
+    </div>
 
     <ClientOnly>
       <CCallToolbar />
