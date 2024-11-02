@@ -160,6 +160,9 @@ importers:
       '@iconify-json/bitcoin-icons':
         specifier: ^1.2.1
         version: 1.2.1
+      '@iconify-json/eos-icons':
+        specifier: ^1.2.1
+        version: 1.2.1
       '@iconify-json/material-symbols':
         specifier: ^1.2.5
         version: 1.2.5
@@ -1128,6 +1131,9 @@ packages:
 
   '@iconify-json/bitcoin-icons@1.2.1':
     resolution: {integrity: sha512-VoYYfkOskB04PzBPemGGPv0RnK26ykAyxT7NR1PgAz45kc4wwzd1w9P9lnyTsQ4t681qzm8m5SZtrSgcj8Oywg==}
+
+  '@iconify-json/eos-icons@1.2.1':
+    resolution: {integrity: sha512-nqucN9E670dRHDk5osNNObhxQg/eBI8wvYA+zWaOMsJR0g8VodF9z/cpDvMH7YyUm4elOF9r8cGIj3byFBFLRQ==}
 
   '@iconify-json/heroicons@1.2.1':
     resolution: {integrity: sha512-TkKfS5U27kE5MXmSGLzPoz95BP5VA9xEJXwJFwmPMVLX+xyWq0OkoiWTUXB0uAoQODpb8BaRpzSydItrq9fIRA==}
@@ -7040,6 +7046,10 @@ snapshots:
       '@iconify/types': 2.0.0
 
   '@iconify-json/bitcoin-icons@1.2.1':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/eos-icons@1.2.1':
     dependencies:
       '@iconify/types': 2.0.0
 
