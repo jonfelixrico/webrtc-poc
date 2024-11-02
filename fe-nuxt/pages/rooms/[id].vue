@@ -18,6 +18,7 @@ import CPeerConnectionManager from '~/components/CPeerConnectionManager.vue'
 import { useSocketInit } from '~/composables/socket.composable'
 import { useDescriptionHandlers } from '~/composables/rtc-signaling-description.composable'
 import CVideoCallLayout from '~/components/CVideoCallLayout.vue'
+import CPeerConnectionRenderer from '~/components/CPeerConnectionRenderer.vue'
 
 definePageMeta({
   validate: (route) =>
@@ -97,21 +98,11 @@ if (import.meta.client) {
           </div>
 
           <div class="flex-1 flex flex-col">
-            <div
-              v-for="({ stream, polite, states }, clientId) in connections"
+            <CPeerConnectionRenderer
+              v-for="(connection, clientId) in connections"
               :key="clientId"
-            >
-              {{ clientId }}
-              {{ polite }}
-              {{ states }}
-
-              <CMediaStreamRenderer
-                v-if="stream"
-                :media-stream="stream"
-                :width="400"
-                :height="400"
-              />
-            </div>
+              :connection
+            />
           </div>
         </div>
       </template>
