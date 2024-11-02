@@ -44,9 +44,7 @@ if (import.meta.client) {
     </ClientOnly>
 
     <div class="grow overflow-auto">
-      <ClientOnly>
-        <CCallRenderer />
-      </ClientOnly>
+      <CCallRenderer />
     </div>
 
     <ClientOnly>
