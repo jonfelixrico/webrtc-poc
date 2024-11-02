@@ -16,6 +16,8 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+
+  muteAudio: Boolean,
 })
 
 const divRef = useTemplateRef('div')
@@ -51,5 +53,6 @@ const dimsStyle = computed(() => {
     autoplay
     :controls="false"
     :playsinline="true"
+    :muted="muteAudio"
   />
 </template>
