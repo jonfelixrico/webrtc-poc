@@ -27,8 +27,10 @@
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@iconify-json/bi": "^1.2.1",
     "@iconify-json/material-symbols": "^1.2.5",
     "@iconify-json/mdi": "^1.2.1",
+    "@iconify-json/tdesign": "^1.2.2",
     "@webrtcpoc/common": "workspace:*",
     "eslint": "^9.13.0",
     "prettier": "^3.3.3",
