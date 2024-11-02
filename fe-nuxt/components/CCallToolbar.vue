@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useDevicesList, useUserMedia } from '@vueuse/core'
-import { computed, reactive, ref, toValue, watch, type Ref } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
+import CDeviceSelect from '~/components/CDeviceSelect.vue'
 
 const logger = useLogger()
-const devices = useDevicesList({
+const { audioInputs, videoInputs } = useDevicesList({
   constraints: {
     audio: true,
     video: true,
@@ -13,36 +14,28 @@ const devices = useDevicesList({
   requestPermissions: true,
 })
 
-function createMediaDeviceOptions(devices: Ref<MediaDeviceInfo[]>) {
-  return computed(() => {
-    const value = toValue(devices)
-
-    return [
-      {
-        label: 'Disabled',
-        value: undefined,
-      },
-      ...value.map(({ label, deviceId }) => ({
-        label,
-        value: deviceId,
-      })),
-    ]
-  })
+interface DeviceValue {
+  id: string | null
+  enabled: boolean
 }
 
-const audioOptions = createMediaDeviceOptions(devices.audioInputs)
-const videoOptions = createMediaDeviceOptions(devices.videoInputs)
+const audioV = reactive<DeviceValue>({
+  id: null,
+  enabled: false,
+})
 
-const audioId = ref<string>()
-const videoId = ref<string>()
+const videoV = reactive<DeviceValue>({
+  id: null,
+  enabled: false,
+})
 
 const msStore = useMediaStreamStore()
 const constraints = reactive<MediaStreamConstraints>({
   audio: reactive({
-    deviceId: audioId,
+    deviceId: computed(() => audioV.id ?? undefined),
   }),
   video: reactive({
-    deviceId: videoId,
+    deviceId: computed(() => videoV.id ?? undefined),
   }),
 })
 const { stream } = useUserMedia({
@@ -52,8 +45,8 @@ const { stream } = useUserMedia({
 watch(stream, (stream) => {
   logger.info(
     'Media stream has changed; video: %s, audio: %s',
-    toValue(videoId),
-    toValue(audioId),
+    videoV.id,
+    audioV.id,
   )
   msStore.mediaStream = stream ?? null
 })
@@ -61,17 +54,15 @@ watch(stream, (stream) => {
 
 <template>
   <div class="flex flex-row">
-    <USelect
-      v-model="videoId"
-      :options="videoOptions"
-      option-attribute="label"
-      value-attribute="deviceId"
+    <CDeviceSelect
+      v-model="audioV.id"
+      v-model:enabled="audioV.enabled"
+      :devices="audioInputs"
     />
-    <USelect
-      v-model="audioId"
-      :options="audioOptions"
-      option-attribute="label"
-      value-attribute="deviceId"
+    <CDeviceSelect
+      v-model="videoV.id"
+      v-model:enabled="videoV.enabled"
+      :devices="videoInputs"
     />
   </div>
 </template>
