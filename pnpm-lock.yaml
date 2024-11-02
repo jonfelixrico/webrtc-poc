@@ -154,6 +154,9 @@ importers:
         specifier: latest
         version: 4.4.5(vue@3.5.12(typescript@5.6.3))
     devDependencies:
+      '@iconify-json/mdi':
+        specifier: ^1.2.1
+        version: 1.2.1
       '@webrtcpoc/common':
         specifier: workspace:*
         version: link:../common
@@ -1107,6 +1110,9 @@ packages:
 
   '@iconify-json/heroicons@1.2.1':
     resolution: {integrity: sha512-TkKfS5U27kE5MXmSGLzPoz95BP5VA9xEJXwJFwmPMVLX+xyWq0OkoiWTUXB0uAoQODpb8BaRpzSydItrq9fIRA==}
+
+  '@iconify-json/mdi@1.2.1':
+    resolution: {integrity: sha512-dSkQU78gsZV6Yxnq78+LuX7jzeFC/5NAmz7O3rh558GimGFcwMVY/OtqRowIzjqJBmMmWZft7wkFV4TrwRXjlg==}
 
   '@iconify/collections@1.0.477':
     resolution: {integrity: sha512-YzvFZZgeYxew/qSiFDBFAu9Z0269WQYp/cVmrS+4LEOxoplhsFSv063F0qPZZNwfrJV7jlMAz9Nsv1INFIG5fg==}
@@ -7000,6 +7006,10 @@ snapshots:
   '@humanwhocodes/retry@0.3.1': {}
 
   '@iconify-json/heroicons@1.2.1':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/mdi@1.2.1':
     dependencies:
       '@iconify/types': 2.0.0
 

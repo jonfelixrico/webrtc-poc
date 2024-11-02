@@ -27,6 +27,7 @@
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@iconify-json/mdi": "^1.2.1",
     "@webrtcpoc/common": "workspace:*",
     "eslint": "^9.13.0",
     "prettier": "^3.3.3",
