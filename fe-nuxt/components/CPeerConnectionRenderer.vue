@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, useTemplateRef, type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
-import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
 import type { AppPeerConnection } from '~/typings/rtc.types'
 import { useI18n } from 'vue-i18n'
 
@@ -30,14 +29,11 @@ const isConnectionReady = computed(() => {
   )
 })
 
-const divRef = useTemplateRef('div')
-const dimensions = useResizeObserverValue(divRef)
-
 const { t } = useI18n()
 </script>
 
 <template>
-  <div ref="div">
+  <div>
     <div
       v-if="!isConnectionReady || !stream"
       class="h-full w-full flex flex-col items-center justify-center bg-zinc-800 text-white"
@@ -53,8 +49,7 @@ const { t } = useI18n()
     <CMediaStreamRenderer
       v-else-if="stream"
       :media-stream="stream"
-      :width="dimensions.width"
-      :height="dimensions.height"
+      class="h-full w-full"
     >
       <template #audio-only>
         <div

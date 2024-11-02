@@ -16,13 +16,12 @@ const msStore = useMediaStreamStore()
 </script>
 
 <template>
-  <CCallLayout v-slot="{ id, width, height }" :ids>
+  <CCallLayout v-slot="{ id }" :ids>
     <template v-if="id === 'self'">
       <CMediaStreamRenderer
         v-if="msStore.mediaStream"
         :media-stream="msStore.mediaStream"
-        :width
-        :height
+        class="h-full w-full"
       />
 
       <!-- do nothing for now -->
