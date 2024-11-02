@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@iconify-json/bi": "^1.2.1",
+    "@iconify-json/bitcoin-icons": "^1.2.1",
     "@iconify-json/material-symbols": "^1.2.5",
     "@iconify-json/mdi": "^1.2.1",
     "@iconify-json/tdesign": "^1.2.2",
