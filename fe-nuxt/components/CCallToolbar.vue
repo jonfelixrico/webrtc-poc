@@ -101,17 +101,17 @@ const { t } = useI18n()
     >
       <div class="flex flex-col items-center">
         <template v-if="status === 'enabled'">
-          <UIcon name="i-tdesign-video-camera" class="w-7 h-7" />
+          <UIcon name="i-ri-video-on-fill" class="w-7 h-7" />
           {{ t('call.videoControl.stop') }}
         </template>
 
         <template v-else-if="status === 'disabled'">
-          <UIcon name="i-tdesign-video-camera-off" class="w-7 h-7" />
+          <UIcon name="i-ri-video-off-fill" class="w-7 h-7" />
           {{ t('call.videoControl.start') }}
         </template>
 
         <template v-else-if="status === 'no_device'">
-          <UIcon name="i-tdesign-video-camera-off" class="w-7 h-7" />
+          <UIcon name="i-ri-video-off-line" class="w-7 h-7" />
           {{ t('call.videoControl.select') }}
         </template>
       </div>
