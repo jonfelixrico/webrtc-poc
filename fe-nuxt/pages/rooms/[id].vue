@@ -17,7 +17,6 @@ import { useLogger } from '~/composables/logger.composable'
 import CPeerConnectionManager from '~/components/CPeerConnectionManager.vue'
 import { useSocketInit } from '~/composables/socket.composable'
 import { useDescriptionHandlers } from '~/composables/rtc-signaling-description.composable'
-import CVideoCallLayout from '~/components/CVideoCallLayout.vue'
 import CPeerConnectionRenderer from '~/components/CPeerConnectionRenderer.vue'
 
 definePageMeta({
@@ -71,7 +70,7 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <main>
+  <main class="h-dvh w-dvw flex flex-col">
     <!-- Renderless section -->
     <ClientOnly>
       <CPeerConnectionManager
@@ -82,32 +81,27 @@ if (import.meta.client) {
       />
     </ClientOnly>
 
-    <!-- Actual content -->
-    <CVideoCallLayout>
-      <template #default>
-        <div class="flex flex-row">
-          <div class="flex-1">
-            <ClientOnly>
-              <CMediaStreamRenderer
-                v-if="mediaStreamStore.mediaStream"
-                :media-stream="mediaStreamStore.mediaStream"
-                :width="400"
-                :height="400"
-              />
-            </ClientOnly>
-          </div>
+    <div class="grow flex flex-row">
+      <div class="flex-1">
+        <ClientOnly>
+          <CMediaStreamRenderer
+            v-if="mediaStreamStore.mediaStream"
+            :media-stream="mediaStreamStore.mediaStream"
+            :width="400"
+            :height="400"
+          />
+        </ClientOnly>
+      </div>
 
-          <div class="flex-1 flex flex-col">
-            <CPeerConnectionRenderer
-              v-for="(connection, clientId) in connections"
-              :key="clientId"
-              :connection
-            />
-          </div>
-        </div>
-      </template>
+      <div class="flex-1 flex flex-col">
+        <CPeerConnectionRenderer
+          v-for="(connection, clientId) in connections"
+          :key="clientId"
+          :connection
+        />
+      </div>
+    </div>
 
-      <template #bottom> Hello, world </template>
-    </CVideoCallLayout>
+    <div>Hello, world</div>
   </main>
 </template>
