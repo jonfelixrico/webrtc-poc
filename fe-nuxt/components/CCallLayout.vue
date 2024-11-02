@@ -35,7 +35,7 @@ const gridColsClass = computed(() => {
         if ever the slot content did overflow.
       -->
       <div class="absolute h-full w-full overflow-hidden">
-        <slot :width :height />
+        <slot :id :width :height />
       </div>
     </CCallLayoutItem>
   </div>
