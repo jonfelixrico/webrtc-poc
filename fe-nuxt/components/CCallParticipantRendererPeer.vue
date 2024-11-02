@@ -3,6 +3,7 @@ import { computed, type PropType } from 'vue'
 import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
 import type { AppPeerConnection } from '~/typings/rtc.types'
 import { useI18n } from 'vue-i18n'
+import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
 
 const props = defineProps({
   connection: {
@@ -34,17 +35,16 @@ const { t } = useI18n()
 
 <template>
   <div>
-    <div
+    <CCallParticipantLayout
       v-if="!isConnectionReady || !stream"
-      class="h-full w-full flex flex-col items-center justify-center bg-zinc-800 text-white"
+      :display-name
+      class="h-full w-full"
     >
-      <div class="text-2xl font-medium">{{ displayName }}</div>
-
       <div v-if="!isConnectionReady" class="flex flex-row items-center gap-1">
         {{ t('call.waitingForConnection') }}
         <UIcon name="i-eos-icons-three-dots-loading" class="w-8 h-8" />
       </div>
-    </div>
+    </CCallParticipantLayout>
 
     <CMediaStreamRenderer
       v-else-if="stream"
@@ -52,11 +52,7 @@ const { t } = useI18n()
       class="h-full w-full"
     >
       <template #audio-only>
-        <div
-          class="h-full w-full flex flex-col items-center justify-center bg-zinc-800 text-white"
-        >
-          <div class="text-2xl font-medium">{{ displayName }}</div>
-        </div>
+        <CCallParticipantLayout class="h-full w-full" :display-name />
       </template>
     </CMediaStreamRenderer>
   </div>
