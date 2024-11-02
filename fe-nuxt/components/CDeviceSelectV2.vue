@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { computed, type PropType } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { computed, toValue, type PropType } from 'vue'
 
 const props = defineProps({
   devices: {
@@ -20,8 +19,6 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'update:enabled'])
 
-const { t } = useI18n()
-
 const deviceIdModel = computed({
   get: () => props.modelValue || undefined, // converted to undefined to appease USelect types
   set: (value) => {
@@ -37,36 +34,35 @@ const enabledModel = computed({
 })
 
 const options = computed(() => {
-  const formatted: { value: string | undefined; label: string }[] =
-    props.devices.map(({ deviceId, label }) => ({
-      value: deviceId,
+  return props.devices.map(({ deviceId, label }) => {
+    const item: { label: string; click: () => void; icon?: string } = {
       label,
-    }))
+      click: () => {
+        deviceIdModel.value = deviceId
+      },
+    }
 
-  formatted.push({
-    value: undefined,
-    label: t('call.device.noDevice'),
+    if (deviceId === toValue(deviceIdModel)) {
+      item.icon = 'i-material-symbols-check-rounded'
+    }
+
+    return [item]
   })
-
-  return formatted
 })
 </script>
 
 <template>
   <div class="flex flex-row">
-    <USelect v-model="deviceIdModel" :options />
-    <UButton>
-      {{ enabledModel ? 'Enabled' : 'Disabled' }}
-    </UButton>
-
     <UButtonGroup orientation="horizontal">
       <UButton :disabled="!modelValue" @click="enabledModel = !enabledModel">
         <slot :device-id="modelValue" :enabled />
       </UButton>
 
-      <UButton>
-        <UIcon name="mdi-triangle-small-up" />
-      </UButton>
+      <UDropdown :items="options">
+        <UButton>
+          <UIcon name="mdi-triangle-small-up" />
+        </UButton>
+      </UDropdown>
     </UButtonGroup>
   </div>
 </template>
