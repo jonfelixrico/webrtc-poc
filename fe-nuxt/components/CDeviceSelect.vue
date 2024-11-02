@@ -9,8 +9,8 @@ const props = defineProps({
   },
 
   modelValue: {
-    type: String,
-    default: undefined,
+    type: String as PropType<string | null>,
+    default: null,
   },
 
   enabled: {
@@ -23,7 +23,7 @@ const emit = defineEmits(['update:modelValue', 'update:enabled'])
 const { t } = useI18n()
 
 const deviceIdModel = computed({
-  get: () => props.modelValue,
+  get: () => props.modelValue ?? undefined, // converted to undefined to appease USelect types
   set: (value) => {
     emit('update:modelValue', value)
   },
@@ -37,14 +37,14 @@ const enabledModel = computed({
 })
 
 const options = computed(() => {
-  const formatted: { value: string | undefined; label: string }[] =
+  const formatted: { value: string | null; label: string }[] =
     props.devices.map(({ deviceId, label }) => ({
       value: deviceId,
       label,
     }))
 
   formatted.push({
-    value: undefined,
+    value: null,
     label: t('call.device.noDevice'),
   })
 
