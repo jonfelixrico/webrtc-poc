@@ -25,9 +25,9 @@ const isConnectionReady = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col items-center">
     <div
-      class="flex justify-center items-center"
+      class="flex flex-row justify-center items-center"
       :style="{ width: '400px', height: '400px' }"
     >
       <div v-if="!isConnectionReady">Waiting for connection ...</div>
@@ -44,6 +44,6 @@ const isConnectionReady = computed(() => {
     </div>
 
     <!-- TODO replace with name -->
-    <div>{{ connection.clientId }}</div>
+    <div class="flex flex-row justify-center">{{ connection.clientId }}</div>
   </div>
 </template>
