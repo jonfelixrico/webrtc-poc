@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import CCallLayout from '~/components/CCallLayout.vue'
-import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
 import CCallParticipantRendererPeer from '~/components/CCallParticipantRendererPeer.vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useWebRtcStore } from '~/store/web-rtc.store'
+import CCallParticipantRendererSelf from '~/components/CCallParticipantRendererSelf.vue'
 
 const store = useWebRtcStore()
 const ids = computed(() => {
@@ -18,14 +18,11 @@ const msStore = useMediaStreamStore()
 <template>
   <CCallLayout v-slot="{ id }" :ids>
     <template v-if="id === 'self'">
-      <CMediaStreamRenderer
-        v-if="msStore.mediaStream"
-        :media-stream="msStore.mediaStream"
+      <CCallParticipantRendererSelf
         class="h-full w-full"
+        display-name="Self"
+        :media-stream="msStore.mediaStream"
       />
-
-      <!-- do nothing for now -->
-      <div v-else>No stream</div>
     </template>
 
     <!-- For peers -->
