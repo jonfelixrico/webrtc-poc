@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDevicesList, useUserMedia } from '@vueuse/core'
-import { computed, ref, toValue, watch } from 'vue'
+import { computed, reactive, toValue, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
 import CDeviceSelect from '~/components/CDeviceSelect.vue'
@@ -14,23 +14,33 @@ const { audioInputs, videoInputs } = useDevicesList({
   requestPermissions: true,
 })
 
-const aId = ref<string | null>(null)
-const aEnabled = ref<boolean>(false)
-const vId = ref<string | null>(null)
-const vEnabled = ref<boolean>(false)
+interface DeviceValue {
+  id: string | null
+  enabled: boolean
+}
+
+const audio = reactive<DeviceValue>({
+  id: null,
+  enabled: false,
+})
+
+const video = reactive<DeviceValue>({
+  id: null,
+  enabled: false,
+})
 
 const constraints = computed<MediaStreamConstraints>(() => {
   const value: MediaStreamConstraints = {}
 
-  if (toValue(aId) && toValue(aEnabled)) {
+  if (audio.id && audio.enabled) {
     value.audio = {
-      deviceId: toValue(aId) as string,
+      deviceId: audio.id as string,
     }
   }
 
-  if (toValue(vId) && toValue(vEnabled)) {
+  if (video.id && video.enabled) {
     value.video = {
-      deviceId: toValue(vId) as string,
+      deviceId: video.id as string,
     }
   }
 
@@ -47,8 +57,8 @@ const msStore = useMediaStreamStore()
 watch(stream, (stream) => {
   logger.info(
     'Media stream has changed; video: %s, audio: %s',
-    toValue(vId),
-    toValue(aId),
+    video.id,
+    audio.id,
   )
   msStore.mediaStream = stream ?? null
 })
@@ -57,13 +67,13 @@ watch(stream, (stream) => {
 <template>
   <div class="flex flex-row">
     <CDeviceSelect
-      v-model="aId"
-      v-model:enabled="aEnabled"
+      v-model="audio.id"
+      v-model:enabled="audio.enabled"
       :devices="audioInputs"
     />
     <CDeviceSelect
-      v-model="vId"
-      v-model:enabled="vEnabled"
+      v-model="video.id"
+      v-model:enabled="video.enabled"
       :devices="videoInputs"
     />
   </div>
