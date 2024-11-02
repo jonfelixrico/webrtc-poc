@@ -65,24 +65,53 @@ watch(stream, (stream) => {
 </script>
 
 <template>
-  <div class="flex flex-row">
+  <div class="flex flex-row gap-4 justify-center p-4">
     <CDeviceSelectV2
-      v-slot="{ deviceId, enabled }"
+      v-slot="{ status }"
       v-model="audio.id"
       v-model:enabled="audio.enabled"
       :devices="audioInputs"
     >
-      {{ deviceId }}
-      {{ enabled }}
+      <div class="flex flex-col items-center">
+        <template v-if="status === 'enabled'">
+          <UIcon name="i-bi-mic-fill" class="w-7 h-7" />
+          Mute
+        </template>
+
+        <template v-else-if="status === 'disabled'">
+          <UIcon name="bi-mic-mute-fill" class="w-7 h-7" />
+          Unmute
+        </template>
+
+        <template v-else-if="status === 'no_device'">
+          <UIcon name="bi-mic-mute-fill" class="w-7 h-7" />
+          Select Mic
+        </template>
+      </div>
     </CDeviceSelectV2>
+
     <CDeviceSelectV2
-      v-slot="{ deviceId, enabled }"
+      v-slot="{ status }"
       v-model="video.id"
       v-model:enabled="video.enabled"
       :devices="videoInputs"
     >
-      {{ deviceId }}
-      {{ enabled }}
+      <div class="flex flex-col items-center">
+        <template v-if="status === 'enabled'">
+          <UIcon name="i-tdesign-video-camera" class="w-7 h-7" />
+          Stop Video
+        </template>
+
+        <template v-else-if="status === 'disabled'">
+          <UIcon name="i-tdesign-video-camera-off" class="w-7 h-7" />
+          Start Video
+        </template>
+
+        <template v-else-if="status === 'no_device'">
+          <UIcon name="i-tdesign-video-camera-off" class="w-7 h-7" />
+          Select Camera
+        </template>
+      </div>
     </CDeviceSelectV2>
   </div>
 </template>
