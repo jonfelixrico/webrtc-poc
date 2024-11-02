@@ -2,7 +2,9 @@
 import { useDevicesList, useUserMedia } from '@vueuse/core'
 import { computed, reactive, ref, toValue, watch, type Ref } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
+import { useLogger } from '~/composables/logger.composable'
 
+const logger = useLogger()
 const devices = useDevicesList({
   constraints: {
     audio: true,
@@ -48,6 +50,11 @@ const { stream } = useUserMedia({
   constraints: constraints,
 })
 watch(stream, (stream) => {
+  logger.info(
+    'Media stream has changed; video: %s, audio: %s',
+    toValue(videoId),
+    toValue(audioId),
+  )
   msStore.mediaStream = stream ?? null
 })
 </script>
