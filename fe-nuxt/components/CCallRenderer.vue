@@ -18,6 +18,7 @@ const msStore = useMediaStreamStore()
 <template>
   <CCallLayout v-slot="{ id }" :ids>
     <template v-if="id === 'self'">
+      <!-- TODO provide proper name -->
       <CCallParticipantRendererSelf
         class="h-full w-full"
         display-name="Self"
@@ -27,6 +28,7 @@ const msStore = useMediaStreamStore()
 
     <!-- For peers -->
     <template v-else>
+      <!-- TODO provide proper name -->
       <CCallParticipantRendererPeer
         :connection="rtcStore.connections[id]"
         class="h-full w-full"
