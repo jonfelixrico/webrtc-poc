@@ -64,7 +64,5 @@ const dimsStyle = computed(() => {
     This assumes that if hasVideo is off, then there must be at least audio for this
     media stream to exist.
   -->
-  <div v-if="!hasVideo" :style="dimsStyle">
-    <slot name="audio-only" />
-  </div>
+  <slot v-if="!hasVideo" name="audio-only" />
 </template>
