@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 import { markRaw } from 'vue'
-import type { ClientConnection, RTCConnectionStates } from '~/typings/rtc.types'
+import type {
+  AppPeerConnection,
+  RTCConnectionStates,
+} from '~/typings/rtc.types'
 import type { MaybeFalsy } from '~/typings/util.types'
 
 interface SignalingFlags {
@@ -9,7 +12,7 @@ interface SignalingFlags {
   shouldIgnoreOffer: boolean
 }
 
-export type Connection = ClientConnection & {
+export type Connection = AppPeerConnection & {
   polite: boolean
 } & Partial<SignalingFlags>
 
@@ -34,6 +37,7 @@ export const useWebRtcStore = defineStore('webRtc', {
         polite: options?.polite ?? false,
         states: {},
         stream: null,
+        clientId,
       }
     },
 
