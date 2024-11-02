@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useResizeObserverValue } from '#imports'
+import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
 import { computed, toValue, useTemplateRef } from 'vue'
 
 const divRef = useTemplateRef('div')
