@@ -37,8 +37,6 @@ const constraints = computed<MediaStreamConstraints>(() => {
   return value
 })
 
-watch(constraints, (c) => console.log(c))
-
 const { stream } = useUserMedia({
   enabled: computed(() => Object.keys(toValue(constraints)).length > 0),
   constraints,
