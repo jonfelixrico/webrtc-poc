@@ -66,15 +66,16 @@ const deviceStatus = computed(() => {
     <UButtonGroup orientation="horizontal">
       <UButton
         :disabled="!modelValue"
-        class="w-32 flex flex-row justify-center"
+        color="white"
+        variant="ghost"
         @click="enabledModel = !enabledModel"
       >
         <slot :status="deviceStatus" />
       </UButton>
 
       <UDropdown :items="options">
-        <UButton>
-          <UIcon name="mdi-triangle-small-up" />
+        <UButton color="white" variant="ghost">
+          <UIcon name="i-bitcoin-icons-caret-up-filled" />
         </UButton>
       </UDropdown>
     </UButtonGroup>
