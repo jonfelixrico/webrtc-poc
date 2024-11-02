@@ -19,7 +19,7 @@ export type Connection = {
   connection: RTCPeerConnection
   polite: boolean
   states: Partial<ConnectionStates>
-  stream?: MaybeFalsy<MediaStream>
+  stream: MaybeFalsy<MediaStream>
 } & Partial<SignalingFlags>
 
 export interface WebRtcStore {
@@ -42,6 +42,7 @@ export const useWebRtcStore = defineStore('webRtc', {
         connection: markRaw(connection),
         polite: options?.polite ?? false,
         states: {},
+        stream: null,
       }
     },
 
