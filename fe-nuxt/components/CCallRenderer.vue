@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import CCallLayout from '~/components/CCallLayout.vue'
 import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
-import CPeerConnectionRenderer from '~/components/CPeerConnectionRenderer.vue'
+import CCallParticipantRendererPeer from '~/components/CCallParticipantRendererPeer.vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 
@@ -30,7 +30,7 @@ const msStore = useMediaStreamStore()
 
     <!-- For peers -->
     <template v-else>
-      <CPeerConnectionRenderer
+      <CCallParticipantRendererPeer
         v-if="rtcStore.connections[id]"
         :connection="rtcStore.connections[id]"
         class="h-full w-full"
