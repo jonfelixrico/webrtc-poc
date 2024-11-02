@@ -13,9 +13,9 @@ const gridColsClass = computed(() => {
   const length = props.ids.length
 
   if (length <= 2) {
-    return 'grid-cols-2'
+    return 'md:grid-cols-2 sm:grid-cols-1'
   } else {
-    return 'grid-cols-3'
+    return 'lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1'
   }
 })
 </script>
