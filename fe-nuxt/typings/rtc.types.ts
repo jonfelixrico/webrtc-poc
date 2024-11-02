@@ -7,8 +7,9 @@ export interface RTCConnectionStates {
   iceConnectionState: RTCPeerConnection['iceConnectionState']
 }
 
-export interface ClientConnection {
+export interface AppPeerConnection {
   connection: RTCPeerConnection
   states: Partial<RTCConnectionStates>
   stream: MaybeFalsy<MediaStream>
+  clientId: string
 }
