@@ -34,27 +34,29 @@ const dimensions = useResizeObserverValue(containerRef)
 </script>
 
 <template>
-  <div v-show="hasVideo" ref="container" class="relative">
-    <video
-      ref="video"
-      class="absolute"
-      :style="{
-        width: `${dimensions.width}px`,
-        height: `${dimensions.height}px`,
-      }"
-      autoplay
-      :controls="false"
-      :playsinline="true"
-      :muted="muteAudio"
-    />
-  </div>
+  <div>
+    <div v-show="hasVideo" ref="container" class="relative h-full w-full">
+      <video
+        ref="video"
+        class="absolute"
+        :style="{
+          width: `${dimensions.width}px`,
+          height: `${dimensions.height}px`,
+        }"
+        autoplay
+        :controls="false"
+        :playsinline="true"
+        :muted="muteAudio"
+      />
+    </div>
 
-  <!--
-    hasVideo being off means that the stream is audio-only.
-    This assumes that if hasVideo is off, then there must be at least audio for this
-    media stream to exist.
-  -->
-  <slot v-if="!hasVideo" name="audio-only">
-    <div class="bg-black" />
-  </slot>
+    <!--
+      hasVideo being off means that the stream is audio-only.
+      This assumes that if hasVideo is off, then there must be at least audio for this
+      media stream to exist.
+    -->
+    <slot v-if="!hasVideo" name="audio-only">
+      <div class="bg-black h-full w-full" />
+    </slot>
+  </div>
 </template>
