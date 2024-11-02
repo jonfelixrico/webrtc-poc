@@ -35,6 +35,7 @@ const msStore = useMediaStreamStore()
         v-if="rtcStore.connections[id]"
         :connection="rtcStore.connections[id]"
         class="h-full w-full"
+        :display-name="id"
       />
 
       <!-- TODO handle this -->
