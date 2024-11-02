@@ -35,21 +35,15 @@ watch(
     immediate: true,
   },
 )
-
-const dimsStyle = computed(() => {
-  const { width, height } = props
-
-  return {
-    width: `${width}px`,
-    height: `${height}px`,
-  }
-})
 </script>
 
 <template>
   <video
     ref="div"
-    :style="dimsStyle"
+    :style="{
+      width: `${width}px`,
+      height: `${height}px`,
+    }"
     autoplay
     :controls="false"
     :playsinline="true"
