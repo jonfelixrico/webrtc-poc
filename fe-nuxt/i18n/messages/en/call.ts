@@ -10,4 +10,6 @@ export default {
     start: 'Start Video',
     select: 'Select Camera',
   },
+
+  waitingForConnection: 'Waiting for connection',
 }
