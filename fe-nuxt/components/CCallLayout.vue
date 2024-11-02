@@ -24,8 +24,19 @@ const gridColsClass = computed(() => {
 
 <template>
   <div class="flex flex-row grid gap-4" :class="gridColsClass">
-    <CCallLayoutItem v-for="id in ids" :key="id" v-slot="{ width, height }">
-      <slot :width :height />
+    <CCallLayoutItem
+      v-for="id in ids"
+      :key="id"
+      v-slot="{ width, height }"
+      class="relative"
+    >
+      <!--
+        The slot wrapper is made absolute to prevent the layout from being messy
+        if ever the slot content did overflow.
+      -->
+      <div class="absolute h-full w-full overflow-hidden">
+        <slot :width :height />
+      </div>
     </CCallLayoutItem>
   </div>
 </template>
