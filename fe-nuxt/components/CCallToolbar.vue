@@ -4,6 +4,7 @@ import { computed, reactive, toValue, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
 import CDeviceSelect from '~/components/CDeviceSelect.vue'
+import { useI18n } from 'vue-i18n'
 
 const logger = useLogger()
 const { audioInputs, videoInputs } = useDevicesList({
@@ -62,6 +63,8 @@ watch(stream, (stream) => {
   )
   msStore.mediaStream = stream ?? null
 })
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -75,17 +78,17 @@ watch(stream, (stream) => {
       <div class="flex flex-col items-center">
         <template v-if="status === 'enabled'">
           <UIcon name="i-bi-mic-fill" class="w-7 h-7" />
-          Mute
+          {{ t('call.audioControl.mute') }}
         </template>
 
         <template v-else-if="status === 'disabled'">
           <UIcon name="bi-mic-mute-fill" class="w-7 h-7" />
-          Unmute
+          {{ t('call.audioControl.unmute') }}
         </template>
 
         <template v-else-if="status === 'no_device'">
           <UIcon name="bi-mic-mute-fill" class="w-7 h-7" />
-          Select Mic
+          {{ t('call.audioControl.select') }}
         </template>
       </div>
     </CDeviceSelect>
@@ -99,17 +102,17 @@ watch(stream, (stream) => {
       <div class="flex flex-col items-center">
         <template v-if="status === 'enabled'">
           <UIcon name="i-tdesign-video-camera" class="w-7 h-7" />
-          Stop Video
+          {{ t('call.videoControl.stop') }}
         </template>
 
         <template v-else-if="status === 'disabled'">
           <UIcon name="i-tdesign-video-camera-off" class="w-7 h-7" />
-          Start Video
+          {{ t('call.videoControl.start') }}
         </template>
 
         <template v-else-if="status === 'no_device'">
           <UIcon name="i-tdesign-video-camera-off" class="w-7 h-7" />
-          Select Camera
+          {{ t('call.videoControl.select') }}
         </template>
       </div>
     </CDeviceSelect>
