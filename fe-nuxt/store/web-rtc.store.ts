@@ -1,13 +1,7 @@
 import { defineStore } from 'pinia'
 import { markRaw } from 'vue'
+import type { ClientConnection, RTCConnectionStates } from '~/typings/rtc.types'
 import type { MaybeFalsy } from '~/typings/util.types'
-
-interface ConnectionStates {
-  connectionState: RTCPeerConnection['connectionState']
-  signalingState: RTCPeerConnection['signalingState']
-  iceGatheringState: RTCPeerConnection['iceGatheringState']
-  iceConnectionState: RTCPeerConnection['iceConnectionState']
-}
 
 interface SignalingFlags {
   isSettingRemoteAnswer: boolean
@@ -15,11 +9,8 @@ interface SignalingFlags {
   shouldIgnoreOffer: boolean
 }
 
-export type Connection = {
-  connection: RTCPeerConnection
+export type Connection = ClientConnection & {
   polite: boolean
-  states: Partial<ConnectionStates>
-  stream: MaybeFalsy<MediaStream>
 } & Partial<SignalingFlags>
 
 export interface WebRtcStore {
@@ -59,10 +50,10 @@ export const useWebRtcStore = defineStore('webRtc', {
       }
     },
 
-    setStateValue<K extends keyof ConnectionStates>(
+    setStateValue<K extends keyof RTCConnectionStates>(
       clientId: string,
       key: K,
-      value: ConnectionStates[K],
+      value: RTCConnectionStates[K],
     ) {
       const obj = this.connections[clientId]
       if (!obj) {
