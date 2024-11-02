@@ -49,13 +49,27 @@ const options = computed(() => {
     return [item]
   })
 })
+
+const deviceStatus = computed(() => {
+  const { modelValue, enabled } = props
+
+  if (!modelValue) {
+    return 'no_device'
+  } else {
+    return enabled ? 'enabled' : 'disabled'
+  }
+})
 </script>
 
 <template>
   <div class="flex flex-row">
     <UButtonGroup orientation="horizontal">
-      <UButton :disabled="!modelValue" @click="enabledModel = !enabledModel">
-        <slot :device-id="modelValue" :enabled />
+      <UButton
+        :disabled="!modelValue"
+        class="w-32 flex flex-row justify-center"
+        @click="enabledModel = !enabledModel"
+      >
+        <slot :status="deviceStatus" />
       </UButton>
 
       <UDropdown :items="options">
