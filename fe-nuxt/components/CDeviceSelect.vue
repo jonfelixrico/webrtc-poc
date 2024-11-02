@@ -55,7 +55,10 @@ const options = computed(() => {
 <template>
   <div class="flex flex-row">
     <USelect v-model="deviceIdModel" :options />
-    <UButton @click="enabledModel = !enabledModel">
+    <UButton
+      :disabled="!props.modelValue"
+      @click="enabledModel = !enabledModel"
+    >
       {{ enabledModel ? 'Enabled' : 'Disabled' }}
     </UButton>
   </div>
