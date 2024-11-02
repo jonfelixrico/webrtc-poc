@@ -17,6 +17,7 @@ import { useLogger } from '~/composables/logger.composable'
 import CPeerConnectionManager from '~/components/CPeerConnectionManager.vue'
 import { useSocketInit } from '~/composables/socket.composable'
 import { useDescriptionHandlers } from '~/composables/rtc-signaling-description.composable'
+import CVideoCallLayout from '~/components/CVideoCallLayout.vue'
 
 definePageMeta({
   validate: (route) =>
@@ -69,7 +70,7 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <div class="flex flex-row">
+  <main>
     <!-- Renderless section -->
     <ClientOnly>
       <CPeerConnectionManager
@@ -80,33 +81,42 @@ if (import.meta.client) {
       />
     </ClientOnly>
 
-    <div class="flex-1">
-      <ClientOnly>
-        <CMediaStreamRenderer
-          v-if="mediaStreamStore.mediaStream"
-          :media-stream="mediaStreamStore.mediaStream"
-          :width="400"
-          :height="400"
-        />
-      </ClientOnly>
-    </div>
+    <!-- Actual content -->
+    <CVideoCallLayout>
+      <template #default>
+        <div class="flex flex-row">
+          <div class="flex-1">
+            <ClientOnly>
+              <CMediaStreamRenderer
+                v-if="mediaStreamStore.mediaStream"
+                :media-stream="mediaStreamStore.mediaStream"
+                :width="400"
+                :height="400"
+              />
+            </ClientOnly>
+          </div>
 
-    <div class="flex-1 flex flex-col">
-      <div
-        v-for="({ stream, polite, states }, clientId) in connections"
-        :key="clientId"
-      >
-        {{ clientId }}
-        {{ polite }}
-        {{ states }}
+          <div class="flex-1 flex flex-col">
+            <div
+              v-for="({ stream, polite, states }, clientId) in connections"
+              :key="clientId"
+            >
+              {{ clientId }}
+              {{ polite }}
+              {{ states }}
 
-        <CMediaStreamRenderer
-          v-if="stream"
-          :media-stream="stream"
-          :width="400"
-          :height="400"
-        />
-      </div>
-    </div>
-  </div>
+              <CMediaStreamRenderer
+                v-if="stream"
+                :media-stream="stream"
+                :width="400"
+                :height="400"
+              />
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <template #bottom> Hello, world </template>
+    </CVideoCallLayout>
+  </main>
 </template>
