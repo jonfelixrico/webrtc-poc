@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useDevicesList, useUserMedia } from '@vueuse/core'
-import { reactive, ref, toValue, watch } from 'vue'
+import { computed, reactive, ref, toValue, watch, type Ref } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 
-const { audioInputs, videoInputs } = useDevicesList({
+const devices = useDevicesList({
   constraints: {
     audio: true,
     video: true,
@@ -11,36 +11,28 @@ const { audioInputs, videoInputs } = useDevicesList({
   requestPermissions: true,
 })
 
+function createMediaDeviceOptions(devices: Ref<MediaDeviceInfo[]>) {
+  return computed(() => {
+    const value = toValue(devices)
+
+    return [
+      {
+        label: 'Disabled',
+        value: undefined,
+      },
+      ...value.map(({ label, deviceId }) => ({
+        label,
+        value: deviceId,
+      })),
+    ]
+  })
+}
+
+const audioOptions = createMediaDeviceOptions(devices.audioInputs)
+const videoOptions = createMediaDeviceOptions(devices.videoInputs)
+
 const audioId = ref<string>()
 const videoId = ref<string>()
-
-watch(
-  audioInputs,
-  (inputs) => {
-    if (toValue(audioId)) {
-      return
-    }
-
-    audioId.value = inputs[0]?.deviceId
-  },
-  {
-    immediate: true,
-  },
-)
-
-watch(
-  videoInputs,
-  (inputs) => {
-    if (toValue(videoId)) {
-      return
-    }
-
-    videoId.value = inputs[0]?.deviceId
-  },
-  {
-    immediate: true,
-  },
-)
 
 const msStore = useMediaStreamStore()
 const constraints = reactive<MediaStreamConstraints>({
@@ -64,13 +56,13 @@ watch(stream, (stream) => {
   <div class="flex flex-row">
     <USelect
       v-model="videoId"
-      :options="videoInputs"
+      :options="videoOptions"
       option-attribute="label"
       value-attribute="deviceId"
     />
     <USelect
       v-model="audioId"
-      :options="audioInputs"
+      :options="audioOptions"
       option-attribute="label"
       value-attribute="deviceId"
     />
