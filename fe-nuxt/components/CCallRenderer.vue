@@ -31,14 +31,10 @@ const msStore = useMediaStreamStore()
     <!-- For peers -->
     <template v-else>
       <CCallParticipantRendererPeer
-        v-if="rtcStore.connections[id]"
         :connection="rtcStore.connections[id]"
         class="h-full w-full"
         :display-name="id"
       />
-
-      <!-- TODO handle this -->
-      <div v-else>No connection ...</div>
     </template>
   </CCallLayout>
 </template>

@@ -6,8 +6,8 @@ import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   connection: {
-    type: Object as PropType<AppPeerConnection>,
-    required: true,
+    type: Object as PropType<AppPeerConnection | null>,
+    default: null,
   },
 
   displayName: {
@@ -16,11 +16,11 @@ const props = defineProps({
   },
 })
 
-const stream = computed(() => props.connection.stream)
+const stream = computed(() => props.connection?.stream)
 
 const isConnectionReady = computed(() => {
   const { connectionState, iceConnectionState, signalingState } =
-    props.connection.states
+    props.connection?.states ?? {}
 
   return (
     connectionState === 'connected' &&
