@@ -37,7 +37,9 @@ const dimensions = useResizeObserverValue(divRef)
       :media-stream="stream"
       :width="dimensions.width"
       :height="dimensions.height"
-    />
+    >
+      <template #audio-only> Audio only </template>
+    </CMediaStreamRenderer>
 
     <div v-else>Waiting for user content ...</div>
   </div>
