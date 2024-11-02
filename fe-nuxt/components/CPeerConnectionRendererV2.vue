@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { useResizeObserver } from '@vueuse/core'
-import { computed, reactive, useTemplateRef, type PropType } from 'vue'
+import { computed, useTemplateRef, type PropType } from 'vue'
 import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
 import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
 import type { AppPeerConnection } from '~/typings/rtc.types'
