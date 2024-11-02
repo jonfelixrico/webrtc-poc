@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, type PropType } from 'vue'
+import { computed, useTemplateRef, type PropType } from 'vue'
 import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
+import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
 import type { AppPeerConnection } from '~/typings/rtc.types'
 
 const props = defineProps({
@@ -22,28 +23,22 @@ const isConnectionReady = computed(() => {
     signalingState === 'stable'
   )
 })
+
+const divRef = useTemplateRef('div')
+const dimensions = useResizeObserverValue(divRef)
 </script>
 
 <template>
-  <div class="flex flex-col items-center">
-    <div
-      class="flex flex-row justify-center items-center"
-      :style="{ width: '400px', height: '400px' }"
-    >
-      <div v-if="!isConnectionReady">Waiting for connection ...</div>
+  <div ref="div" class="flex flex-col justify-center items-center">
+    <div v-if="!isConnectionReady">Waiting for connection ...</div>
 
-      <CMediaStreamRenderer
-        v-else-if="stream"
-        :media-stream="stream"
-        :width="400"
-        :height="400"
-      />
+    <CMediaStreamRenderer
+      v-else-if="stream"
+      :media-stream="stream"
+      :width="dimensions.width"
+      :height="dimensions.height"
+    />
 
-      <!-- At this point we can assume that the connection is ready but there's just no stream -->
-      <div v-else>Waiting for user content ...</div>
-    </div>
-
-    <!-- TODO replace with name -->
-    <div class="flex flex-row justify-center">{{ connection.clientId }}</div>
+    <div v-else>Waiting for user content ...</div>
   </div>
 </template>
