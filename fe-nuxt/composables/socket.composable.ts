@@ -1,20 +1,18 @@
+import { useLogger } from '~/composables/logger.composable'
 import { io, type Socket } from 'socket.io-client'
 import {
   computed,
   markRaw,
   onBeforeMount,
   onBeforeUnmount,
-  ref,
   toValue,
   watch,
-  type Ref,
 } from 'vue'
-import { useLogger } from '~/composables/logger.composable'
 import { useSocketStore } from '~/store/socket.store'
 
-function useSocketCreate() {
+export function useSocketInit(roomId: string) {
+  const store = useSocketStore()
   const logger = useLogger()
-  const socketRef = ref<Socket | null>(null)
 
   function connect() {
     const isSecure = window.location.protocol.startsWith('https')
@@ -25,39 +23,20 @@ function useSocketCreate() {
        *
        * /be is our proxy for the backend, where the socket.io server is at.
        */
-      path: '/be/socket.io',
+      path: `/be/socket.io/room-${roomId}`,
       autoConnect: false,
     })
 
     socket.once('connect', () => {
       logger.info('Your client id is %s', socket.id)
-      socketRef.value = markRaw(socket)
+      store.socket = markRaw(socket)
     })
 
     socket.connect()
   }
 
-  return {
-    socket: socketRef as Ref<Socket>,
-    connect,
-  }
-}
-
-export function useSocketInit() {
-  const store = useSocketStore()
-  const { connect, socket } = useSocketCreate()
-
   onBeforeMount(() => {
     connect()
-  })
-
-  watch(socket, (socket) => {
-    if (!socket) {
-      store.socket = null
-      return
-    }
-
-    store.socket = markRaw(socket)
   })
 }
 

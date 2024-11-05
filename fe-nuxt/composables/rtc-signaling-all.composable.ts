@@ -7,6 +7,7 @@ import {
   onAppSocketEvent,
   useAppSocketEmit,
 } from '~/composables/app-socket.composable'
+import type { RoomWsEventPayloadMap } from '@webrtcpoc/common'
 
 export function useDescriptionHandlers() {
   const logger = useLogger()
@@ -93,7 +94,7 @@ export function useDescriptionHandlers() {
   )
 }
 
-export function useJoinHandler(roomId: string) {
+export function useJoinHandler() {
   const logger = useLogger()
 
   const store = useWebRtcStore()
@@ -124,24 +125,23 @@ export function useJoinHandler(roomId: string) {
   }
 
   onSocketAvailable((sock) => {
-    socketEmit('join', {
-      roomId,
-    })
-    logger.debug('Emitted join to room %s', roomId)
+    sock.emit('sync_user_list', {})
+    sock.once(
+      'user_list_synced',
+      async (payload: RoomWsEventPayloadMap['user_list_synced']) => {
+        logger.debug(
+          'Received initial user list. %s users',
+          payload.clientIds.length,
+        )
 
-    sock.once('user_list_synced', async (payload: { clientIds: string[] }) => {
-      logger.debug(
-        'Received initial user list. %s users',
-        payload.clientIds.length,
-      )
+        for (const clientId of payload.clientIds) {
+          if (clientId === sock.id) {
+            continue
+          }
 
-      for (const clientId of payload.clientIds) {
-        if (clientId === sock.id) {
-          continue
+          await createConnection(clientId)
         }
-
-        await createConnection(clientId)
-      }
-    })
+      },
+    )
   })
 }
