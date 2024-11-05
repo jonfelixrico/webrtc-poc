@@ -13,9 +13,6 @@ import {
   RoomWsCommandPayloadMap,
   RoomWsEventPayloadMap,
 } from '@webrtcpoc/common'
-import { URL } from 'url'
-
-const ROOM_REGEXP = /room-(.+)/
 
 function getRoomId(socket: Socket) {
   const urlString = socket.request.url
@@ -23,13 +20,11 @@ function getRoomId(socket: Socket) {
     return null
   }
 
-  const urlObj = new URL(urlString)
-  return ROOM_REGEXP.exec(urlObj.pathname)?.[1] ?? null
+  const ID_EXTRACT_REGEXP = /\/room-([^/]+)/
+  return ID_EXTRACT_REGEXP.exec(urlString)?.[1] ?? null
 }
 
-@WebSocketGateway({
-  namespace: ROOM_REGEXP,
-})
+@WebSocketGateway(/^room-(.+)/)
 export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   constructor(private logger: Logger) {}
 
@@ -73,9 +68,13 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   }
 
   handleConnection(socket: Socket) {
-    this.logger.debug('Client has established connection', socket.id)
-
     const roomId = getRoomId(socket)
+
+    this.logger.debug(
+      'Client has established connection',
+      [socket.id, roomId].join('/'),
+    )
+
     this.addMember(roomId, socket)
 
     socket.broadcast // broadcast to all room members except this one
@@ -122,8 +121,11 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
   @SubscribeMessage('sync_user_list')
   handleSyncUserList(@ConnectedSocket() socket: Socket) {
+    const roomId = getRoomId(socket)
+
+    this.logger.debug('sync_user_list', roomId)
     socket.emit('user_list_synced', {
-      clientIds: this.getMembers(getRoomId(socket)),
+      clientIds: this.getMembers(roomId),
     })
   }
 }
