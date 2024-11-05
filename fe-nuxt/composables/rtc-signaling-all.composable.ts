@@ -93,7 +93,7 @@ export function useDescriptionHandlers() {
   )
 }
 
-export function useJoinHandler(roomId: string) {
+export function useJoinHandler() {
   const logger = useLogger()
 
   const store = useWebRtcStore()
@@ -124,11 +124,6 @@ export function useJoinHandler(roomId: string) {
   }
 
   onSocketAvailable((sock) => {
-    socketEmit('join', {
-      roomId,
-    })
-    logger.debug('Emitted join to room %s', roomId)
-
     sock.once('user_list_synced', async (payload: { clientIds: string[] }) => {
       logger.debug(
         'Received initial user list. %s users',

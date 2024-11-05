@@ -12,7 +12,7 @@ import {
 import { useLogger } from '~/composables/logger.composable'
 import { useSocketStore } from '~/store/socket.store'
 
-function useSocketCreate() {
+function useSocketCreate(roomId: string) {
   const logger = useLogger()
   const socketRef = ref<Socket | null>(null)
 
@@ -25,7 +25,7 @@ function useSocketCreate() {
        *
        * /be is our proxy for the backend, where the socket.io server is at.
        */
-      path: '/be/socket.io',
+      path: `/be/socket.io/room-${roomId}`,
       autoConnect: false,
     })
 
@@ -43,9 +43,9 @@ function useSocketCreate() {
   }
 }
 
-export function useSocketInit() {
+export function useSocketInit(roomId: string) {
   const store = useSocketStore()
-  const { connect, socket } = useSocketCreate()
+  const { connect, socket } = useSocketCreate(roomId)
 
   onBeforeMount(() => {
     connect()
