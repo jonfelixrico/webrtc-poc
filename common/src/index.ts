@@ -12,6 +12,8 @@ export interface RoomWsCommandPayloadMap {
   join: {
     roomId: string
   }
+
+  sync_user_list: {}
 }
 
 export interface RoomWsEventPayloadMap {
@@ -27,12 +29,6 @@ export interface RoomWsEventPayloadMap {
 
   user_list_synced: {
     clientIds: string[]
-    roomId: string
-  }
-
-  user_joined: {
-    clientId: string
-    roomId: string
   }
 }
 
