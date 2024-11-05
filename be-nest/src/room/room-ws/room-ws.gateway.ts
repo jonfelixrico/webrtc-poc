@@ -14,7 +14,17 @@ import {
   RoomWsEventPayloadMap,
 } from '@webrtcpoc/common'
 
-@WebSocketGateway()
+function getRoomId(socket: Socket) {
+  const urlString = socket.request.url
+  if (!urlString) {
+    return null
+  }
+
+  const ID_EXTRACT_REGEXP = /\/room-([^/]+)/
+  return ID_EXTRACT_REGEXP.exec(urlString)?.[1] ?? null
+}
+
+@WebSocketGateway(/^room-(.+)/)
 export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   constructor(private logger: Logger) {}
 
@@ -31,62 +41,43 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
     roomObj.add(socket.id)
   }
-  private purgeMemberships(socket: Socket) {
-    const formerMemberships: string[] = []
-
-    for (const roomId in this.roomMembers) {
-      const set = this.roomMembers[roomId]
-
-      if (!set.has(socket.id)) {
-        continue
-      }
-
-      formerMemberships.push(roomId)
-      set.delete(socket.id)
-    }
-
-    return formerMemberships
-  }
 
   handleDisconnect(client: Socket) {
-    this.logger.debug('Client has disconnected', client.id)
-    const formerRooms = this.purgeMemberships(client)
+    const roomId = getRoomId(client)
 
-    for (const roomId of formerRooms) {
-      this.syncUserList(roomId)
-    }
+    this.logger.debug('Client has disconnected', [client.id, roomId].join('/'))
+
+    const set = this.roomMembers[roomId]
+    set.delete(client.id)
+
+    this.broadcastUserList(roomId)
   }
 
-  handleConnection(client: Socket) {
-    this.logger.debug('Client has established connection', client.id)
+  handleConnection(socket: Socket) {
+    const roomId = getRoomId(socket)
+
+    this.logger.debug(
+      'Client has established connection',
+      [socket.id, roomId].join('/'),
+    )
+
+    this.addMember(roomId, socket)
+
+    socket.broadcast // broadcast to entire namespace except this one
+      .emit('user_joined', {
+        clientId: socket.id,
+      } as RoomWsEventPayloadMap['user_joined'])
+
+    this.broadcastUserList(roomId)
   }
 
   @WebSocketServer()
   private server: Server
 
-  private syncUserList(roomId: string) {
-    this.server.to(roomId).emit('user_list_synced', {
+  private broadcastUserList(roomId: string) {
+    this.server.of(`/room-${roomId}`).emit('user_list_synced', {
       clientIds: this.getMembers(roomId),
-      roomId,
     } as RoomWsEventPayloadMap['user_list_synced'])
-  }
-
-  @SubscribeMessage('join')
-  async handleJoin(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() { roomId }: RoomWsCommandPayloadMap['join'],
-  ) {
-    await socket.join(roomId)
-    this.addMember(roomId, socket)
-
-    socket.broadcast // broadcast to all room members except this one
-      .to(roomId)
-      .emit('user_joined', {
-        clientId: socket.id,
-        roomId,
-      } as RoomWsEventPayloadMap['user_joined'])
-
-    this.syncUserList(roomId)
   }
 
   @SubscribeMessage('send_description')
@@ -111,5 +102,15 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       fromClientId: socket.id,
       candidate: payload.candidate,
     } as RoomWsEventPayloadMap['candidate_sent'])
+  }
+
+  @SubscribeMessage('sync_user_list')
+  handleSyncUserList(@ConnectedSocket() socket: Socket) {
+    const roomId = getRoomId(socket)
+
+    this.logger.debug('sync_user_list', roomId)
+    socket.emit('user_list_synced', {
+      clientIds: this.getMembers(roomId),
+    } as RoomWsEventPayloadMap['user_list_synced'])
   }
 }

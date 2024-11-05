@@ -25,8 +25,10 @@ const connStore = useWebRtcStore()
 const connections = computed(() => connStore.connections)
 
 if (import.meta.client) {
-  useSocketInit()
-  useJoinHandler(String(route.params.id))
+  const roomId = String(route.params.id)
+
+  useSocketInit(roomId)
+  useJoinHandler()
   useDescriptionHandlers()
 }
 </script>
