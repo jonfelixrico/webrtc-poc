@@ -119,4 +119,11 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       candidate: payload.candidate,
     } as RoomWsEventPayloadMap['candidate_sent'])
   }
+
+  @SubscribeMessage('sync_user_list')
+  handleSyncUserList(@ConnectedSocket() socket: Socket) {
+    socket.emit('user_list_synced', {
+      clientIds: this.getMembers(getRoomId(socket)),
+    })
+  }
 }
