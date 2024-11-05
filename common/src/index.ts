@@ -27,6 +27,10 @@ export interface RoomWsEventPayloadMap {
     description: RTCSessionDescription
   }
 
+  user_joined: {
+    clientId: string
+  }
+
   user_list_synced: {
     clientIds: string[]
   }
