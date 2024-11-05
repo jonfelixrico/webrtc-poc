@@ -9,10 +9,6 @@ export interface RoomWsCommandPayloadMap {
     description: RTCSessionDescription
   }
 
-  join: {
-    roomId: string
-  }
-
   sync_user_list: {}
 }
 
