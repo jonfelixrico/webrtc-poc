@@ -124,6 +124,7 @@ export function useJoinHandler() {
   }
 
   onSocketAvailable((sock) => {
+    sock.emit('sync_user_list')
     sock.once('user_list_synced', async (payload: { clientIds: string[] }) => {
       logger.debug(
         'Received initial user list. %s users',
