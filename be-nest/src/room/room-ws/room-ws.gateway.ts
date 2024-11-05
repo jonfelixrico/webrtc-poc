@@ -50,7 +50,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     const set = this.roomMembers[roomId]
     set.delete(client.id)
 
-    this.syncUserList(roomId)
+    this.broadcastUserList(roomId)
   }
 
   handleConnection(socket: Socket) {
@@ -68,13 +68,13 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
         clientId: socket.id,
       } as RoomWsEventPayloadMap['user_joined'])
 
-    this.syncUserList(roomId)
+    this.broadcastUserList(roomId)
   }
 
   @WebSocketServer()
   private server: Server
 
-  private syncUserList(roomId: string) {
+  private broadcastUserList(roomId: string) {
     this.server.of(`/room-${roomId}`).emit('user_list_synced', {
       clientIds: this.getMembers(roomId),
     } as RoomWsEventPayloadMap['user_list_synced'])
