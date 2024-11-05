@@ -27,7 +27,9 @@ function getRoomId(socket: Socket) {
   return ROOM_REGEXP.exec(urlObj.pathname)?.[1] ?? null
 }
 
-@WebSocketGateway(ROOM_REGEXP)
+@WebSocketGateway({
+  namespace: ROOM_REGEXP,
+})
 export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   constructor(private logger: Logger) {}
 
