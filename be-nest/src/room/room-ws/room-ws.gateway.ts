@@ -14,7 +14,9 @@ import {
   RoomWsEventPayloadMap,
 } from '@webrtcpoc/common'
 
-@WebSocketGateway()
+const ROOM_REGEXP = /^room-.+/
+
+@WebSocketGateway(ROOM_REGEXP)
 export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   constructor(private logger: Logger) {}
 
