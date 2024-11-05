@@ -126,6 +126,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     this.logger.debug('sync_user_list', roomId)
     socket.emit('user_list_synced', {
       clientIds: this.getMembers(roomId),
-    })
+    } as RoomWsEventPayloadMap['user_list_synced'])
   }
 }
