@@ -80,7 +80,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       .to(roomId)
       .emit('user_joined', {
         clientId: socket.id,
-        roomId,
       } as RoomWsEventPayloadMap['user_joined'])
 
     this.syncUserList(roomId)
@@ -92,7 +91,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   private syncUserList(roomId: string) {
     this.server.of(`/room-${roomId}`).emit('user_list_synced', {
       clientIds: this.getMembers(roomId),
-      roomId,
     } as RoomWsEventPayloadMap['user_list_synced'])
   }
 
