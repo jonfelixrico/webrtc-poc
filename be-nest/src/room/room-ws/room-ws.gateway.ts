@@ -63,8 +63,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
     this.addMember(roomId, socket)
 
-    socket.broadcast // broadcast to all room members except this one
-      .to(roomId)
+    socket.broadcast // broadcast to entire namespace except this one
       .emit('user_joined', {
         clientId: socket.id,
       } as RoomWsEventPayloadMap['user_joined'])
