@@ -96,24 +96,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     } as RoomWsEventPayloadMap['user_list_synced'])
   }
 
-  @SubscribeMessage('join')
-  async handleJoin(
-    @ConnectedSocket() socket: Socket,
-    @MessageBody() { roomId }: RoomWsCommandPayloadMap['join'],
-  ) {
-    await socket.join(roomId)
-    this.addMember(roomId, socket)
-
-    socket.broadcast // broadcast to all room members except this one
-      .to(roomId)
-      .emit('user_joined', {
-        clientId: socket.id,
-        roomId,
-      } as RoomWsEventPayloadMap['user_joined'])
-
-    this.syncUserList(roomId)
-  }
-
   @SubscribeMessage('send_description')
   async handleSendDescription(
     @MessageBody()
