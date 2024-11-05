@@ -41,30 +41,16 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
     roomObj.add(socket.id)
   }
-  private purgeMemberships(socket: Socket) {
-    const formerMemberships: string[] = []
-
-    for (const roomId in this.roomMembers) {
-      const set = this.roomMembers[roomId]
-
-      if (!set.has(socket.id)) {
-        continue
-      }
-
-      formerMemberships.push(roomId)
-      set.delete(socket.id)
-    }
-
-    return formerMemberships
-  }
 
   handleDisconnect(client: Socket) {
-    this.logger.debug('Client has disconnected', client.id)
-    const formerRooms = this.purgeMemberships(client)
+    const roomId = getRoomId(client)
 
-    for (const roomId of formerRooms) {
-      this.syncUserList(roomId)
-    }
+    this.logger.debug('Client has disconnected', [client.id, roomId].join('/'))
+
+    const set = this.roomMembers[roomId]
+    set.delete(client.id)
+
+    this.syncUserList(roomId)
   }
 
   handleConnection(socket: Socket) {
