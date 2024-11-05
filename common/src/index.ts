@@ -9,10 +9,6 @@ export interface RoomWsCommandPayloadMap {
     description: RTCSessionDescription
   }
 
-  join: {
-    roomId: string
-  }
-
   sync_user_list: {}
 }
 
@@ -25,6 +21,10 @@ export interface RoomWsEventPayloadMap {
   description_sent: {
     fromClientId: string
     description: RTCSessionDescription
+  }
+
+  user_joined: {
+    clientId: string
   }
 
   user_list_synced: {
