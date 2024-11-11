@@ -24,6 +24,14 @@ function getRoomId(socket: Socket) {
   return ID_EXTRACT_REGEXP.exec(urlString)?.[1] ?? null
 }
 
+function wrapEmitter(
+  emitter: Pick<Socket, 'emit'>,
+) {
+  return <K extends keyof RoomWsEventPayloadMap>(event: K, payload: RoomWsEventPayloadMap[K]) {
+    emitter.emit(event, payload)
+  }
+}
+
 @WebSocketGateway(/^room-(.+)/)
 export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   constructor(private logger: Logger) {}
