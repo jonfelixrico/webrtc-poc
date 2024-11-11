@@ -50,6 +50,10 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     roomObj.add(socket.id)
   }
 
+  private getRoomBroadcaster(roomId: string) {
+    return this.server.of(`/room-${roomId}`)
+  }
+
   handleDisconnect(client: Socket) {
     const roomId = getRoomId(client)
 
@@ -57,6 +61,11 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
     const set = this.roomMembers[roomId]
     set.delete(client.id)
+
+    const emit = wrapEmitter(this.getRoomBroadcaster(roomId))
+    emit('user_left', {
+      id: client.id
+    })
 
     this.broadcastUserList(roomId)
   }
@@ -87,9 +96,10 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       id,
     }))
 
-    this.server.of(`/room-${roomId}`).emit('user_list_synced', {
+    const emit = wrapEmitter(this.getRoomBroadcaster(roomId))
+    emit('user_list_synced', {
       users,
-    } as RoomWsEventPayloadMap['user_list_synced'])
+    })
   }
 
   @SubscribeMessage('send_description')
