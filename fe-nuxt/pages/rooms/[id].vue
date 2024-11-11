@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { computed, definePageMeta } from '#imports'
+import { computed, definePageMeta, useRoomMembersListener } from '#imports'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 import CPeerConnectionManager from '~/components/CPeerConnectionManager.vue'
 import { useSocketInit } from '~/composables/socket.composable'
@@ -30,6 +30,7 @@ if (import.meta.client) {
   useSocketInit(roomId)
   useJoinHandler()
   useDescriptionHandlers()
+  useRoomMembersListener()
 }
 </script>
 
