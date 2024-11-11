@@ -65,7 +65,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
     const emit = wrapEmitter(this.getRoomBroadcaster(roomId))
     emit('user_left', {
-      id: client.id
+      id: client.id,
     })
 
     this.broadcastUserList(roomId)
@@ -81,10 +81,10 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
     this.addMember(roomId, socket)
 
-    socket.broadcast // broadcast to entire namespace except this one
-      .emit('user_joined', {
-        id: socket.id,
-      } as RoomWsEventPayloadMap['user_joined'])
+    const emit = wrapEmitter(socket.broadcast)
+    emit('user_joined', {
+      id: socket.id,
+    })
 
     this.broadcastUserList(roomId)
   }
@@ -109,10 +109,11 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     payload: RoomWsCommandPayloadMap['send_description'],
     @ConnectedSocket() socket: Socket,
   ) {
-    socket.to(payload.toClientId).emit('description_sent', {
+    const emit = wrapEmitter(socket.to(payload.toClientId))
+    emit('description_sent', {
       fromClientId: socket.id,
       description: payload.description,
-    } as RoomWsEventPayloadMap['description_sent'])
+    })
   }
 
   @SubscribeMessage('send_candidate')
@@ -121,10 +122,11 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     payload: RoomWsCommandPayloadMap['send_candidate'],
     @ConnectedSocket() socket: Socket,
   ) {
-    socket.to(payload.toClientId).emit('candidate_sent', {
+    const emit = wrapEmitter(socket.to(payload.toClientId))
+    emit('candidate_sent', {
       fromClientId: socket.id,
       candidate: payload.candidate,
-    } as RoomWsEventPayloadMap['candidate_sent'])
+    })
   }
 
   @SubscribeMessage('sync_user_list')
@@ -134,9 +136,10 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       id,
     }))
 
-    socket.emit('user_list_synced', {
+    const emit = wrapEmitter(socket)
+    emit('user_list_synced', {
       users,
-    } as RoomWsEventPayloadMap['user_list_synced'])
+    })
 
     this.logger.debug('sync_user_list', roomId)
   }
