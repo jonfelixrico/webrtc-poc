@@ -29,6 +29,8 @@ export interface RoomWsEventPayloadMap {
 
   user_joined: RoomUser
 
+  user_left: RoomUser
+
   user_list_synced: {
     users: RoomUser[]
   }
