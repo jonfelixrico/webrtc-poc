@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 export interface RoomState {
-  user: Record<
+  users: Record<
     string,
     {
       id: string
@@ -12,6 +12,6 @@ export interface RoomState {
 export const useRoomStore = defineStore('room', {
   state: () =>
     ({
-      user: {},
+      users: {},
     }) as RoomState,
 })
