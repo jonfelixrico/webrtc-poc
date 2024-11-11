@@ -107,11 +107,9 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   @SubscribeMessage('sync_user_list')
   handleSyncUserList(@ConnectedSocket() socket: Socket) {
     const roomId = getRoomId(socket)
-    const users = this.getMembers(roomId).map((id) => {
-      return {
-        id,
-      }
-    })
+    const users = this.getMembers(roomId).map((id) => ({
+      id,
+    }))
 
     socket.emit('user_list_synced', {
       users,
