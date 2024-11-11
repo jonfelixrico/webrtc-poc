@@ -12,6 +12,10 @@ export interface RoomWsCommandPayloadMap {
   sync_user_list: {}
 }
 
+export interface RoomUser {
+  id: string
+}
+
 export interface RoomWsEventPayloadMap {
   candidate_sent: {
     fromClientId: string
@@ -23,12 +27,10 @@ export interface RoomWsEventPayloadMap {
     description: RTCSessionDescription
   }
 
-  user_joined: {
-    clientId: string
-  }
+  user_joined: RoomUser
 
   user_list_synced: {
-    clientIds: string[]
+    users: RoomUser[]
   }
 }
 
