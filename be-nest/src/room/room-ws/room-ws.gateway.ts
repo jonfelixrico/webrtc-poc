@@ -65,7 +65,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
     socket.broadcast // broadcast to entire namespace except this one
       .emit('user_joined', {
-        clientId: socket.id,
+        id: socket.id,
       } as RoomWsEventPayloadMap['user_joined'])
 
     this.broadcastUserList(roomId)
@@ -75,8 +75,12 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   private server: Server
 
   private broadcastUserList(roomId: string) {
+    const users = this.getMembers(roomId).map((id) => ({
+      id,
+    }))
+
     this.server.of(`/room-${roomId}`).emit('user_list_synced', {
-      clientIds: this.getMembers(roomId),
+      users,
     } as RoomWsEventPayloadMap['user_list_synced'])
   }
 
