@@ -7,7 +7,7 @@ export function useSocketInit(roomId: string) {
   const store = useSocketStore()
   const logger = useLogger()
 
-  function connect() {
+  onBeforeMount(() => {
     const socket = io({
       /*
        * Adding /be to the URL above doesn't work. Looks like it only accepts
@@ -25,10 +25,6 @@ export function useSocketInit(roomId: string) {
     })
 
     socket.connect()
-  }
-
-  onBeforeMount(() => {
-    connect()
   })
 }
 
