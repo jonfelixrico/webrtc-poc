@@ -53,23 +53,20 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     roomObj.add(socket.id)
   }
 
-  private getRoomBroadcaster(roomId: string) {
-    return this.server.of(`/room-${roomId}`)
-  }
+  handleDisconnect(socket: Socket) {
+    const roomId = getRoomId(socket)
 
-  handleDisconnect(client: Socket) {
-    const roomId = getRoomId(client)
-
-    this.logger.debug('Client has disconnected', [client.id, roomId].join('/'))
+    this.logger.debug('Client has disconnected', [socket.id, roomId].join('/'))
 
     const set = this.roomMembers[roomId]
-    set.delete(client.id)
+    set.delete(socket.id)
 
-    emit(this.getRoomBroadcaster(roomId), 'user_left', {
-      id: client.id,
+    emit(socket.nsp, 'user_left', {
+      id: socket.id,
     })
-
-    this.broadcastUserList(roomId)
+    emit(socket.nsp, 'user_list_synced', {
+      users: this.getMembers(roomId),
+    })
   }
 
   handleConnection(socket: Socket) {
@@ -85,21 +82,9 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     emit(socket.broadcast, 'user_joined', {
       id: socket.id,
     })
-
-    this.broadcastUserList(roomId)
-  }
-
-  @WebSocketServer()
-  private server: Server
-
-  private broadcastUserList(roomId: string) {
-    const users = this.getMembers(roomId)
-
-    emit(this.getRoomBroadcaster(roomId), 'user_list_synced', {
-      users,
+    emit(socket.nsp, 'user_list_synced', {
+      users: this.getMembers(roomId),
     })
-
-    this.logger.debug('sync_user_list', roomId)
   }
 
   @SubscribeMessage('send_description')
