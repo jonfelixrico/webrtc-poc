@@ -1,7 +1,9 @@
+import { useSocketFromStore } from '~/composables/socket.composable'
 import { onAppSocketEvent } from '~/composables/app-socket.composable'
 import { useRoomStore } from '~/store/room.store'
 import keyBy from 'lodash/keyBy'
 import { useLogger } from '~/composables/logger.composable'
+import { computed } from 'vue'
 
 export function useRoomMembersListener() {
   const store = useRoomStore()
@@ -25,4 +27,9 @@ export function useRoomMembersListener() {
 
     store.users = updatedUserMap
   })
+}
+
+export function useUserId() {
+  const socket = useSocketFromStore()
+  return computed(() => socket.value?.id)
 }
