@@ -1,4 +1,4 @@
-import { useSocketFromStore } from '~/composables/socket.composable'
+import { useSocket } from '~/composables/socket.composable'
 import { onAppSocketEvent } from '~/composables/app-socket.composable'
 import { useRoomStore } from '~/store/room.store'
 import keyBy from 'lodash/keyBy'
@@ -30,6 +30,6 @@ export function useRoomMembersListener() {
 }
 
 export function useUserId() {
-  const socket = useSocketFromStore()
+  const socket = useSocket()
   return computed(() => socket.value?.id)
 }

@@ -29,7 +29,7 @@ export function useSocketInit(roomId: string) {
   })
 }
 
-export function useSocketFromStore() {
+export function useSocket() {
   const store = useSocketStore()
 
   return computed(() => (store.socket ?? null) as MaybeNull<Socket>)
@@ -38,7 +38,7 @@ export function useSocketFromStore() {
 export function onSocketAvailable(
   handler: (socket: Socket) => Promise<void> | void,
 ) {
-  const socket = useSocketFromStore()
+  const socket = useSocket()
 
   watch(
     socket,
@@ -60,7 +60,7 @@ export function onSocketEvent(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handler: (...args: any[]) => void | Promise<void>,
 ) {
-  const socket = useSocketFromStore()
+  const socket = useSocket()
 
   watch(
     socket,
