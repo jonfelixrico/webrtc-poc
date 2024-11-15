@@ -14,7 +14,7 @@ export function useCandidateHandlers(
   const logger = useLogger()
   const store = useWebRtcStore()
   const addListener = useAddListener(peerConnection)
-  const connEntry = computed(() => store.connections[peerClientId])
+  const connEntry = computed(() => store.connections.get(peerClientId))
   const socketEmit = useAppSocketEmit()
 
   logger.debug('Started candidate handler for client %s', peerClientId)
@@ -31,6 +31,10 @@ export function useCandidateHandlers(
       if (fromClientId !== peerClientId) {
         return
       }
+      if (!connEntry.value) {
+        return
+      }
+
       const { shouldIgnoreOffer } = connEntry.value
 
       logger.debug('Incoming ice candidate from client %s...', fromClientId)

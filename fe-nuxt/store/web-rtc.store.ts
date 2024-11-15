@@ -17,13 +17,13 @@ export type Connection = AppPeerConnection & {
 } & Partial<SignalingFlags>
 
 export interface WebRtcStore {
-  connections: Record<string, Connection>
+  connections: Map<string, Connection>
 }
 
 export const useWebRtcStore = defineStore('webRtc', {
   state: () =>
     ({
-      connections: {},
+      connections: new Map(),
     }) as WebRtcStore,
 
   actions: {
@@ -32,17 +32,17 @@ export const useWebRtcStore = defineStore('webRtc', {
       connection: RTCPeerConnection,
       options?: { polite?: boolean },
     ) {
-      this.connections[clientId] = {
+      this.connections.set(clientId, {
         connection: markRaw(connection),
         polite: options?.polite ?? false,
         states: {},
         stream: null,
         clientId,
-      }
+      })
     },
 
     setStream(clientId: string, stream: MaybeFalsy<MediaStream>) {
-      const conn = this.connections[clientId]
+      const conn = this.connections.get(clientId)
       if (!conn) {
         return
       }
@@ -59,7 +59,7 @@ export const useWebRtcStore = defineStore('webRtc', {
       key: K,
       value: RTCConnectionStates[K],
     ) {
-      const obj = this.connections[clientId]
+      const obj = this.connections.get(clientId)
       if (!obj) {
         return
       }
@@ -72,7 +72,7 @@ export const useWebRtcStore = defineStore('webRtc', {
       key: K,
       value: SignalingFlags[K],
     ) {
-      const obj = this.connections[clientId]
+      const obj = this.connections.get(clientId)
       if (!obj) {
         return
       }

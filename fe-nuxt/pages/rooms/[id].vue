@@ -39,7 +39,7 @@ if (import.meta.client) {
     <!-- Renderless section -->
     <ClientOnly>
       <CPeerConnectionManager
-        v-for="({ connection }, clientId) in connections"
+        v-for="[clientId, { connection }] in connections"
         :key="clientId"
         :peer-client-id="clientId"
         :peer-connection="connection"

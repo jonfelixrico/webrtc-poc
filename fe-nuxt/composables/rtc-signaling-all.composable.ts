@@ -25,7 +25,7 @@ export function useDescriptionHandlers() {
     }) => {
       logger.debug('Description sent from client %s', fromClientId)
 
-      if (!store.connections[fromClientId]) {
+      if (!store.connections.has(fromClientId)) {
         store.setConnection(
           fromClientId,
           new RTCPeerConnection({
@@ -41,9 +41,12 @@ export function useDescriptionHandlers() {
         await nextTick()
       }
 
-      const { connection, isMakingOffer, polite } =
-        store.connections[fromClientId]
+      const fromState = store.connections.get(fromClientId)
+      if (!fromState) {
+        throw new Error('Unexpected state')
+      }
 
+      const { connection, isMakingOffer, polite } = fromState
       const offerCollision =
         description.type === 'offer' &&
         (isMakingOffer || connection.signalingState !== 'stable')
