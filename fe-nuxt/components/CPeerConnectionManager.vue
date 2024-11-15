@@ -32,3 +32,9 @@ useNegotiationNeededHandler(props.peerConnection, props.peerClientId)
 const logger = useLogger()
 logger.debug('Started manager for client %s', props.peerClientId)
 </script>
+
+<!--
+  This is a renderless component, so we're not placing anything inside the template.
+-->
+<!-- eslint-disable-next-line vue/valid-template-root -->
+<template></template>
