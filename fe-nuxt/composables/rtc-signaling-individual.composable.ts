@@ -1,4 +1,4 @@
-import { computed, toValue } from 'vue'
+import { computed, toValue, watch, type MaybeRef } from 'vue'
 import {
   onAppSocketEvent,
   useAppSocketEmit,
@@ -14,7 +14,7 @@ export function useCandidateHandlers(
   const logger = useLogger()
   const store = useWebRtcStore()
   const addListener = useAddListener(peerConnection)
-  const connEntry = computed(() => store.connections[peerClientId])
+  const connEntry = computed(() => store.connections.get(peerClientId))
   const socketEmit = useAppSocketEmit()
 
   logger.debug('Started candidate handler for client %s', peerClientId)
@@ -31,7 +31,11 @@ export function useCandidateHandlers(
       if (fromClientId !== peerClientId) {
         return
       }
-      const { shouldIgnoreOffer } = toValue(connEntry)
+      if (!connEntry.value) {
+        return
+      }
+
+      const { shouldIgnoreOffer } = connEntry.value
 
       logger.debug('Incoming ice candidate from client %s...', fromClientId)
       try {
@@ -145,5 +149,28 @@ export function useNegotiationNeededHandler(
     } finally {
       store.setSignalingFlag(peerClientId, 'isMakingOffer', false)
     }
+  })
+}
+
+export function useFailedConnectionCleanup(id: MaybeRef<string>) {
+  const rtcStore = useWebRtcStore()
+  const logger = useLogger()
+
+  const states = computed(() => rtcStore.connections.get(toValue(id))?.states)
+  const hasFailed = computed(() => {
+    const { connectionState, iceConnectionState } = states.value ?? {}
+
+    return connectionState === 'failed' || iceConnectionState === 'failed'
+  })
+
+  watch(hasFailed, (hasFailed) => {
+    if (!hasFailed) {
+      return
+    }
+
+    const conId = toValue(id)
+
+    rtcStore.removeWithCleanup(conId)
+    logger.info('Housekeeping: cleaned up connection %s', conId)
   })
 }

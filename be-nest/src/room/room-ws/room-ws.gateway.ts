@@ -10,6 +10,7 @@ import {
 } from '@nestjs/websockets'
 import { Server, type Socket } from 'socket.io'
 import {
+  RoomUser,
   RoomWsCommandPayloadMap,
   RoomWsEventPayloadMap,
 } from '@webrtcpoc/common'
@@ -24,13 +25,23 @@ function getRoomId(socket: Socket) {
   return ID_EXTRACT_REGEXP.exec(urlString)?.[1] ?? null
 }
 
+function emit<K extends keyof RoomWsEventPayloadMap>(
+  emitter: Pick<Socket, 'emit'>,
+  event: K,
+  payload: RoomWsEventPayloadMap[K],
+) {
+  emitter.emit(event, payload)
+}
+
 @WebSocketGateway(/^room-(.+)/)
 export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   constructor(private logger: Logger) {}
 
   private roomMembers: Record<string, Set<string>> = {}
-  private getMembers(roomId: string) {
-    return Array.from(this.roomMembers[roomId] ?? [])
+  private getMembers(roomId: string): RoomUser[] {
+    return Array.from(this.roomMembers[roomId] ?? []).map((id) => ({
+      id,
+    }))
   }
   private addMember(roomId: string, socket: Socket) {
     let roomObj = this.roomMembers[roomId]
@@ -42,15 +53,20 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     roomObj.add(socket.id)
   }
 
-  handleDisconnect(client: Socket) {
-    const roomId = getRoomId(client)
+  handleDisconnect(socket: Socket) {
+    const roomId = getRoomId(socket)
 
-    this.logger.debug('Client has disconnected', [client.id, roomId].join('/'))
+    this.logger.debug('Client has disconnected', [socket.id, roomId].join('/'))
 
     const set = this.roomMembers[roomId]
-    set.delete(client.id)
+    set.delete(socket.id)
 
-    this.broadcastUserList(roomId)
+    emit(socket.nsp, 'user_left', {
+      id: socket.id,
+    })
+    emit(socket.nsp, 'user_list_synced', {
+      users: this.getMembers(roomId),
+    })
   }
 
   handleConnection(socket: Socket) {
@@ -63,21 +79,12 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
     this.addMember(roomId, socket)
 
-    socket.broadcast // broadcast to entire namespace except this one
-      .emit('user_joined', {
-        clientId: socket.id,
-      } as RoomWsEventPayloadMap['user_joined'])
-
-    this.broadcastUserList(roomId)
-  }
-
-  @WebSocketServer()
-  private server: Server
-
-  private broadcastUserList(roomId: string) {
-    this.server.of(`/room-${roomId}`).emit('user_list_synced', {
-      clientIds: this.getMembers(roomId),
-    } as RoomWsEventPayloadMap['user_list_synced'])
+    emit(socket.broadcast, 'user_joined', {
+      id: socket.id,
+    })
+    emit(socket.nsp, 'user_list_synced', {
+      users: this.getMembers(roomId),
+    })
   }
 
   @SubscribeMessage('send_description')
@@ -86,10 +93,10 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     payload: RoomWsCommandPayloadMap['send_description'],
     @ConnectedSocket() socket: Socket,
   ) {
-    socket.to(payload.toClientId).emit('description_sent', {
+    emit(socket.to(payload.toClientId), 'description_sent', {
       fromClientId: socket.id,
       description: payload.description,
-    } as RoomWsEventPayloadMap['description_sent'])
+    })
   }
 
   @SubscribeMessage('send_candidate')
@@ -98,19 +105,21 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     payload: RoomWsCommandPayloadMap['send_candidate'],
     @ConnectedSocket() socket: Socket,
   ) {
-    socket.to(payload.toClientId).emit('candidate_sent', {
+    emit(socket.to(payload.toClientId), 'candidate_sent', {
       fromClientId: socket.id,
       candidate: payload.candidate,
-    } as RoomWsEventPayloadMap['candidate_sent'])
+    })
   }
 
   @SubscribeMessage('sync_user_list')
   handleSyncUserList(@ConnectedSocket() socket: Socket) {
     const roomId = getRoomId(socket)
+    const users = this.getMembers(roomId)
 
-    this.logger.debug('sync_user_list', roomId)
-    socket.emit('user_list_synced', {
-      clientIds: this.getMembers(roomId),
-    } as RoomWsEventPayloadMap['user_list_synced'])
+    emit(socket, 'user_list_synced', {
+      users,
+    })
+
+    this.logger.debug('sync_user_list - specific', roomId)
   }
 }

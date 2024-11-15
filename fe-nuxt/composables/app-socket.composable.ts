@@ -1,9 +1,9 @@
-import { onSocketEvent, toValue, useSocketFromStore } from '#imports'
 import type {
   RoomWsCommandPayloadMap,
   RoomWsEventHandler,
   RoomWsEventPayloadMap,
 } from '@webrtcpoc/common'
+import { useSocket, onSocketEvent } from '~/composables/socket.composable'
 
 export const onAppSocketEvent: <K extends keyof RoomWsEventPayloadMap>(
   event: K,
@@ -11,14 +11,17 @@ export const onAppSocketEvent: <K extends keyof RoomWsEventPayloadMap>(
 ) => void = onSocketEvent
 
 export function useAppSocketEmit() {
-  const socket = useSocketFromStore()
+  const socket = useSocket()
 
   function emit<K extends keyof RoomWsCommandPayloadMap>(
     name: K,
     payload: RoomWsCommandPayloadMap[K],
   ) {
-    const vSocket = toValue(socket)
-    vSocket.emit(name, payload)
+    if (!socket.value) {
+      return
+    }
+
+    socket.value.emit(name, payload)
   }
 
   return emit

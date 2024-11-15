@@ -1,22 +1,15 @@
 import { useLogger } from '~/composables/logger.composable'
 import { io, type Socket } from 'socket.io-client'
-import {
-  computed,
-  markRaw,
-  onBeforeMount,
-  onBeforeUnmount,
-  toValue,
-  watch,
-} from 'vue'
+import { computed, markRaw, onBeforeMount, onBeforeUnmount, watch } from 'vue'
 import { useSocketStore } from '~/store/socket.store'
+import type { MaybeNull } from '~/typings/util.types'
 
 export function useSocketInit(roomId: string) {
   const store = useSocketStore()
   const logger = useLogger()
 
-  function connect() {
-    const isSecure = window.location.protocol.startsWith('https')
-    const socket = io(`${isSecure ? 'wss' : 'ws'}://${window.location.host}`, {
+  onBeforeMount(() => {
+    const socket = io({
       /*
        * Adding /be to the URL above doesn't work. Looks like it only accepts
        * protocol + host, so we're specifying /be here.
@@ -33,23 +26,19 @@ export function useSocketInit(roomId: string) {
     })
 
     socket.connect()
-  }
-
-  onBeforeMount(() => {
-    connect()
   })
 }
 
-export function useSocketFromStore() {
+export function useSocket() {
   const store = useSocketStore()
 
-  return computed(() => store.socket as Socket)
+  return computed(() => (store.socket ?? null) as MaybeNull<Socket>)
 }
 
 export function onSocketAvailable(
   handler: (socket: Socket) => Promise<void> | void,
 ) {
-  const socket = useSocketFromStore()
+  const socket = useSocket()
 
   watch(
     socket,
@@ -71,7 +60,7 @@ export function onSocketEvent(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handler: (...args: any[]) => void | Promise<void>,
 ) {
-  const socket = useSocketFromStore()
+  const socket = useSocket()
 
   watch(
     socket,
@@ -90,9 +79,8 @@ export function onSocketEvent(
   )
 
   onBeforeUnmount(() => {
-    const vSocket = toValue(socket)
-    if (vSocket) {
-      vSocket.off(event, handler)
+    if (socket.value) {
+      socket.value.off(event, handler)
     }
   })
 }

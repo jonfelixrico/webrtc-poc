@@ -25,7 +25,7 @@ export function useDescriptionHandlers() {
     }) => {
       logger.debug('Description sent from client %s', fromClientId)
 
-      if (!store.connections[fromClientId]) {
+      if (!store.connections.has(fromClientId)) {
         store.setConnection(
           fromClientId,
           new RTCPeerConnection({
@@ -41,9 +41,12 @@ export function useDescriptionHandlers() {
         await nextTick()
       }
 
-      const { connection, isMakingOffer, polite } =
-        store.connections[fromClientId]
+      const fromState = store.connections.get(fromClientId)
+      if (!fromState) {
+        throw new Error('Unexpected state')
+      }
 
+      const { connection, isMakingOffer, polite } = fromState
       const offerCollision =
         description.type === 'offer' &&
         (isMakingOffer || connection.signalingState !== 'stable')
@@ -128,18 +131,15 @@ export function useJoinHandler() {
     sock.emit('sync_user_list', {})
     sock.once(
       'user_list_synced',
-      async (payload: RoomWsEventPayloadMap['user_list_synced']) => {
-        logger.debug(
-          'Received initial user list. %s users',
-          payload.clientIds.length,
-        )
+      async ({ users }: RoomWsEventPayloadMap['user_list_synced']) => {
+        logger.debug('Received initial user list. %s users', users.length)
 
-        for (const clientId of payload.clientIds) {
-          if (clientId === sock.id) {
+        for (const { id } of users) {
+          if (id === sock.id) {
             continue
           }
 
-          await createConnection(clientId)
+          await createConnection(id)
         }
       },
     )

@@ -10,7 +10,7 @@ export function useStreamSender(peerClientId: string) {
   const logger = useLogger()
 
   const conn = computed(() => {
-    const entry = rtcStore.connections[peerClientId]
+    const entry = rtcStore.connections.get(peerClientId)
 
     if (entry?.states?.connectionState !== 'connected') {
       return

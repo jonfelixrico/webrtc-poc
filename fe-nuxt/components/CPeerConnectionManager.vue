@@ -6,6 +6,7 @@ import {
 } from '~/composables/rtc-media.composable'
 import {
   useCandidateHandlers,
+  useFailedConnectionCleanup,
   useNegotiationNeededHandler,
   useStatesListeners,
 } from '~/composables/rtc-signaling-individual.composable'
@@ -28,7 +29,14 @@ useStreamSender(props.peerClientId)
 useStreamReceiver(props.peerConnection, props.peerClientId)
 useStatesListeners(props.peerConnection, props.peerClientId)
 useNegotiationNeededHandler(props.peerConnection, props.peerClientId)
+useFailedConnectionCleanup(props.peerClientId)
 
 const logger = useLogger()
 logger.debug('Started manager for client %s', props.peerClientId)
 </script>
+
+<!--
+  This is a renderless component, so we're not placing anything inside the template.
+-->
+<!-- eslint-disable-next-line vue/valid-template-root -->
+<template></template>

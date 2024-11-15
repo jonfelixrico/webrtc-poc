@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, toValue, type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 
 const props = defineProps({
   devices: {
@@ -42,7 +42,7 @@ const options = computed(() => {
       },
     }
 
-    if (deviceId === toValue(deviceIdModel)) {
+    if (deviceId === deviceIdModel.value) {
       item.icon = 'i-material-symbols-check-rounded'
     }
 
