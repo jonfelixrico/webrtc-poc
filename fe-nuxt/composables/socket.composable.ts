@@ -2,6 +2,7 @@ import { useLogger } from '~/composables/logger.composable'
 import { io, type Socket } from 'socket.io-client'
 import { computed, markRaw, onBeforeMount, onBeforeUnmount, watch } from 'vue'
 import { useSocketStore } from '~/store/socket.store'
+import type { MaybeNull } from '~/typings/util.types'
 
 export function useSocketInit(roomId: string) {
   const store = useSocketStore()
@@ -31,7 +32,7 @@ export function useSocketInit(roomId: string) {
 export function useSocketFromStore() {
   const store = useSocketStore()
 
-  return computed(() => store.socket as Socket)
+  return computed(() => (store.socket ?? null) as MaybeNull<Socket>)
 }
 
 export function onSocketAvailable(
