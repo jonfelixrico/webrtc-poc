@@ -80,7 +80,7 @@ export const useWebRtcStore = defineStore('webRtc', {
       obj[key] = value
     },
 
-    remove(clientId: string) {
+    removeWithCleanup(clientId: string) {
       const conn = this.connections.get(clientId)
       if (!conn) {
         return
