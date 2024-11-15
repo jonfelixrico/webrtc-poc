@@ -45,4 +45,8 @@ export default defineNuxtConfig({
   eslint: {
     checker: true,
   },
+
+  typescript: {
+    typeCheck: true,
+  },
 })

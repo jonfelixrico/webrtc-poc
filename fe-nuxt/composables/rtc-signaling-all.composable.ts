@@ -128,18 +128,15 @@ export function useJoinHandler() {
     sock.emit('sync_user_list', {})
     sock.once(
       'user_list_synced',
-      async (payload: RoomWsEventPayloadMap['user_list_synced']) => {
-        logger.debug(
-          'Received initial user list. %s users',
-          payload.clientIds.length,
-        )
+      async ({ users }: RoomWsEventPayloadMap['user_list_synced']) => {
+        logger.debug('Received initial user list. %s users', users.length)
 
-        for (const clientId of payload.clientIds) {
-          if (clientId === sock.id) {
+        for (const { id } of users) {
+          if (id === sock.id) {
             continue
           }
 
-          await createConnection(clientId)
+          await createConnection(id)
         }
       },
     )

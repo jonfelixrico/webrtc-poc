@@ -15,8 +15,7 @@ export function useSocketInit(roomId: string) {
   const logger = useLogger()
 
   function connect() {
-    const isSecure = window.location.protocol.startsWith('https')
-    const socket = io(`${isSecure ? 'wss' : 'ws'}://${window.location.host}`, {
+    const socket = io({
       /*
        * Adding /be to the URL above doesn't work. Looks like it only accepts
        * protocol + host, so we're specifying /be here.

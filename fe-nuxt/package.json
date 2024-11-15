@@ -19,6 +19,7 @@
     "@pinia/nuxt": "^0.5.5",
     "@vueuse/core": "^11.1.0",
     "@vueuse/nuxt": "^11.1.0",
+    "lodash": "^4.17.21",
     "nanoid": "^5.0.7",
     "nuxt": "^3.13.2",
     "pinia": "^2.2.4",
@@ -34,10 +35,12 @@
     "@iconify-json/mdi": "^1.2.1",
     "@iconify-json/ri": "^1.2.3",
     "@iconify-json/tdesign": "^1.2.2",
+    "@types/lodash": "^4.17.13",
     "@webrtcpoc/common": "workspace:*",
     "eslint": "^9.13.0",
     "prettier": "^3.3.3",
     "typescript": "^5.6.3",
-    "vite-plugin-eslint2": "^5.0.1"
+    "vite-plugin-eslint2": "^5.0.1",
+    "vue-tsc": "^2.1.10"
   }
 }
