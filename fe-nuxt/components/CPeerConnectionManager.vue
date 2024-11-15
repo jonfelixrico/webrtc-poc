@@ -6,6 +6,7 @@ import {
 } from '~/composables/rtc-media.composable'
 import {
   useCandidateHandlers,
+  useFailedConnectionCleanup,
   useNegotiationNeededHandler,
   useStatesListeners,
 } from '~/composables/rtc-signaling-individual.composable'
@@ -28,6 +29,7 @@ useStreamSender(props.peerClientId)
 useStreamReceiver(props.peerConnection, props.peerClientId)
 useStatesListeners(props.peerConnection, props.peerClientId)
 useNegotiationNeededHandler(props.peerConnection, props.peerClientId)
+useFailedConnectionCleanup(props.peerClientId)
 
 const logger = useLogger()
 logger.debug('Started manager for client %s', props.peerClientId)

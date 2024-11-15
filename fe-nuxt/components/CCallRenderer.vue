@@ -45,7 +45,7 @@ const rtcStore = useWebRtcStore()
     <template v-else>
       <!-- TODO provide proper name -->
       <CCallParticipantRendererPeer
-        :connection="rtcStore.connections[id]"
+        :connection="rtcStore.connections.get(id)"
         class="h-full w-full"
         :display-name="id"
       />
