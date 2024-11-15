@@ -1,13 +1,6 @@
 import { useLogger } from '~/composables/logger.composable'
 import { io, type Socket } from 'socket.io-client'
-import {
-  computed,
-  markRaw,
-  onBeforeMount,
-  onBeforeUnmount,
-  toValue,
-  watch,
-} from 'vue'
+import { computed, markRaw, onBeforeMount, onBeforeUnmount, watch } from 'vue'
 import { useSocketStore } from '~/store/socket.store'
 
 export function useSocketInit(roomId: string) {
@@ -89,9 +82,8 @@ export function onSocketEvent(
   )
 
   onBeforeUnmount(() => {
-    const vSocket = toValue(socket)
-    if (vSocket) {
-      vSocket.off(event, handler)
+    if (socket.value) {
+      socket.value.off(event, handler)
     }
   })
 }

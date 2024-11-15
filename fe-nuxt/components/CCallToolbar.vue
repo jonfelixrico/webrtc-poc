@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDevicesList, useUserMedia } from '@vueuse/core'
-import { computed, reactive, toValue, watch } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
 import CDeviceSelect from '~/components/CDeviceSelect.vue'
@@ -49,7 +49,7 @@ const constraints = computed<MediaStreamConstraints>(() => {
 })
 
 const { stream } = useUserMedia({
-  enabled: computed(() => Object.keys(toValue(constraints)).length > 0),
+  enabled: computed(() => Object.keys(constraints.value).length > 0),
   constraints,
   autoSwitch: true,
 })

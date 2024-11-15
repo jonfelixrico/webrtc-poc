@@ -1,4 +1,4 @@
-import { onSocketEvent, toValue, useSocketFromStore } from '#imports'
+import { onSocketEvent, useSocketFromStore } from '#imports'
 import type {
   RoomWsCommandPayloadMap,
   RoomWsEventHandler,
@@ -17,8 +17,11 @@ export function useAppSocketEmit() {
     name: K,
     payload: RoomWsCommandPayloadMap[K],
   ) {
-    const vSocket = toValue(socket)
-    vSocket.emit(name, payload)
+    if (!socket.value) {
+      return
+    }
+
+    socket.value.emit(name, payload)
   }
 
   return emit

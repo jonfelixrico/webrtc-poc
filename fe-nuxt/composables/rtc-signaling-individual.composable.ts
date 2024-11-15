@@ -1,4 +1,4 @@
-import { computed, toValue } from 'vue'
+import { computed } from 'vue'
 import {
   onAppSocketEvent,
   useAppSocketEmit,
@@ -31,7 +31,7 @@ export function useCandidateHandlers(
       if (fromClientId !== peerClientId) {
         return
       }
-      const { shouldIgnoreOffer } = toValue(connEntry)
+      const { shouldIgnoreOffer } = connEntry.value
 
       logger.debug('Incoming ice candidate from client %s...', fromClientId)
       try {
