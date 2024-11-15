@@ -1,4 +1,4 @@
-import { computed } from 'vue'
+import { computed, toValue, watch, type MaybeRef } from 'vue'
 import {
   onAppSocketEvent,
   useAppSocketEmit,
@@ -149,5 +149,24 @@ export function useNegotiationNeededHandler(
     } finally {
       store.setSignalingFlag(peerClientId, 'isMakingOffer', false)
     }
+  })
+}
+
+export function useFailedConnectionCleanup(id: MaybeRef<string>) {
+  const rtcStore = useWebRtcStore()
+
+  const states = computed(() => rtcStore.connections.get(toValue(id))?.states)
+  const hasFailed = computed(() => {
+    const { connectionState, iceConnectionState } = states.value ?? {}
+
+    return connectionState === 'failed' || iceConnectionState === 'failed'
+  })
+
+  watch(hasFailed, (hasFailed) => {
+    if (!hasFailed) {
+      return
+    }
+
+    rtcStore.connections.delete(toValue(id))
   })
 }
