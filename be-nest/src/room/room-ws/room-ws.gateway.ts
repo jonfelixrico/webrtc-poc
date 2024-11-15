@@ -101,6 +101,8 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     emit('user_list_synced', {
       users,
     })
+
+    this.logger.debug('sync_user_list', roomId)
   }
 
   @SubscribeMessage('send_description')
@@ -141,6 +143,6 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       users,
     })
 
-    this.logger.debug('sync_user_list', roomId)
+    this.logger.debug('sync_user_list - specific', roomId)
   }
 }
