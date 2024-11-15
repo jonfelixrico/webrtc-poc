@@ -154,6 +154,7 @@ export function useNegotiationNeededHandler(
 
 export function useFailedConnectionCleanup(id: MaybeRef<string>) {
   const rtcStore = useWebRtcStore()
+  const logger = useLogger()
 
   const states = computed(() => rtcStore.connections.get(toValue(id))?.states)
   const hasFailed = computed(() => {
@@ -167,6 +168,9 @@ export function useFailedConnectionCleanup(id: MaybeRef<string>) {
       return
     }
 
-    rtcStore.connections.delete(toValue(id))
+    const conId = toValue(id)
+
+    rtcStore.connections.delete(conId)
+    logger.info('Housekeeping: cleaned up connection %s', conId)
   })
 }
