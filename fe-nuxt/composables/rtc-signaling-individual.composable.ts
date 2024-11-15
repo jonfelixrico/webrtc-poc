@@ -170,7 +170,7 @@ export function useFailedConnectionCleanup(id: MaybeRef<string>) {
 
     const conId = toValue(id)
 
-    rtcStore.connections.delete(conId)
+    rtcStore.remove(conId)
     logger.info('Housekeeping: cleaned up connection %s', conId)
   })
 }
