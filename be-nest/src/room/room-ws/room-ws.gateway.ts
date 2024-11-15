@@ -65,8 +65,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     const set = this.roomMembers[roomId]
     set.delete(client.id)
 
-    const emit = wrapEmitter(this.getRoomBroadcaster(roomId))
-    emit('user_left', {
+    emit(this.getRoomBroadcaster(roomId), 'user_left', {
       id: client.id,
     })
 
@@ -83,8 +82,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
     this.addMember(roomId, socket)
 
-    const emit = wrapEmitter(socket.broadcast)
-    emit('user_joined', {
+    emit(socket.broadcast, 'user_joined', {
       id: socket.id,
     })
 
@@ -97,8 +95,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   private broadcastUserList(roomId: string) {
     const users = this.getMembers(roomId)
 
-    const emit = wrapEmitter(this.getRoomBroadcaster(roomId))
-    emit('user_list_synced', {
+    emit(this.getRoomBroadcaster(roomId), 'user_list_synced', {
       users,
     })
 
@@ -111,8 +108,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     payload: RoomWsCommandPayloadMap['send_description'],
     @ConnectedSocket() socket: Socket,
   ) {
-    const emit = wrapEmitter(socket.to(payload.toClientId))
-    emit('description_sent', {
+    emit(socket.to(payload.toClientId), 'description_sent', {
       fromClientId: socket.id,
       description: payload.description,
     })
@@ -124,8 +120,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     payload: RoomWsCommandPayloadMap['send_candidate'],
     @ConnectedSocket() socket: Socket,
   ) {
-    const emit = wrapEmitter(socket.to(payload.toClientId))
-    emit('candidate_sent', {
+    emit(socket.to(payload.toClientId), 'candidate_sent', {
       fromClientId: socket.id,
       candidate: payload.candidate,
     })
@@ -136,8 +131,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
     const roomId = getRoomId(socket)
     const users = this.getMembers(roomId)
 
-    const emit = wrapEmitter(socket)
-    emit('user_list_synced', {
+    emit(socket, 'user_list_synced', {
       users,
     })
 
