@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
-import { computed, toValue, useTemplateRef } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 
 const divRef = useTemplateRef('div')
 const dimensions = useResizeObserverValue(divRef)
 
 const width = computed(() => dimensions.width)
-const height = computed(() => toValue(width) * 0.5)
+const height = computed(() => width.value * 0.5)
 </script>
 
 <template>

@@ -5,8 +5,8 @@ import CCallParticipantRendererPeer from '~/components/CCallParticipantRendererP
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import CCallParticipantRendererSelf from '~/components/CCallParticipantRendererSelf.vue'
 import { useRoomStore } from '~/store/room.store'
-import { useUserId } from '~/composables/user.composable'
 import { useWebRtcStore } from '~/store/web-rtc.store'
+import { useUserId } from '~/composables/room-composables'
 
 const roomStore = useRoomStore()
 
