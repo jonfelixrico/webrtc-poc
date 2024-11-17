@@ -42,25 +42,30 @@ const height = computed(() => dimensions.width * (9 / 16))
           </div>
         </div>
 
-        <div class="flex flex-col gap-2 w-56">
-          <div class="flex flex-col">
-            <!-- TODO i18nize -->
-            <div>Video</div>
-            <USelect
-              v-model="videoId"
-              :options="videoInputs"
-              value-attribute="deviceId"
-            />
+        <div class="flex flex-col justify-between gap-2 w-56">
+          <div class="flex flex-col gap-2">
+            <div class="flex flex-col">
+              <!-- TODO i18nize -->
+              <div>Video</div>
+              <USelect
+                v-model="videoId"
+                :options="videoInputs"
+                value-attribute="deviceId"
+              />
+            </div>
+
+            <div class="flex flex-col">
+              <!-- TODO i18nize -->
+              <div>Audio</div>
+              <USelect
+                v-model="audioId"
+                :options="audioInputs"
+                value-attribute="deviceId"
+              />
+            </div>
           </div>
-          <div>
-            <!-- TODO i18nize -->
-            <div>Audio</div>
-            <USelect
-              v-model="audioId"
-              :options="audioInputs"
-              value-attribute="deviceId"
-            />
-          </div>
+
+          <UButton block>Test</UButton>
         </div>
       </div>
     </UCard>
