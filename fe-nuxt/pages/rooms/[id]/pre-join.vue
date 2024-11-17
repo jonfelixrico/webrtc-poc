@@ -7,6 +7,7 @@ import { useUserMediaStream } from '~/composables/media.composable'
 import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
 import { definePageMeta, navigateTo } from '#imports'
 import { useRoomStore } from '~/store/room.store'
+import { useRoute, useRouter } from 'vue-router'
 
 definePageMeta({
   middleware: [
@@ -46,6 +47,15 @@ const dimensions = useResizeObserverValue(videoDivRef)
 const height = computed(() => dimensions.width * (9 / 16))
 
 const { t } = useI18n()
+
+const router = useRouter()
+const roomStore = useRoomStore()
+function joinCall() {
+  roomStore.preJoinDone = true
+  router.push({
+    path: `/rooms/${router.currentRoute.value.params.id}`,
+  })
+}
 </script>
 
 <template>
@@ -83,7 +93,7 @@ const { t } = useI18n()
             </div>
           </div>
 
-          <UButton block>{{ t('preCall.joinCall') }}</UButton>
+          <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
         </div>
       </div>
     </UCard>
