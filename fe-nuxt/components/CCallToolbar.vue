@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useDevicesList, useUserMedia } from '@vueuse/core'
+import { useDevicesList } from '@vueuse/core'
 import { computed, reactive, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
 import CDeviceSelect from '~/components/CDeviceSelect.vue'
 import { useI18n } from 'vue-i18n'
+import { useUserMediaStream } from '~/composables/media.composable'
 
 const logger = useLogger()
 const { audioInputs, videoInputs } = useDevicesList({
@@ -30,29 +31,12 @@ const video = reactive<DeviceValue>({
   enabled: false,
 })
 
-const constraints = computed<MediaStreamConstraints>(() => {
-  const value: MediaStreamConstraints = {}
-
-  if (audio.id && audio.enabled) {
-    value.audio = {
-      deviceId: audio.id as string,
-    }
-  }
-
-  if (video.id && video.enabled) {
-    value.video = {
-      deviceId: video.id as string,
-    }
-  }
-
-  return value
-})
-
-const { stream } = useUserMedia({
-  enabled: computed(() => Object.keys(constraints.value).length > 0),
-  constraints,
-  autoSwitch: true,
-})
+const stream = useUserMediaStream(
+  reactive({
+    audio: computed(() => (audio.id && audio.enabled ? audio.id : null)),
+    video: computed(() => (video.id && video.enabled ? video.id : null)),
+  }),
+)
 
 const msStore = useMediaStreamStore()
 watch(stream, (stream) => {
