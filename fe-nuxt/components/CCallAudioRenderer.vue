@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import CAudioRenderer from '~/components/media/CAudioRenderer.vue'
+import CAudioRenderer from '~/components/media-stream/CMediaStreamRendererAudio.vue'
 import { useUserId } from '~/composables/room-composables'
 import { useRoomStore } from '~/store/room.store'
 import { useWebRtcStore } from '~/store/web-rtc.store'
