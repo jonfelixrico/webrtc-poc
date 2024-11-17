@@ -20,10 +20,15 @@ const hasVideo = useHasVideo(toRef(props, 'mediaStream'))
 </script>
 
 <template>
+  <!--
+    This needs to be keyed so that a new component instance will be made each
+    time `mediaStream` reference got changed, as per the advise of the component
+    itself.
+  -->
   <CMediaStreamRendererVideo
     v-if="mediaStream && hasVideo"
+    :key="mediaStream.id"
     :media-stream
-    mute-audio
   />
 
   <CCallParticipantLayout v-else :display-name />

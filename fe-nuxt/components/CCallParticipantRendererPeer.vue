@@ -49,6 +49,11 @@ const { t } = useI18n()
     </CCallParticipantLayout>
 
     <template v-else-if="mediaStream">
+      <!--
+        This needs to be keyed so that a new component instance will be made each
+        time `mediaStream` reference got changed, as per the advise of the component
+        itself.
+      -->
       <CMediaStreamRendererVideo
         v-if="hasVideo"
         :key="mediaStream.id"
