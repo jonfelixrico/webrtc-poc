@@ -4,7 +4,7 @@ import type {
   AppPeerConnection,
   RTCConnectionStates,
 } from '~/typings/rtc.types'
-import type { MaybeFalsy } from '~/typings/util.types'
+import type { MaybeNullish } from '~/typings/util.types'
 
 interface SignalingFlags {
   isSettingRemoteAnswer: boolean
@@ -41,7 +41,7 @@ export const useWebRtcStore = defineStore('webRtc', {
       })
     },
 
-    setStream(clientId: string, stream: MaybeFalsy<MediaStream>) {
+    setStream(clientId: string, stream: MaybeNullish<MediaStream>) {
       const conn = this.connections.get(clientId)
       if (!conn) {
         return
