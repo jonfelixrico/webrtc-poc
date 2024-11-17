@@ -4,6 +4,7 @@ import type { AppPeerConnection } from '~/typings/rtc.types'
 import { useI18n } from 'vue-i18n'
 import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
+import { useHasVideo } from '~/composables/media-stream.composable'
 
 const props = defineProps({
   connection: {
@@ -18,6 +19,7 @@ const props = defineProps({
 })
 
 const mediaStream = computed(() => props.connection?.stream)
+const hasVideo = useHasVideo(mediaStream)
 
 const isConnectionReady = computed(() => {
   const { connectionState, iceConnectionState, signalingState } =
@@ -48,7 +50,7 @@ const { t } = useI18n()
 
     <template v-else-if="mediaStream">
       <CMediaStreamRendererVideo
-        v-if="mediaStream.getVideoTracks().length > 0"
+        v-if="hasVideo"
         :key="mediaStream.id"
         :media-stream
         class="h-full w-full"

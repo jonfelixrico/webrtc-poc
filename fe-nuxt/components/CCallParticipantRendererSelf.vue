@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, type PropType } from 'vue'
+import { toRef, type PropType } from 'vue'
 import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
+import { useHasVideo } from '~/composables/media-stream.composable'
 
 const props = defineProps({
   mediaStream: {
@@ -15,9 +16,7 @@ const props = defineProps({
   },
 })
 
-const hasVideo = computed(() => {
-  return (props.mediaStream?.getVideoTracks()?.length ?? 0) > 0
-})
+const hasVideo = useHasVideo(toRef(props, 'mediaStream'))
 </script>
 
 <template>
