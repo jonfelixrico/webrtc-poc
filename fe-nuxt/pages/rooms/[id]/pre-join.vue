@@ -5,10 +5,22 @@ import { computed, reactive, ref, useTemplateRef } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import { useUserMediaStream } from '~/composables/media.composable'
 import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
-import { definePageMeta } from '#imports'
+import { definePageMeta, navigateTo } from '#imports'
+import { useRoomStore } from '~/store/room.store'
 
 definePageMeta({
-  middleware: ['room-exists-check'],
+  middleware: [
+    'room-exists-check',
+    (to) => {
+      if (import.meta.client) {
+        const roomStore = useRoomStore()
+
+        if (roomStore.preJoinDone) {
+          return navigateTo(`/rooms/${to.params.id}`)
+        }
+      }
+    },
+  ],
 })
 
 const { audioInputs, videoInputs } = useDevicesList({
