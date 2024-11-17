@@ -20,6 +20,10 @@ import { useRoomStore } from '~/store/room.store'
 definePageMeta({
   middleware: [
     'room-exists-check',
+    /**
+     * Redirects the user back to the pre-join page if we detected that
+     * they have not visited that page prior to going here.
+     */
     (to) => {
       const roomStore = useRoomStore()
       if (roomStore.preJoinDone) {

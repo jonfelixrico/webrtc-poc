@@ -12,6 +12,13 @@ import { useRouter } from 'vue-router'
 definePageMeta({
   middleware: [
     'room-exists-check',
+    /**
+     * Navigates the user to the actual call if we've detected that they've
+     * gone through here before.
+     *
+     * Expected scenario is if the user hits the back button from the actual
+     * call page.
+     */
     (to) => {
       if (import.meta.client) {
         const roomStore = useRoomStore()
