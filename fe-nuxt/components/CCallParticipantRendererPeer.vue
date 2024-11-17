@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, type PropType } from 'vue'
-import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
 import type { AppPeerConnection } from '~/typings/rtc.types'
 import { useI18n } from 'vue-i18n'
 import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
+import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 
 const props = defineProps({
   connection: {
@@ -17,7 +17,7 @@ const props = defineProps({
   },
 })
 
-const stream = computed(() => props.connection?.stream)
+const mediaStream = computed(() => props.connection?.stream)
 
 const isConnectionReady = computed(() => {
   const { connectionState, iceConnectionState, signalingState } =
@@ -36,7 +36,7 @@ const { t } = useI18n()
 <template>
   <div>
     <CCallParticipantLayout
-      v-if="!isConnectionReady || !stream"
+      v-if="!isConnectionReady || !mediaStream"
       :display-name
       class="h-full w-full"
     >
@@ -46,15 +46,15 @@ const { t } = useI18n()
       </div>
     </CCallParticipantLayout>
 
-    <CMediaStreamRenderer
-      v-else-if="stream"
-      :media-stream="stream"
-      class="h-full w-full"
-      mute-audio
-    >
-      <template #audio-only>
-        <CCallParticipantLayout class="h-full w-full" :display-name />
-      </template>
-    </CMediaStreamRenderer>
+    <template v-else-if="mediaStream">
+      <CMediaStreamRendererVideo
+        v-if="mediaStream.getVideoTracks().length > 0"
+        :key="mediaStream.id"
+        :media-stream
+        class="h-full w-full"
+      />
+
+      <CCallParticipantLayout v-else class="h-full w-full" :display-name />
+    </template>
   </div>
 </template>

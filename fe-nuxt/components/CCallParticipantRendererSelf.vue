@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, type PropType } from 'vue'
 import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
-import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
+import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 
 const props = defineProps({
   mediaStream: {
@@ -21,7 +21,7 @@ const hasVideo = computed(() => {
 </script>
 
 <template>
-  <CMediaStreamRenderer
+  <CMediaStreamRendererVideo
     v-if="mediaStream && hasVideo"
     :media-stream
     mute-audio
