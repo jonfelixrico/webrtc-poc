@@ -7,7 +7,7 @@ import CCallParticipantRendererSelf from '~/components/CCallParticipantRendererS
 import { useRoomStore } from '~/store/room.store'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 import { useUserId } from '~/composables/room-composables'
-import CCallAudioRenderer from '~/components/audio/CCallAudioRenderer.vue'
+import CCallAudioRenderer from '~/components/CCallAudioRenderer.vue'
 
 const roomStore = useRoomStore()
 
