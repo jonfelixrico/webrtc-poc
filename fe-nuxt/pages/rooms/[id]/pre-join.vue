@@ -1,4 +1,3 @@
-<script setup lang="ts"></script>
 <template>
   <main class="h-dvh w-dvw flex flex-col justify-center items-center">
     <UCard class="w-3/4">
