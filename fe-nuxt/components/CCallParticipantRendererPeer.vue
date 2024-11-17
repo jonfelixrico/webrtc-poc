@@ -50,6 +50,7 @@ const { t } = useI18n()
       v-else-if="stream"
       :media-stream="stream"
       class="h-full w-full"
+      mute-audio
     >
       <template #audio-only>
         <CCallParticipantLayout class="h-full w-full" :display-name />
