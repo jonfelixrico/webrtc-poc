@@ -8,11 +8,7 @@ import { useResizeObserverValue } from '~/composables/vueuse-extensions.composab
 import { definePageMeta } from '#imports'
 
 definePageMeta({
-  validate: (route) =>
-    $fetch(`/be/room/${route.params.id}`)
-      // TODO add error-specific handling
-      .then(() => true)
-      .catch(() => false),
+  middleware: ['room-exists-check'],
 })
 
 const { audioInputs, videoInputs } = useDevicesList({
