@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { useResizeObserverValue } from '#imports'
+import { useI18n } from 'vue-i18n'
 import { useDevicesList } from '@vueuse/core'
 import { computed, reactive, ref, useTemplateRef } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import { useUserMediaStream } from '~/composables/media.composable'
+import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
 
 const { audioInputs, videoInputs } = useDevicesList({
   constraints: {
@@ -26,6 +27,8 @@ const mediaStream = useUserMediaStream(
 const videoDivRef = useTemplateRef('videoDiv')
 const dimensions = useResizeObserverValue(videoDivRef)
 const height = computed(() => dimensions.width * (9 / 16))
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -45,8 +48,7 @@ const height = computed(() => dimensions.width * (9 / 16))
         <div class="flex flex-col justify-between gap-2 w-56">
           <div class="flex flex-col gap-2">
             <div class="flex flex-col">
-              <!-- TODO i18nize -->
-              <div>Video</div>
+              <div>{{ t('preCall.video') }}</div>
               <USelect
                 v-model="videoId"
                 :options="videoInputs"
@@ -55,8 +57,7 @@ const height = computed(() => dimensions.width * (9 / 16))
             </div>
 
             <div class="flex flex-col">
-              <!-- TODO i18nize -->
-              <div>Audio</div>
+              <div>{{ t('preCall.audio') }}</div>
               <USelect
                 v-model="audioId"
                 :options="audioInputs"
@@ -65,7 +66,7 @@ const height = computed(() => dimensions.width * (9 / 16))
             </div>
           </div>
 
-          <UButton block>Test</UButton>
+          <UButton block>{{ t('preCall.joinCall') }}</UButton>
         </div>
       </div>
     </UCard>
