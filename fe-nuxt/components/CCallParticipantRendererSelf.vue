@@ -21,7 +21,11 @@ const hasVideo = computed(() => {
 </script>
 
 <template>
-  <CMediaStreamRenderer v-if="mediaStream && hasVideo" :media-stream />
+  <CMediaStreamRenderer
+    v-if="mediaStream && hasVideo"
+    :media-stream
+    mute-audio
+  />
 
   <CCallParticipantLayout v-else :display-name />
 </template>
