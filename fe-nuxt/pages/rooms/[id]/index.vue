@@ -12,11 +12,7 @@ import {
 import CCallRenderer from '~/components/CCallRenderer.vue'
 
 definePageMeta({
-  validate: (route) =>
-    $fetch(`/be/room/${route.params.id}`)
-      // TODO add error-specific handling
-      .then(() => true)
-      .catch(() => false),
+  middleware: ['room-exists-check'],
 })
 
 const route = useRoute()
