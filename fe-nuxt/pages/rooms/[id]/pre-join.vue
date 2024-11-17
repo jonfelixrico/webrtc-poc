@@ -5,6 +5,15 @@ import { computed, reactive, ref, useTemplateRef } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import { useUserMediaStream } from '~/composables/media.composable'
 import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
+import { definePageMeta } from '#imports'
+
+definePageMeta({
+  validate: (route) =>
+    $fetch(`/be/room/${route.params.id}`)
+      // TODO add error-specific handling
+      .then(() => true)
+      .catch(() => false),
+})
 
 const { audioInputs, videoInputs } = useDevicesList({
   constraints: {
