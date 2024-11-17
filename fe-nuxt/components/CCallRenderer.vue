@@ -7,6 +7,7 @@ import CCallParticipantRendererSelf from '~/components/CCallParticipantRendererS
 import { useRoomStore } from '~/store/room.store'
 import { useWebRtcStore } from '~/store/web-rtc.store'
 import { useUserId } from '~/composables/room-composables'
+import CCallAudioRenderer from '~/components/CCallAudioRenderer.vue'
 
 const roomStore = useRoomStore()
 
@@ -31,7 +32,7 @@ const rtcStore = useWebRtcStore()
 </script>
 
 <template>
-  <CCallLayout v-slot="{ id }" :ids>
+  <CCallLayout v-slot="{ id }" v-bind="$attrs" :ids>
     <template v-if="id === 'self'">
       <!-- TODO provide proper name -->
       <CCallParticipantRendererSelf
@@ -51,4 +52,6 @@ const rtcStore = useWebRtcStore()
       />
     </template>
   </CCallLayout>
+
+  <CCallAudioRenderer />
 </template>

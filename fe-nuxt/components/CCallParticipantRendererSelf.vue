@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, type PropType } from 'vue'
+import { toRef, type PropType } from 'vue'
 import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
-import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
+import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
+import { useHasVideo } from '~/composables/media-stream.composable'
 
 const props = defineProps({
   mediaStream: {
@@ -15,13 +16,20 @@ const props = defineProps({
   },
 })
 
-const hasVideo = computed(() => {
-  return (props.mediaStream?.getVideoTracks()?.length ?? 0) > 0
-})
+const hasVideo = useHasVideo(toRef(props, 'mediaStream'))
 </script>
 
 <template>
-  <CMediaStreamRenderer v-if="mediaStream && hasVideo" :media-stream />
+  <!--
+    This needs to be keyed so that a new component instance will be made each
+    time `mediaStream` reference got changed, as per the advise of the component
+    itself.
+  -->
+  <CMediaStreamRendererVideo
+    v-if="mediaStream && hasVideo"
+    :key="mediaStream.id"
+    :media-stream
+  />
 
   <CCallParticipantLayout v-else :display-name />
 </template>

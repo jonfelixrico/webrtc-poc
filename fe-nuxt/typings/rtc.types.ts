@@ -1,4 +1,4 @@
-import type { MaybeFalsy } from '~/typings/util.types'
+import type { MaybeNullish } from '~/typings/util.types'
 
 export interface RTCConnectionStates {
   connectionState: RTCPeerConnection['connectionState']
@@ -10,6 +10,6 @@ export interface RTCConnectionStates {
 export interface AppPeerConnection {
   connection: RTCPeerConnection
   states: Partial<RTCConnectionStates>
-  stream: MaybeFalsy<MediaStream>
+  stream: MaybeNullish<MediaStream>
   clientId: string
 }

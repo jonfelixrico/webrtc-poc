@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, type PropType } from 'vue'
-import CMediaStreamRenderer from '~/components/CMediaStreamRenderer.vue'
 import type { AppPeerConnection } from '~/typings/rtc.types'
 import { useI18n } from 'vue-i18n'
 import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
+import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
+import { useHasVideo } from '~/composables/media-stream.composable'
 
 const props = defineProps({
   connection: {
@@ -17,7 +18,8 @@ const props = defineProps({
   },
 })
 
-const stream = computed(() => props.connection?.stream)
+const mediaStream = computed(() => props.connection?.stream)
+const hasVideo = useHasVideo(mediaStream)
 
 const isConnectionReady = computed(() => {
   const { connectionState, iceConnectionState, signalingState } =
@@ -36,7 +38,7 @@ const { t } = useI18n()
 <template>
   <div>
     <CCallParticipantLayout
-      v-if="!isConnectionReady || !stream"
+      v-if="!isConnectionReady || !mediaStream"
       :display-name
       class="h-full w-full"
     >
@@ -46,14 +48,20 @@ const { t } = useI18n()
       </div>
     </CCallParticipantLayout>
 
-    <CMediaStreamRenderer
-      v-else-if="stream"
-      :media-stream="stream"
-      class="h-full w-full"
-    >
-      <template #audio-only>
-        <CCallParticipantLayout class="h-full w-full" :display-name />
-      </template>
-    </CMediaStreamRenderer>
+    <template v-else-if="mediaStream">
+      <!--
+        This needs to be keyed so that a new component instance will be made each
+        time `mediaStream` reference got changed, as per the advise of the component
+        itself.
+      -->
+      <CMediaStreamRendererVideo
+        v-if="hasVideo"
+        :key="mediaStream.id"
+        :media-stream
+        class="h-full w-full"
+      />
+
+      <CCallParticipantLayout v-else class="h-full w-full" :display-name />
+    </template>
   </div>
 </template>
