@@ -7,7 +7,7 @@ import { useUserMediaStream } from '~/composables/media.composable'
 import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
 import { definePageMeta, navigateTo } from '#imports'
 import { useRoomStore } from '~/store/room.store'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 definePageMeta({
   middleware: [
