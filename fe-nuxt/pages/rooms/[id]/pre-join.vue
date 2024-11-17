@@ -1,6 +1,6 @@
 <template>
   <main class="h-dvh w-dvw flex flex-col justify-center items-center">
-    <UCard class="w-3/4">
+    <UCard class="w-[40dvw]">
       <div class="flex flex-row">
         <div ref="videoDiv" class="grow">Test</div>
 
