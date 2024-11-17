@@ -8,10 +8,12 @@ export function useHasVideo(mediaStream: MaybeRef<MaybeNullish<MediaStream>>) {
   )
 }
 
-export function useUserMediaStream(deviceIds: {
+export interface DeviceIds {
   audio?: MaybeNullish<string>
   video?: MaybeNullish<string>
-}) {
+}
+
+export function useUserMediaStream(deviceIds: DeviceIds) {
   const constraints = computed<MediaStreamConstraints>(() => {
     const value: MediaStreamConstraints = {}
 
