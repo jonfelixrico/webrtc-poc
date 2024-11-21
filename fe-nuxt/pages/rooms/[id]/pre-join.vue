@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useDevicesList } from '@vueuse/core'
-import { reactive } from 'vue'
+import { ref } from 'vue'
 import { definePageMeta, navigateTo } from '#imports'
 import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
@@ -38,11 +38,11 @@ const { audioInputs, videoInputs } = useDevicesList({
   requestPermissions: true,
 })
 
-const audio = reactive<DeviceState>({
+const audio = ref<DeviceState>({
   id: null,
   enabled: false,
 })
-const video = reactive<DeviceState>({
+const video = ref<DeviceState>({
   id: null,
   enabled: false,
 })
