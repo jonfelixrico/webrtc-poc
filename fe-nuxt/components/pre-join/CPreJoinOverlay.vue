@@ -6,10 +6,7 @@ import type { DeviceState } from '~/typings/media.types'
 
 const video = defineModel('video', {
   type: Object as PropType<DeviceState>,
-  default: () => ({
-    enabled: false,
-    id: null,
-  }),
+  required: true,
 })
 const videoEnabled = computed({
   get: () => video.value.enabled,
@@ -23,10 +20,7 @@ const videoEnabled = computed({
 
 const audio = defineModel('audio', {
   type: Object as PropType<DeviceState>,
-  default: () => ({
-    enabled: false,
-    id: null,
-  }),
+  required: true,
 })
 const audioEnabled = computed({
   get: () => audio.value.enabled,
@@ -67,6 +61,9 @@ function openDialog() {
 
     audioDevices,
     videoDevices,
+
+    audioId: audio.value?.id ?? '',
+    videoId: video.value?.id ?? '',
   })
 }
 </script>

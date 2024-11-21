@@ -19,18 +19,12 @@ defineProps({
 
 const video = defineModel('video', {
   type: Object as PropType<DeviceState>,
-  default: () => ({
-    enabled: false,
-    id: null,
-  }),
+  required: true,
 })
 
 const audio = defineModel('audio', {
   type: Object as PropType<DeviceState>,
-  default: () => ({
-    enabled: false,
-    id: null,
-  }),
+  required: true,
 })
 
 const stream = useUserMediaStream(
