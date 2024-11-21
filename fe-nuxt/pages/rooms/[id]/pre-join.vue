@@ -62,7 +62,7 @@ function joinCall() {
 <template>
   <main class="h-dvh w-dvw flex flex-col justify-center items-center">
     <UCard>
-      <div class="flex flex-col">
+      <div class="flex flex-col gap-y-2">
         <CPrejoinInput
           v-model:audio="audio"
           v-model:video="video"
