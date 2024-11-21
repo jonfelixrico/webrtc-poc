@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useUserMediaStream } from '#imports'
-import { reactive, watch, type PropType } from 'vue'
+import { reactive, type PropType } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import CPreJoinOverlay from '~/components/pre-join/CPreJoinOverlay.vue'
 import type { DeviceState } from '~/typings/media.types'
 
-const props = defineProps({
+defineProps({
   videoDevices: {
     type: Array as PropType<MediaDeviceInfo[]>,
     required: true,
@@ -24,20 +24,6 @@ const video = defineModel('video', {
     id: null,
   }),
 })
-watch(
-  () => props.videoDevices,
-  (newVal, oldVal) => {
-    if (!oldVal?.length && newVal.length) {
-      video.value = {
-        ...video.value,
-        id: newVal[0].deviceId,
-      }
-    }
-  },
-  {
-    once: true,
-  },
-)
 
 const audio = defineModel('audio', {
   type: Object as PropType<DeviceState>,
@@ -46,20 +32,6 @@ const audio = defineModel('audio', {
     id: null,
   }),
 })
-watch(
-  () => props.audioDevices,
-  (newVal, oldVal) => {
-    if (!oldVal?.length && newVal.length) {
-      audio.value = {
-        ...audio.value,
-        id: newVal[0].deviceId,
-      }
-    }
-  },
-  {
-    once: true,
-  },
-)
 
 const stream = useUserMediaStream(
   reactive({
