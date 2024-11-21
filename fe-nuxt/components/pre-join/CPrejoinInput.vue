@@ -37,18 +37,19 @@ const stream = useUserMediaStream(
 
 <template>
   <div class="relative">
-    <CMediaStreamRendererVideo
-      v-if="stream"
-      :key="stream.id"
-      :media-stream="stream"
-    />
-
     <CPreJoinOverlay
       v-model:audio="audio"
       v-model:video="video"
       class="h-full w-full absolute z-10"
       :audio-devices
       :video-devices
+    />
+
+    <CMediaStreamRendererVideo
+      v-if="stream"
+      :key="stream.id"
+      :media-stream="stream"
+      class="h-full w-full"
     />
   </div>
 </template>
