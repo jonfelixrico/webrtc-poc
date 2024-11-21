@@ -1,27 +1,37 @@
 <script setup lang="ts">
 import { useUserMediaStream } from '#imports'
-import { useDevicesList } from '@vueuse/core'
-import { reactive, watch } from 'vue'
+import { reactive, watch, type PropType } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import CPreJoinOverlay from '~/components/pre-join/CPreJoinOverlay.vue'
 import type { DeviceState } from '~/typings/media.types'
 
-const { audioInputs, videoInputs } = useDevicesList({
-  constraints: {
-    audio: true,
-    video: true,
+const props = defineProps({
+  videoDevices: {
+    type: Array as PropType<MediaDeviceInfo[]>,
+    required: true,
+  },
+
+  audioDevices: {
+    type: Array as PropType<MediaDeviceInfo[]>,
+    required: true,
   },
 })
 
-const video = reactive<DeviceState>({
-  id: null,
-  enabled: false,
+const video = defineModel('video', {
+  type: Object as PropType<DeviceState>,
+  default: () => ({
+    enabled: false,
+    id: null,
+  }),
 })
 watch(
-  videoInputs,
+  () => props.videoDevices,
   (newVal, oldVal) => {
     if (!oldVal?.length && newVal.length) {
-      video.id = newVal[0].deviceId
+      video.value = {
+        ...video.value,
+        id: newVal[0].deviceId,
+      }
     }
   },
   {
@@ -29,15 +39,21 @@ watch(
   },
 )
 
-const audio = reactive<DeviceState>({
-  id: null,
-  enabled: false,
+const audio = defineModel('audio', {
+  type: Object as PropType<DeviceState>,
+  default: () => ({
+    enabled: false,
+    id: null,
+  }),
 })
 watch(
-  audioInputs,
+  () => props.audioDevices,
   (newVal, oldVal) => {
     if (!oldVal?.length && newVal.length) {
-      audio.id = newVal[0].deviceId
+      audio.value = {
+        ...audio.value,
+        id: newVal[0].deviceId,
+      }
     }
   },
   {
@@ -65,8 +81,8 @@ const stream = useUserMediaStream(
       v-model:audio="audio"
       v-model:video="video"
       class="h-full w-full absolute z-10"
-      :audio-devices="audioInputs"
-      :video-devices="videoInputs"
+      :audio-devices
+      :video-devices
     />
   </div>
 </template>
