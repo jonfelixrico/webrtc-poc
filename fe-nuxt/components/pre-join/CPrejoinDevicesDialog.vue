@@ -12,8 +12,15 @@ const props = defineProps({
     required: true,
   },
 
-  videoId: String,
-  audioId: String,
+  videoId: {
+    type: String,
+    default: null,
+  },
+
+  audioId: {
+    type: String,
+    default: null,
+  },
 })
 
 const model = reactive({
