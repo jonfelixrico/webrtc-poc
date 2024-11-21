@@ -28,9 +28,11 @@ const model = reactive({
   audioId: props.audioId,
 })
 
-const emit = defineEmits(['success'])
+const emit = defineEmits<{
+  (e: 'submit', value: { videoId: string; audioId: string }): void
+}>()
 function confirmSelection() {
-  emit('success', model)
+  emit('submit', model)
 }
 </script>
 
