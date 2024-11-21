@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useModal } from '#imports'
 import { reactive, type PropType } from 'vue'
 
 const props = defineProps({
@@ -28,11 +29,13 @@ const model = reactive({
   audioId: props.audioId,
 })
 
+const modal = useModal()
 const emit = defineEmits<{
   (e: 'submit', value: { videoId: string; audioId: string }): void
 }>()
 function confirmSelection() {
   emit('submit', model)
+  modal.close()
 }
 </script>
 

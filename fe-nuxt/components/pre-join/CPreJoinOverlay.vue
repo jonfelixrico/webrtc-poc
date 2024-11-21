@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, useModal } from '#imports'
 import type { PropType } from 'vue'
-import CPrejoinDevicesDialog from '~/components/pre-join/CPrejoinDevicesDialog.vue'
+import CPrejoinDevicesDialog from '~/components/pre-join/CPrejoinDevicesModal.vue'
 import type { DeviceState } from '~/typings/media.types'
 
 const video = defineModel('video', {
