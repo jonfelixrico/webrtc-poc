@@ -73,7 +73,7 @@ function openDialog() {
 
 <template>
   <div class="flex flex-col justify-end">
-    <div class="flex flex-row justify-center gap-4">
+    <div class="flex flex-row justify-center gap-4 items-center">
       <!-- TODO add icon -->
       <UToggle v-model="videoEnabled" />
 
