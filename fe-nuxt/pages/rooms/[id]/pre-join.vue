@@ -43,8 +43,14 @@ const videoId = ref<string>()
 
 const mediaStream = useUserMediaStream(
   reactive({
-    audio: audioId,
-    video: videoId,
+    audio: {
+      enabled: true,
+      id: audioId,
+    },
+    video: {
+      enabled: true,
+      id: videoId,
+    },
   }),
 )
 
