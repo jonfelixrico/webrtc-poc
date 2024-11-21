@@ -1,6 +1,6 @@
-import type { MaybeNull } from '~/typings/util.types'
+import type { MaybeNullish } from '~/typings/util.types'
 
 export interface TrackState {
   enabled: boolean
-  id: MaybeNull<string>
+  id: MaybeNullish<string>
 }
