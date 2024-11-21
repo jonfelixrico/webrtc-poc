@@ -1,24 +1,41 @@
 <script setup lang="ts">
-import { useModal } from '#imports'
+import { computed, useModal } from '#imports'
 import type { PropType } from 'vue'
 import CPrejoinDevicesDialog from '~/components/pre-join/CPrejoinDevicesDialog.vue'
+import type { TrackState } from '~/typings/media-stream.types'
 
-const videoEnabled = defineModel('videoEnabled', {
-  type: Boolean,
+const video = defineModel('video', {
+  type: Object as PropType<TrackState>,
+  default: () => ({
+    enabled: false,
+    id: null,
+  }),
+})
+const videoEnabled = computed({
+  get: () => video.value.enabled,
+  set: (enabled) => {
+    video.value = {
+      ...video.value,
+      enabled,
+    }
+  },
 })
 
-const videoId = defineModel('videoId', {
-  type: String,
-  default: null,
+const audio = defineModel('audio', {
+  type: Object as PropType<TrackState>,
+  default: () => ({
+    enabled: false,
+    id: null,
+  }),
 })
-
-const audioEnabled = defineModel('videoEnabled', {
-  type: Boolean,
-})
-
-const audioId = defineModel('audioId', {
-  type: String,
-  default: null,
+const audioEnabled = computed({
+  get: () => audio.value.enabled,
+  set: (enabled) => {
+    audio.value = {
+      ...audio.value,
+      enabled,
+    }
+  },
 })
 
 const props = defineProps({
@@ -38,8 +55,14 @@ function openDialog() {
 
   modal.open(CPrejoinDevicesDialog, {
     onSubmit: (v) => {
-      videoId.value = v.videoId
-      audioId.value = v.audioId
+      video.value = {
+        ...video.value,
+        id: v.videoId,
+      }
+      audio.value = {
+        ...audio.value,
+        id: v.audioId,
+      }
     },
 
     audioDevices,
