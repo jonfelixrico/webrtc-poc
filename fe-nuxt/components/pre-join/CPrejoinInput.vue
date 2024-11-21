@@ -40,7 +40,7 @@ const stream = useUserMediaStream(
     <CPreJoinOverlay
       v-model:audio="audio"
       v-model:video="video"
-      class="h-full w-full absolute z-10 p-1"
+      class="h-full w-full absolute z-10 p-1 overlay-gradient"
       :audio-devices
       :video-devices
     />
@@ -54,3 +54,9 @@ const stream = useUserMediaStream(
     />
   </div>
 </template>
+
+<style scoped>
+.overlay-gradient {
+  background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+}
+</style>
