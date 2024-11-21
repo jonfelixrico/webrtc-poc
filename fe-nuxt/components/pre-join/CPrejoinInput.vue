@@ -4,7 +4,7 @@ import { useDevicesList } from '@vueuse/core'
 import { reactive, watch } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import CPreJoinOverlay from '~/components/pre-join/CPreJoinOverlay.vue'
-import type { TrackState } from '~/typings/media-stream.types'
+import type { DeviceState } from '~/typings/media.types'
 
 const { audioInputs, videoInputs } = useDevicesList({
   constraints: {
@@ -13,7 +13,7 @@ const { audioInputs, videoInputs } = useDevicesList({
   },
 })
 
-const video = reactive<TrackState>({
+const video = reactive<DeviceState>({
   id: null,
   enabled: false,
 })
@@ -29,7 +29,7 @@ watch(
   },
 )
 
-const audio = reactive<TrackState>({
+const audio = reactive<DeviceState>({
   id: null,
   enabled: false,
 })

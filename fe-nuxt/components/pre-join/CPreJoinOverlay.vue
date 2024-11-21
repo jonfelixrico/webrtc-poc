@@ -2,10 +2,10 @@
 import { computed, useModal } from '#imports'
 import type { PropType } from 'vue'
 import CPrejoinDevicesDialog from '~/components/pre-join/CPrejoinDevicesDialog.vue'
-import type { TrackState } from '~/typings/media-stream.types'
+import type { DeviceState } from '~/typings/media.types'
 
 const video = defineModel('video', {
-  type: Object as PropType<TrackState>,
+  type: Object as PropType<DeviceState>,
   default: () => ({
     enabled: false,
     id: null,
@@ -22,7 +22,7 @@ const videoEnabled = computed({
 })
 
 const audio = defineModel('audio', {
-  type: Object as PropType<TrackState>,
+  type: Object as PropType<DeviceState>,
   default: () => ({
     enabled: false,
     id: null,

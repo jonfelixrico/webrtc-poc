@@ -1,6 +1,6 @@
 import { useUserMedia } from '#imports'
 import { computed, toValue, type MaybeRef } from 'vue'
-import type { TrackState } from '~/typings/media-stream.types'
+import type { DeviceState } from '~/typings/media.types'
 import type { MaybeNullish } from '~/typings/util.types'
 
 export function useHasVideo(mediaStream: MaybeRef<MaybeNullish<MediaStream>>) {
@@ -10,8 +10,8 @@ export function useHasVideo(mediaStream: MaybeRef<MaybeNullish<MediaStream>>) {
 }
 
 export interface DeviceStates {
-  audio?: MaybeNullish<TrackState>
-  video?: MaybeNullish<TrackState>
+  audio?: MaybeNullish<DeviceState>
+  video?: MaybeNullish<DeviceState>
 }
 
 export function useUserMediaStream(state: DeviceStates) {
