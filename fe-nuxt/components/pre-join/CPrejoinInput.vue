@@ -40,7 +40,7 @@ const stream = useUserMediaStream(
     <CPreJoinOverlay
       v-model:audio="audio"
       v-model:video="video"
-      class="h-full w-full absolute z-10"
+      class="h-full w-full absolute z-10 p-2"
       :audio-devices
       :video-devices
     />
