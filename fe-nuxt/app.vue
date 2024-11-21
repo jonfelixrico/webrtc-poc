@@ -3,5 +3,7 @@
     <NuxtPage />
   </NuxtLayout>
 
-  <UModals />
+  <ClientOnly>
+    <UModal />
+  </ClientOnly>
 </template>
