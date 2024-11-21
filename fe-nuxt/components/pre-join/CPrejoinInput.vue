@@ -50,6 +50,7 @@ const stream = useUserMediaStream(
       :key="stream.id"
       :media-stream="stream"
       class="h-full w-full"
+      object-fit="cover"
     />
   </div>
 </template>

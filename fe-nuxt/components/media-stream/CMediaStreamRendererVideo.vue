@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTemplateRef, watch, type PropType } from 'vue'
+import { useTemplateRef, watch, type CSSProperties, type PropType } from 'vue'
 
 const props = defineProps({
   /**
@@ -12,6 +12,11 @@ const props = defineProps({
   mediaStream: {
     type: Object as PropType<MediaStream>,
     required: true,
+  },
+
+  objectFit: {
+    type: String as PropType<CSSProperties['object-fit']>,
+    default: undefined,
   },
 })
 
@@ -34,5 +39,13 @@ watch(
 </script>
 
 <template>
-  <video ref="video" :controls="false" :playsinline="true" muted />
+  <video
+    ref="video"
+    :controls="false"
+    :playsinline="true"
+    muted
+    :style="{
+      objectFit,
+    }"
+  />
 </template>
