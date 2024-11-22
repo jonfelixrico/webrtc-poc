@@ -4,7 +4,7 @@ import type { AppPeerConnection } from '~/typings/rtc.types'
 import { useI18n } from 'vue-i18n'
 import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
-import { useHasVideo } from '~/composables/media-stream.composable'
+import { useHasVideo } from '~/composables/media.composable'
 
 const props = defineProps({
   connection: {

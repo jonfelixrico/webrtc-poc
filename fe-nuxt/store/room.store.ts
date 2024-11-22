@@ -7,11 +7,14 @@ export interface RoomState {
       id: string
     }
   >
+
+  preJoinDone: boolean
 }
 
 export const useRoomStore = defineStore('room', {
   state: () =>
     ({
       users: {},
+      preJoinDone: false,
     }) as RoomState,
 })

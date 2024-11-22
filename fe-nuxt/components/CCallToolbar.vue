@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { useDevicesList, useUserMedia } from '@vueuse/core'
+import { useDevicesList } from '@vueuse/core'
 import { computed, reactive, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
 import CDeviceSelect from '~/components/CDeviceSelect.vue'
 import { useI18n } from 'vue-i18n'
+import {
+  usePersistedDeviceConfig,
+  useUserMediaStream,
+} from '~/composables/media.composable'
 
 const logger = useLogger()
 const { audioInputs, videoInputs } = useDevicesList({
@@ -15,51 +19,39 @@ const { audioInputs, videoInputs } = useDevicesList({
   requestPermissions: true,
 })
 
-interface DeviceValue {
-  id: string | null
-  enabled: boolean
-}
-
-const audio = reactive<DeviceValue>({
-  id: null,
-  enabled: false,
+const state = usePersistedDeviceConfig({
+  audio: audioInputs,
+  video: videoInputs,
+})
+const audio = computed({
+  get: () => state.audio,
+  set: ({ enabled, id }) => {
+    // cant reassign state.audio; it breaks the linked refs within usePersistentDeviceConfig
+    state.audio.id = id
+    state.audio.enabled = enabled
+  },
+})
+const video = computed({
+  get: () => state.video,
+  set: ({ enabled, id }) => {
+    state.video.enabled = enabled
+    state.video.id = id
+  },
 })
 
-const video = reactive<DeviceValue>({
-  id: null,
-  enabled: false,
-})
-
-const constraints = computed<MediaStreamConstraints>(() => {
-  const value: MediaStreamConstraints = {}
-
-  if (audio.id && audio.enabled) {
-    value.audio = {
-      deviceId: audio.id as string,
-    }
-  }
-
-  if (video.id && video.enabled) {
-    value.video = {
-      deviceId: video.id as string,
-    }
-  }
-
-  return value
-})
-
-const { stream } = useUserMedia({
-  enabled: computed(() => Object.keys(constraints.value).length > 0),
-  constraints,
-  autoSwitch: true,
-})
+const stream = useUserMediaStream(
+  reactive({
+    audio,
+    video,
+  }),
+)
 
 const msStore = useMediaStreamStore()
 watch(stream, (stream) => {
   logger.info(
     'Media stream has changed; video: %s, audio: %s',
-    video.id,
-    audio.id,
+    video.value.id,
+    audio.value.id,
   )
   msStore.mediaStream = stream ?? null
 })
