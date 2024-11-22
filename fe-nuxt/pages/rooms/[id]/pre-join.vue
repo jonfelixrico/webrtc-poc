@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useDevicesList } from '@vueuse/core'
-import { computed, reactive, ref, useTemplateRef } from 'vue'
+import { reactive, ref } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import { useUserMediaStream } from '~/composables/media.composable'
-import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
 import { definePageMeta, navigateTo } from '#imports'
 import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
@@ -49,10 +48,6 @@ const mediaStream = useUserMediaStream(
   }),
 )
 
-const videoDivRef = useTemplateRef('videoDiv')
-const dimensions = useResizeObserverValue(videoDivRef)
-const height = computed(() => dimensions.width * (9 / 16))
-
 const { t } = useI18n()
 
 const router = useRouter()
@@ -68,15 +63,13 @@ function joinCall() {
 <template>
   <main class="h-dvh w-dvw flex flex-col justify-center items-center">
     <UCard class="w-[50dvw]">
-      <div class="flex flex-row">
-        <div ref="videoDiv" class="grow">
-          <div :style="{ height: `${height}px` }">
-            <CMediaStreamRendererVideo
-              v-if="mediaStream"
-              class="h-full w-full"
-              :media-stream
-            />
-          </div>
+      <div class="flex flex-row gap-2">
+        <div class="grow">
+          <CMediaStreamRendererVideo
+            v-if="mediaStream"
+            class="h-full w-full"
+            :media-stream
+          />
         </div>
 
         <div class="flex flex-col justify-between gap-2 w-56">

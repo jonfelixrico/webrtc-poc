@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useResizeObserverValue } from '~/composables/vueuse-extensions.composables'
 import { useTemplateRef, watch, type PropType } from 'vue'
 
 const props = defineProps({
@@ -32,23 +31,8 @@ watch(
     immediate: true,
   },
 )
-
-const containerRef = useTemplateRef('container')
-const dimensions = useResizeObserverValue(containerRef)
 </script>
 
 <template>
-  <div ref="container" class="relative h-full w-full">
-    <video
-      ref="video"
-      class="absolute"
-      :style="{
-        width: `${dimensions.width}px`,
-        height: `${dimensions.height}px`,
-      }"
-      :controls="false"
-      :playsinline="true"
-      muted
-    />
-  </div>
+  <video ref="video" :controls="false" :playsinline="true" muted />
 </template>
