@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const roomJoinModel = ref()
 const router = useRouter()
@@ -11,14 +12,7 @@ function goToRoom(roomId: string) {
   })
 }
 
-async function createRoom() {
-  // TODO proxy the BE to be under /be
-  const { roomId } = await $fetch<{ roomId: string }>('/be/room', {
-    method: 'POST',
-  })
-
-  goToRoom(roomId)
-}
+const { t } = useI18n()
 </script>
 
 <template>
@@ -28,11 +22,13 @@ async function createRoom() {
       @submit.prevent="goToRoom(roomJoinModel)"
     >
       <UInput v-model="roomJoinModel" />
-      <UButton type="submit">Call</UButton>
+      <UButton type="submit">{{ t('preCall.joinCall') }}</UButton>
     </form>
 
     <div class="flex-1 flex flex-row items-center justify-center">
-      <UButton @click="createRoom">Create a Room</UButton>
+      <NuxtLink to="/rooms/create">
+        <UButton>{{ t('preCall.createRoom') }}</UButton>
+      </NuxtLink>
     </div>
   </div>
 </template>
