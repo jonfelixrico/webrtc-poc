@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { reactive, type PropType } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
-import CPrejoinOverlay from '~/components/pre-join/CPrejoinOverlay.vue'
 import type { DeviceState } from '~/typings/media.types'
 import { useI18n } from 'vue-i18n'
 import { useUserMediaStream } from '~/composables/media.composable'
+import CPrejoinControls from '~/components/pre-join/CPrejoinControls.vue'
 
 defineProps({
   videoDevices: {
@@ -40,15 +40,18 @@ const { t } = useI18n()
 
 <template>
   <div class="relative isolate">
-    <CPrejoinOverlay
-      v-model:audio="audio"
-      v-model:video="video"
-      class="h-full w-full absolute z-20 p-1"
-      :audio-devices
-      :video-devices
+    <div
+      class="flex flex-col justify-end gap-y-2 h-full w-full absolute z-20 p-1"
     >
-      <slot />
-    </CPrejoinOverlay>
+      <div class="flex flex-row justify-center gap-x-4 items-center">
+        <CPrejoinControls
+          v-model:audio="audio"
+          v-model:video="video"
+          :audio-devices
+          :video-devices
+        />
+      </div>
+    </div>
 
     <template v-if="stream">
       <!--
