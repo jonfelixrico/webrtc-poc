@@ -8,4 +8,6 @@ export default {
   noMic: 'No mics found',
   devices: 'Devices',
   cameraOff: 'Camera is off',
+
+  createRoom: 'Create Room',
 }
