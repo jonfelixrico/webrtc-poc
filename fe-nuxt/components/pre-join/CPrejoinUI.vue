@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { reactive, type PropType } from 'vue'
+import { computed, reactive, toRef, type PropType } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
-import type { DeviceState } from '~/typings/media.types'
 import { useI18n } from 'vue-i18n'
-import { useUserMediaStream } from '~/composables/media.composable'
+import {
+  usePersistedDeviceConfig,
+  useUserMediaStream,
+} from '~/composables/media.composable'
 import CPrejoinControls from '~/components/pre-join/CPrejoinControls.vue'
 
-defineProps({
+const props = defineProps({
   videoDevices: {
     type: Array as PropType<MediaDeviceInfo[]>,
     required: true,
@@ -18,14 +20,24 @@ defineProps({
   },
 })
 
-const video = defineModel('video', {
-  type: Object as PropType<DeviceState>,
-  required: true,
+const state = usePersistedDeviceConfig({
+  audio: toRef(props, 'audioDevices'),
+  video: toRef(props, 'videoDevices'),
 })
-
-const audio = defineModel('audio', {
-  type: Object as PropType<DeviceState>,
-  required: true,
+const audio = computed({
+  get: () => state.audio,
+  set: ({ enabled, id }) => {
+    // cant reassign state.audio; it breaks the linked refs within usePersistentDeviceConfig
+    state.audio.id = id
+    state.audio.enabled = enabled
+  },
+})
+const video = computed({
+  get: () => state.video,
+  set: ({ enabled, id }) => {
+    state.video.enabled = enabled
+    state.video.id = id
+  },
 })
 
 const stream = useUserMediaStream(
