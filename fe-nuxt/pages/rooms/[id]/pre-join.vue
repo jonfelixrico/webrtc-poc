@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useDevicesList } from '@vueuse/core'
-import { computed } from 'vue'
 import { definePageMeta, navigateTo } from '#imports'
 import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
-import CPrejoinInput from '~/components/pre-join/CPrejoinInput.vue'
-import { usePersistedDeviceConfig } from '~/composables/media.composable'
+import CPrejoinUI from '~/components/pre-join/CPrejoinUI.vue'
 import { useScreen } from '~/composables/tailwind.composable'
 
 definePageMeta({
@@ -39,26 +37,6 @@ const { audioInputs, videoInputs } = useDevicesList({
   requestPermissions: true,
 })
 
-const state = usePersistedDeviceConfig({
-  audio: audioInputs,
-  video: videoInputs,
-})
-const audio = computed({
-  get: () => state.audio,
-  set: ({ enabled, id }) => {
-    // cant reassign state.audio; it breaks the linked refs within usePersistentDeviceConfig
-    state.audio.id = id
-    state.audio.enabled = enabled
-  },
-})
-const video = computed({
-  get: () => state.video,
-  set: ({ enabled, id }) => {
-    state.video.enabled = enabled
-    state.video.id = id
-  },
-})
-
 const { t } = useI18n()
 
 const router = useRouter()
@@ -81,9 +59,7 @@ const screen = useScreen()
         <div class="flex flex-col gap-y-2 w-[50dvw] h-[60dvh]">
           <div class="grow relative">
             <div class="absolute h-full w-full">
-              <CPrejoinInput
-                v-model:audio="audio"
-                v-model:video="video"
+              <CPrejoinUI
                 :audio-devices="audioInputs"
                 :video-devices="videoInputs"
                 class="h-full w-full"
@@ -94,16 +70,14 @@ const screen = useScreen()
         </div>
       </UCard>
 
-      <CPrejoinInput
+      <CPrejoinUI
         v-else
-        v-model:audio="audio"
-        v-model:video="video"
         :audio-devices="audioInputs"
         :video-devices="videoInputs"
         class="h-dvh w-dvw"
       >
         <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
-      </CPrejoinInput>
+      </CPrejoinUI>
     </ClientOnly>
   </main>
 </template>
