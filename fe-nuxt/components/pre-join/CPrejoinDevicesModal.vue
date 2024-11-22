@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useModal } from '#imports'
 import { reactive, type PropType } from 'vue'
+import { useI18n } from 'vue-i18n'
+import CPrejoinDeviceInput from '~/components/pre-join/CPrejoinDeviceInput.vue'
 
 const props = defineProps({
   videoDevices: {
@@ -29,6 +31,8 @@ const model = reactive({
   audioId: props.audioId,
 })
 
+const { t } = useI18n()
+
 const modal = useModal()
 const emit = defineEmits<{
   (e: 'submit', value: { videoId: string; audioId: string }): void
@@ -43,22 +47,23 @@ function confirmSelection() {
   <UModal>
     <UCard>
       <div class="flex flex-col gap-4">
-        <!-- TODO add labels -->
-        <USelect
+        <CPrejoinDeviceInput
           v-model="model.videoId"
-          :options="videoDevices"
-          value-attribute="deviceId"
+          :devices="videoDevices"
+          :placeholder="t('preCall.selectCamera')"
+          :no-devices-text="t('preCall.noCamera')"
         />
 
-        <!-- TODO add labels -->
-        <USelect
+        <CPrejoinDeviceInput
           v-model="model.audioId"
-          :options="audioDevices"
-          value-attribute="deviceId"
+          :devices="audioDevices"
+          :placeholder="t('preCall.selectMic')"
+          :no-devices-text="t('preCall.noMic')"
         />
 
-        <!-- TODO i18nize -->
-        <UButton block @click="confirmSelection">Submit</UButton>
+        <UButton block @click="confirmSelection">{{
+          t('common.submit')
+        }}</UButton>
       </div>
     </UCard>
   </UModal>
