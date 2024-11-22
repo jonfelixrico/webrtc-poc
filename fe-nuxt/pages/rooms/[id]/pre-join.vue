@@ -7,6 +7,7 @@ import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
 import CPrejoinInput from '~/components/pre-join/CPrejoinInput.vue'
 import { usePersistedDeviceConfig } from '~/composables/media.composable'
+import { useScreen } from '~/composables/tailwind.composable'
 
 definePageMeta({
   middleware: [
@@ -68,22 +69,43 @@ function joinCall() {
     path: `/rooms/${router.currentRoute.value.params.id}`,
   })
 }
+
+const screen = useScreen()
 </script>
 
 <template>
   <main class="h-dvh w-dvw flex flex-col justify-center items-center">
-    <UCard>
-      <div class="flex flex-col gap-y-2">
-        <CPrejoinInput
-          v-model:audio="audio"
-          v-model:video="video"
-          :audio-devices="audioInputs"
-          :video-devices="videoInputs"
-          class="w-[50dvw] h-[60dvh]"
-        />
-
+    <UCard v-if="screen.gt.sm">
+      <div class="flex flex-col gap-y-2 w-[50dvw] h-[60dvh]">
+        <div class="grow relative">
+          <div class="absolute h-full w-full">
+            <CPrejoinInput
+              v-model:audio="audio"
+              v-model:video="video"
+              :audio-devices="audioInputs"
+              :video-devices="videoInputs"
+              class="h-full w-full"
+            />
+          </div>
+        </div>
         <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
       </div>
     </UCard>
+
+    <div v-else class="flex flex-col gap-y-2 h-dvh w-dvw">
+      <div class="grow relative">
+        <div class="absolute h-full w-full">
+          <CPrejoinInput
+            v-model:audio="audio"
+            v-model:video="video"
+            :audio-devices="audioInputs"
+            :video-devices="videoInputs"
+            class="h-full w-full"
+          />
+        </div>
+      </div>
+
+      <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
+    </div>
   </main>
 </template>
