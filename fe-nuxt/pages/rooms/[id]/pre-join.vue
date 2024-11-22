@@ -92,20 +92,15 @@ const screen = useScreen()
       </div>
     </UCard>
 
-    <div v-else class="flex flex-col gap-y-2 h-dvh w-dvw">
-      <div class="grow relative">
-        <div class="absolute h-full w-full">
-          <CPrejoinInput
-            v-model:audio="audio"
-            v-model:video="video"
-            :audio-devices="audioInputs"
-            :video-devices="videoInputs"
-            class="h-full w-full"
-          />
-        </div>
-      </div>
-
+    <CPrejoinInput
+      v-else
+      v-model:audio="audio"
+      v-model:video="video"
+      :audio-devices="audioInputs"
+      :video-devices="videoInputs"
+      class="h-dvh w-dvw"
+    >
       <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
-    </div>
+    </CPrejoinInput>
   </main>
 </template>
