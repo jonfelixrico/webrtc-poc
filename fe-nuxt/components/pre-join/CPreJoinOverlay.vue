@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed, useModal } from '#imports'
-import type { PropType } from 'vue'
+import { useModal } from '#imports'
+import { type PropType, computed } from 'vue'
 import CPrejoinDevicesDialog from '~/components/pre-join/CPrejoinDevicesModal.vue'
 import type { DeviceState } from '~/typings/media.types'
+import { useI18n } from 'vue-i18n'
 
 const video = defineModel('video', {
   type: Object as PropType<DeviceState>,
@@ -66,6 +67,8 @@ function openDialog() {
     videoId: video.value?.id ?? '',
   })
 }
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -77,8 +80,11 @@ function openDialog() {
       <!-- TODO add icon -->
       <UToggle v-model="audioEnabled" />
 
-      <!-- TODO add icon; i18n label -->
-      <UButton variant="ghost" label="Devices" @click="openDialog" />
+      <UButton
+        variant="ghost"
+        :label="t('preCall.devices')"
+        @click="openDialog"
+      />
     </div>
   </div>
 </template>

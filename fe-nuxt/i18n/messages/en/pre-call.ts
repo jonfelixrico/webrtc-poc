@@ -6,4 +6,5 @@ export default {
   selectCamera: 'Select a camera',
   selectMic: 'Select a mic',
   noMic: 'No mics found',
+  devices: 'Devices',
 }
