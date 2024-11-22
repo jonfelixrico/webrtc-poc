@@ -2,7 +2,7 @@
 import { useUserMediaStream } from '#imports'
 import { reactive, type PropType } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
-import CPreJoinOverlay from '~/components/pre-join/CPreJoinOverlay.vue'
+import CPrejoinOverlay from '~/components/pre-join/CPrejoinOverlay.vue'
 import type { DeviceState } from '~/typings/media.types'
 
 defineProps({
@@ -37,7 +37,7 @@ const stream = useUserMediaStream(
 
 <template>
   <div class="relative isolate">
-    <CPreJoinOverlay
+    <CPrejoinOverlay
       v-model:audio="audio"
       v-model:video="video"
       class="h-full w-full absolute z-20 p-1"
