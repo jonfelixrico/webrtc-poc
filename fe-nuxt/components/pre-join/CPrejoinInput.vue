@@ -36,22 +36,28 @@ const stream = useUserMediaStream(
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative isolate">
     <CPreJoinOverlay
       v-model:audio="audio"
       v-model:video="video"
-      class="h-full w-full absolute z-10 p-1 overlay-gradient"
+      class="h-full w-full absolute z-20 p-1"
       :audio-devices
       :video-devices
     />
 
-    <CMediaStreamRendererVideo
-      v-if="stream"
-      :key="stream.id"
-      :media-stream="stream"
-      class="h-full w-full"
-      object-fit="cover"
-    />
+    <template v-if="stream">
+      <!--
+        The purpose of this div is for the gradient alone. I can't seem to make it appear if applied
+        directly on the component or if applied on a div that wrapped the component
+      -->
+      <div class="h-full w-full absolute z-10 overlay-gradient" />
+      <CMediaStreamRendererVideo
+        :key="stream.id"
+        :media-stream="stream"
+        class="h-full w-full"
+        object-fit="cover"
+      />
+    </template>
   </div>
 </template>
 
