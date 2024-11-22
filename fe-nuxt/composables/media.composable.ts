@@ -55,28 +55,34 @@ export function useUserMediaStream(state: DeviceStates) {
   return stream
 }
 
-interface DeviceIdLists {
-  video: MaybeRef<Set<string>>
-  audio: MaybeRef<Set<string>>
+interface DeviceLists {
+  video: MaybeRef<MediaDeviceInfo[]>
+  audio: MaybeRef<MediaDeviceInfo[]>
 }
 
-export function usePersistedDeviceConfig(devices: DeviceIdLists) {
+export function usePersistedDeviceConfig(devices: DeviceLists) {
   const audioId = useLocalStorage('audioId', null)
   const audioEnabled = useLocalStorage('audioEnabled', false)
   const videoId = useLocalStorage('videoId', null)
   const videoEnabled = useLocalStorage('videoEnabled', false)
 
+  const audioDevices = computed(
+    () => new Set(toValue(devices.audio).map((device) => device.deviceId)),
+  )
+  const videoDevices = computed(
+    () => new Set(toValue(devices.video).map((device) => device.deviceId)),
+  )
+
   const safeAudioEnabled = computed({
     get: () =>
-      audioEnabled.value && toValue(devices.audio).has(audioId.value ?? ''),
+      audioEnabled.value && audioDevices.value.has(audioId.value ?? ''),
     set: (value) => {
       audioEnabled.value = value
     },
   })
-
   const safeVideoEnabled = computed({
     get: () =>
-      videoEnabled.value && toValue(devices.video).has(videoId.value ?? ''),
+      videoEnabled.value && videoDevices.value.has(videoId.value ?? ''),
     set: (value) => {
       videoEnabled.value = value
     },
