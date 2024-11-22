@@ -42,7 +42,6 @@ const state = usePersistedDeviceConfig({
   audio: audioInputs,
   video: videoInputs,
 })
-
 const audio = computed({
   get: () => state.audio,
   set: ({ enabled, id }) => {
@@ -51,7 +50,6 @@ const audio = computed({
     state.audio.enabled = enabled
   },
 })
-
 const video = computed({
   get: () => state.video,
   set: ({ enabled, id }) => {
