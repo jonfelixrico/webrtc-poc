@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDevicesList } from '@vueuse/core'
-import { computed, reactive, watch } from 'vue'
+import { reactive, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
 import CDeviceSelect from '~/components/CDeviceSelect.vue'
@@ -33,8 +33,8 @@ const video = reactive<DeviceValue>({
 
 const stream = useUserMediaStream(
   reactive({
-    audio: computed(() => (audio.id && audio.enabled ? audio.id : null)),
-    video: computed(() => (video.id && video.enabled ? video.id : null)),
+    audio,
+    video,
   }),
 )
 

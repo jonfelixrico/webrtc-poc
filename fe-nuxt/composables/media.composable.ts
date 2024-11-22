@@ -1,5 +1,6 @@
 import { useUserMedia } from '#imports'
 import { computed, toValue, type MaybeRef } from 'vue'
+import type { DeviceState } from '~/typings/media.types'
 import type { MaybeNullish } from '~/typings/util.types'
 
 export function useHasVideo(mediaStream: MaybeRef<MaybeNullish<MediaStream>>) {
@@ -8,31 +9,41 @@ export function useHasVideo(mediaStream: MaybeRef<MaybeNullish<MediaStream>>) {
   )
 }
 
-export interface DeviceIds {
-  audio?: MaybeNullish<string>
-  video?: MaybeNullish<string>
+export interface DeviceStates {
+  audio?: MaybeNullish<DeviceState>
+  video?: MaybeNullish<DeviceState>
 }
 
-export function useUserMediaStream(deviceIds: DeviceIds) {
+export function useUserMediaStream(state: DeviceStates) {
+  const audioEnabled = computed(() => {
+    const { enabled, id } = state?.audio ?? {}
+    return Boolean(enabled && id)
+  })
+
+  const videoEnabled = computed(() => {
+    const { enabled, id } = state?.video ?? {}
+    return Boolean(enabled && id)
+  })
+
   const constraints = computed<MediaStreamConstraints>(() => {
     const value: MediaStreamConstraints = {}
 
-    if (deviceIds.audio) {
+    if (audioEnabled.value) {
       value.audio = {
-        deviceId: deviceIds.audio,
+        deviceId: state?.audio?.id as string,
       }
     }
 
-    if (deviceIds.video) {
+    if (videoEnabled.value) {
       value.video = {
-        deviceId: deviceIds.video,
+        deviceId: state?.video?.id as string,
       }
     }
 
     return value
   })
 
-  const enabled = computed(() => Boolean(deviceIds.audio || deviceIds.video))
+  const enabled = computed(() => audioEnabled.value || videoEnabled.value)
 
   const { stream } = useUserMedia({
     enabled,
