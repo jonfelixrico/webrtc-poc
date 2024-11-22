@@ -3,7 +3,7 @@ import { useI18n } from 'vue-i18n'
 import { useDevicesList } from '@vueuse/core'
 import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
-import CPrejoinUI from '~/components/pre-join/CPrejoinUI.vue'
+import CPreCallUI from '~/components/pre-call/CPreCallUI.vue'
 import { useScreen } from '~/composables/tailwind.composable'
 
 const { audioInputs, videoInputs } = useDevicesList({
@@ -39,7 +39,7 @@ const screen = useScreen()
         <div class="flex flex-col gap-y-2 w-[50dvw] h-[60dvh]">
           <div class="grow relative">
             <div class="absolute h-full w-full">
-              <CPrejoinUI
+              <CPreCallUI
                 :audio-devices="audioInputs"
                 :video-devices="videoInputs"
                 class="h-full w-full"
@@ -52,7 +52,7 @@ const screen = useScreen()
         </div>
       </UCard>
 
-      <CPrejoinUI
+      <CPreCallUI
         v-else
         :audio-devices="audioInputs"
         :video-devices="videoInputs"
@@ -61,7 +61,7 @@ const screen = useScreen()
         <UButton block @click="createRoom">{{
           t('preCall.createRoom')
         }}</UButton>
-      </CPrejoinUI>
+      </CPreCallUI>
     </ClientOnly>
   </main>
 </template>
