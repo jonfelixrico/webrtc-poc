@@ -73,8 +73,8 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="flex flex-col justify-end">
-    <div class="flex flex-row justify-center gap-4 items-center">
+  <div class="flex flex-col justify-end gap-y-2">
+    <div class="flex flex-row justify-center gap-x-4 items-center">
       <CPrejoinDeviceToggle
         v-model="videoEnabled"
         icon-enabled="i-ri-video-on-fill"
@@ -96,5 +96,7 @@ const { t } = useI18n()
         @click="openDialog"
       />
     </div>
+
+    <slot />
   </div>
 </template>

@@ -46,7 +46,9 @@ const { t } = useI18n()
       class="h-full w-full absolute z-20 p-1"
       :audio-devices
       :video-devices
-    />
+    >
+      <slot />
+    </CPrejoinOverlay>
 
     <template v-if="stream">
       <!--
