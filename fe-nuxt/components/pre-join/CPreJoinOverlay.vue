@@ -92,6 +92,7 @@ const { t } = useI18n()
       <UButton
         variant="ghost"
         :label="t('preCall.devices')"
+        icon="i-material-symbols-settings"
         @click="openDialog"
       />
     </div>
