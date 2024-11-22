@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useModal } from '#imports'
 import { type PropType, computed } from 'vue'
-import CPreCallDevicesModal from '~/components/pre-join/CPreCallDevicesModal.vue'
+import CPreCallDevicesModal from './CPreCallDevicesModal.vue'
 import type { DeviceState } from '~/typings/media.types'
 import { useI18n } from 'vue-i18n'
-import CPreCallDeviceToggle from '~/components/pre-join/CPreCallDeviceToggle.vue'
+import CPreCallDeviceToggle from './CPreCallDeviceToggle.vue'
 
 const video = defineModel('video', {
   type: Object as PropType<DeviceState>,

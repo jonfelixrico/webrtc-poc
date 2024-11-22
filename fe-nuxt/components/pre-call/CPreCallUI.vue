@@ -6,7 +6,7 @@ import {
   usePersistedDeviceConfig,
   useUserMediaStream,
 } from '~/composables/media.composable'
-import CPreCallControls from '~/components/pre-join/CPreCallControls.vue'
+import CPreCallControls from './CPreCallControls.vue'
 
 const props = defineProps({
   videoDevices: {

@@ -4,7 +4,7 @@ import { useDevicesList } from '@vueuse/core'
 import { definePageMeta, navigateTo } from '#imports'
 import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
-import CPreCallUI from '~/components/pre-join/CPreCallUI.vue'
+import CPreCallUI from '~/components/pre-call/CPreCallUI.vue'
 import { useScreen } from '~/composables/tailwind.composable'
 
 definePageMeta({
