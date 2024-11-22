@@ -1,5 +1,6 @@
 import { useUserMedia } from '#imports'
-import { computed, toValue, type MaybeRef } from 'vue'
+import { useLocalStorage } from '@vueuse/core'
+import { computed, reactive, toValue, type MaybeRef } from 'vue'
 import type { DeviceState } from '~/typings/media.types'
 import type { MaybeNullish } from '~/typings/util.types'
 
@@ -52,4 +53,23 @@ export function useUserMediaStream(state: DeviceStates) {
   })
 
   return stream
+}
+
+export function usePersistedDeviceConfig() {
+  const audioId = useLocalStorage('audioId', null)
+  const audioEnabled = useLocalStorage('audioEnabled', false)
+  const videoId = useLocalStorage('videoId', null)
+  const videoEnabled = useLocalStorage('videoEnabled', false)
+
+  return reactive({
+    audio: {
+      id: audioId,
+      enabled: audioEnabled,
+    },
+
+    video: {
+      id: videoId,
+      enabled: videoEnabled,
+    },
+  })
 }
