@@ -1,5 +1,6 @@
 import { useUserMedia } from '#imports'
-import { computed, toValue, type MaybeRef } from 'vue'
+import { useLocalStorage } from '@vueuse/core'
+import { computed, reactive, toValue, type MaybeRef } from 'vue'
 import type { DeviceState } from '~/typings/media.types'
 import type { MaybeNullish } from '~/typings/util.types'
 
@@ -52,4 +53,50 @@ export function useUserMediaStream(state: DeviceStates) {
   })
 
   return stream
+}
+
+interface DeviceLists {
+  video: MaybeRef<MediaDeviceInfo[]>
+  audio: MaybeRef<MediaDeviceInfo[]>
+}
+
+export function usePersistedDeviceConfig(devices: DeviceLists) {
+  const audioId = useLocalStorage('audioId', null)
+  const audioEnabled = useLocalStorage('audioEnabled', false)
+  const videoId = useLocalStorage('videoId', null)
+  const videoEnabled = useLocalStorage('videoEnabled', false)
+
+  const audioDevices = computed(
+    () => new Set(toValue(devices.audio).map((device) => device.deviceId)),
+  )
+  const videoDevices = computed(
+    () => new Set(toValue(devices.video).map((device) => device.deviceId)),
+  )
+
+  const safeAudioEnabled = computed({
+    get: () =>
+      audioEnabled.value && audioDevices.value.has(audioId.value ?? ''),
+    set: (value) => {
+      audioEnabled.value = value
+    },
+  })
+  const safeVideoEnabled = computed({
+    get: () =>
+      videoEnabled.value && videoDevices.value.has(videoId.value ?? ''),
+    set: (value) => {
+      videoEnabled.value = value
+    },
+  })
+
+  return reactive({
+    audio: {
+      id: audioId,
+      enabled: safeAudioEnabled,
+    },
+
+    video: {
+      id: videoId,
+      enabled: safeVideoEnabled,
+    },
+  })
 }

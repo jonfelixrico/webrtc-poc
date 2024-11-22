@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useDevicesList } from '@vueuse/core'
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { definePageMeta, navigateTo } from '#imports'
 import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
-import type { DeviceState } from '~/typings/media.types'
 import CPrejoinInput from '~/components/pre-join/CPrejoinInput.vue'
+import { usePersistedDeviceConfig } from '~/composables/media.composable'
 
 definePageMeta({
   middleware: [
@@ -38,13 +38,24 @@ const { audioInputs, videoInputs } = useDevicesList({
   requestPermissions: true,
 })
 
-const audio = ref<DeviceState>({
-  id: null,
-  enabled: false,
+const state = usePersistedDeviceConfig({
+  audio: audioInputs,
+  video: videoInputs,
 })
-const video = ref<DeviceState>({
-  id: null,
-  enabled: false,
+const audio = computed({
+  get: () => state.audio,
+  set: ({ enabled, id }) => {
+    // cant reassign state.audio; it breaks the linked refs within usePersistentDeviceConfig
+    state.audio.id = id
+    state.audio.enabled = enabled
+  },
+})
+const video = computed({
+  get: () => state.video,
+  set: ({ enabled, id }) => {
+    state.video.enabled = enabled
+    state.video.id = id
+  },
 })
 
 const { t } = useI18n()
