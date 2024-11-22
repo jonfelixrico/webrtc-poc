@@ -6,7 +6,7 @@ import {
   usePersistedDeviceConfig,
   useUserMediaStream,
 } from '~/composables/media.composable'
-import CPrejoinControls from '~/components/pre-join/CPrejoinControls.vue'
+import CPreCallControls from '~/components/pre-join/CPreCallControls.vue'
 
 const props = defineProps({
   videoDevices: {
@@ -56,7 +56,7 @@ const { t } = useI18n()
       class="flex flex-col justify-end gap-y-2 h-full w-full absolute z-20 p-1"
     >
       <div class="flex flex-row justify-center gap-x-4 items-center">
-        <CPrejoinControls
+        <CPreCallControls
           v-model:audio="audio"
           v-model:video="video"
           :audio-devices

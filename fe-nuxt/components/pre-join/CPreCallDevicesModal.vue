@@ -2,7 +2,7 @@
 import { useModal } from '#imports'
 import { reactive, type PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
-import CPrejoinDeviceInput from '~/components/pre-join/CPrejoinDeviceSelect.vue'
+import CPreCallDeviceSelect from '~/components/pre-join/CPreCallDeviceSelect.vue'
 
 const props = defineProps({
   videoDevices: {
@@ -47,14 +47,14 @@ function confirmSelection() {
   <UModal>
     <UCard>
       <div class="flex flex-col gap-4">
-        <CPrejoinDeviceInput
+        <CPreCallDeviceSelect
           v-model="model.videoId"
           :devices="videoDevices"
           :placeholder="t('preCall.selectCamera')"
           :no-devices-text="t('preCall.noCamera')"
         />
 
-        <CPrejoinDeviceInput
+        <CPreCallDeviceSelect
           v-model="model.audioId"
           :devices="audioDevices"
           :placeholder="t('preCall.selectMic')"

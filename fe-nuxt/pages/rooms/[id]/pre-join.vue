@@ -4,7 +4,7 @@ import { useDevicesList } from '@vueuse/core'
 import { definePageMeta, navigateTo } from '#imports'
 import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
-import CPrejoinUI from '~/components/pre-join/CPrejoinUI.vue'
+import CPreCallUI from '~/components/pre-join/CPreCallUI.vue'
 import { useScreen } from '~/composables/tailwind.composable'
 
 definePageMeta({
@@ -59,7 +59,7 @@ const screen = useScreen()
         <div class="flex flex-col gap-y-2 w-[50dvw] h-[60dvh]">
           <div class="grow relative">
             <div class="absolute h-full w-full">
-              <CPrejoinUI
+              <CPreCallUI
                 :audio-devices="audioInputs"
                 :video-devices="videoInputs"
                 class="h-full w-full"
@@ -70,14 +70,14 @@ const screen = useScreen()
         </div>
       </UCard>
 
-      <CPrejoinUI
+      <CPreCallUI
         v-else
         :audio-devices="audioInputs"
         :video-devices="videoInputs"
         class="h-dvh w-dvw"
       >
         <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
-      </CPrejoinUI>
+      </CPreCallUI>
     </ClientOnly>
   </main>
 </template>
