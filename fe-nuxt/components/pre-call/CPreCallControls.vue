@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { useModal } from '#imports'
 import { type PropType, computed } from 'vue'
-import CPrejoinDevicesDialog from '~/components/pre-join/CPrejoinDevicesModal.vue'
+import CPreCallDevicesModal from './CPreCallDevicesModal.vue'
 import type { DeviceState } from '~/typings/media.types'
 import { useI18n } from 'vue-i18n'
-import CPrejoinDeviceToggle from '~/components/pre-join/CPrejoinDeviceToggle.vue'
+import CPreCallDeviceToggle from './CPreCallDeviceToggle.vue'
 
 const video = defineModel('video', {
   type: Object as PropType<DeviceState>,
@@ -49,7 +49,7 @@ const modal = useModal()
 function openDialog() {
   const { videoDevices, audioDevices } = props
 
-  modal.open(CPrejoinDevicesDialog, {
+  modal.open(CPreCallDevicesModal, {
     onSubmit: (v) => {
       video.value = {
         ...video.value,
@@ -73,30 +73,24 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="flex flex-col justify-end gap-y-2">
-    <div class="flex flex-row justify-center gap-x-4 items-center">
-      <CPrejoinDeviceToggle
-        v-model="videoEnabled"
-        icon-enabled="i-ri-video-on-fill"
-        icon-disabled="i-ri-video-off-fill"
-        class="text-primary"
-      />
+  <CPreCallDeviceToggle
+    v-model="videoEnabled"
+    icon-enabled="i-ri-video-on-fill"
+    icon-disabled="i-ri-video-off-fill"
+    class="text-primary"
+  />
 
-      <CPrejoinDeviceToggle
-        v-model="audioEnabled"
-        icon-enabled="i-ri-mic-fill"
-        icon-disabled="i-ri-mic-off-fill"
-        class="text-primary"
-      />
+  <CPreCallDeviceToggle
+    v-model="audioEnabled"
+    icon-enabled="i-ri-mic-fill"
+    icon-disabled="i-ri-mic-off-fill"
+    class="text-primary"
+  />
 
-      <UButton
-        variant="ghost"
-        :label="t('preCall.devices')"
-        icon="i-material-symbols-settings"
-        @click="openDialog"
-      />
-    </div>
-
-    <slot />
-  </div>
+  <UButton
+    variant="ghost"
+    :label="t('preCall.devices')"
+    icon="i-material-symbols-settings"
+    @click="openDialog"
+  />
 </template>

@@ -1,33 +1,10 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useDevicesList } from '@vueuse/core'
-import { definePageMeta, navigateTo } from '#imports'
 import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
 import CPreCallUI from '~/components/pre-call/CPreCallUI.vue'
 import { useScreen } from '~/composables/tailwind.composable'
-
-definePageMeta({
-  middleware: [
-    'room-exists-check',
-    /**
-     * Navigates the user to the actual call if we've detected that they've
-     * gone through here before.
-     *
-     * Expected scenario is if the user hits the back button from the actual
-     * call page.
-     */
-    (to) => {
-      if (import.meta.client) {
-        const roomStore = useRoomStore()
-
-        if (roomStore.preJoinDone) {
-          return navigateTo(`/rooms/${to.params.id}`)
-        }
-      }
-    },
-  ],
-})
 
 const { audioInputs, videoInputs } = useDevicesList({
   constraints: {
@@ -41,10 +18,13 @@ const { t } = useI18n()
 
 const router = useRouter()
 const roomStore = useRoomStore()
-function joinCall() {
+async function createRoom() {
+  const { roomId } = await $fetch<{ roomId: string }>('/be/room', {
+    method: 'POST',
+  })
   roomStore.preJoinDone = true
-  router.push({
-    path: `/rooms/${router.currentRoute.value.params.id}`,
+  await router.push({
+    path: `/rooms/${roomId}`,
   })
 }
 
@@ -66,7 +46,9 @@ const screen = useScreen()
               />
             </div>
           </div>
-          <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
+          <UButton block @click="createRoom">{{
+            t('preCall.createRoom')
+          }}</UButton>
         </div>
       </UCard>
 
@@ -76,7 +58,9 @@ const screen = useScreen()
         :video-devices="videoInputs"
         class="h-dvh w-dvw"
       >
-        <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
+        <UButton block @click="createRoom">{{
+          t('preCall.createRoom')
+        }}</UButton>
       </CPreCallUI>
     </ClientOnly>
   </main>

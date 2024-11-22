@@ -1,38 +1,25 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
-const roomJoinModel = ref()
-const router = useRouter()
+const roomId = ref<string>()
 
-function goToRoom(roomId: string) {
-  router.push({
-    path: `/rooms/${roomId}`,
-  })
-}
-
-async function createRoom() {
-  // TODO proxy the BE to be under /be
-  const { roomId } = await $fetch<{ roomId: string }>('/be/room', {
-    method: 'POST',
-  })
-
-  goToRoom(roomId)
-}
+const { t } = useI18n()
 </script>
 
 <template>
   <div class="flex flex-row gap-4 w-dvw h-dvh">
-    <form
-      class="flex-1 flex flex-row items-center justify-center gap-2"
-      @submit.prevent="goToRoom(roomJoinModel)"
-    >
-      <UInput v-model="roomJoinModel" />
-      <UButton type="submit">Call</UButton>
-    </form>
+    <div class="flex-1 flex flex-row items-center justify-center gap-2">
+      <UInput v-model="roomId" />
+      <NuxtLink :to="`/rooms/${roomId}`">
+        <UButton type="submit">{{ t('preCall.joinCall') }}</UButton>
+      </NuxtLink>
+    </div>
 
     <div class="flex-1 flex flex-row items-center justify-center">
-      <UButton @click="createRoom">Create a Room</UButton>
+      <NuxtLink to="/rooms/create">
+        <UButton>{{ t('preCall.createRoom') }}</UButton>
+      </NuxtLink>
     </div>
   </div>
 </template>
