@@ -27,7 +27,7 @@ export function useScreen() {
     md: checkLt(BP_MD),
     lg: checkLt(BP_LG),
     xl: checkLt(BP_XL),
-    '2xl': checkLt(BP_2XL),
+    xl2: checkLt(BP_2XL),
   })
 
   const gt = reactive({
@@ -35,7 +35,7 @@ export function useScreen() {
     md: checkGt(BP_MD),
     lg: checkGt(BP_LG),
     xl: checkGt(BP_XL),
-    '2xl': checkGt(BP_2XL),
+    xl2: checkGt(BP_2XL),
   })
 
   return readonly(
@@ -44,7 +44,7 @@ export function useScreen() {
       md: checkEqual(BP_MD),
       lg: checkEqual(BP_LG),
       xl: checkEqual(BP_XL),
-      '2xl': checkEqual(BP_2XL),
+      xl2: checkEqual(BP_2XL),
 
       lt,
       gt,
