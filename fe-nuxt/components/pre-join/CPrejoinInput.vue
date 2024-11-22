@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { useUserMediaStream } from '#imports'
 import { reactive, type PropType } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import CPrejoinOverlay from '~/components/pre-join/CPrejoinOverlay.vue'
 import type { DeviceState } from '~/typings/media.types'
+import { useI18n } from 'vue-i18n'
+import { useUserMediaStream } from '~/composables/media.composable'
 
 defineProps({
   videoDevices: {
@@ -33,6 +34,8 @@ const stream = useUserMediaStream(
     video,
   }),
 )
+
+const { t } = useI18n()
 </script>
 
 <template>
@@ -58,6 +61,13 @@ const stream = useUserMediaStream(
         object-fit="cover"
       />
     </template>
+
+    <div
+      v-else
+      class="h-full w-full flex flex-col justify-center items-center bg-zinc-800 text-white text-2xl font-medium"
+    >
+      {{ t('preCall.cameraOff') }}
+    </div>
   </div>
 </template>
 
