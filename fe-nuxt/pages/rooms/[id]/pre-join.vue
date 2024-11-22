@@ -68,7 +68,7 @@ function joinCall() {
           v-model:video="video"
           :audio-devices="audioInputs"
           :video-devices="videoInputs"
-          class="w-[50dvw] h-[30dvh]"
+          class="w-[50dvw] h-[60dvh]"
         />
 
         <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
