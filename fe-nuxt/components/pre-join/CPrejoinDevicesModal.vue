@@ -2,7 +2,7 @@
 import { useModal } from '#imports'
 import { reactive, type PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
-import CPrejoinDeviceInput from '~/components/pre-join/CPrejoinDeviceInput.vue'
+import CPrejoinDeviceInput from '~/components/pre-join/CPrejoinDeviceSelect.vue'
 
 const props = defineProps({
   videoDevices: {
