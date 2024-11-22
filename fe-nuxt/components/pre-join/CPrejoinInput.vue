@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { useUserMediaStream } from '#imports'
 import { reactive, type PropType } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import CPrejoinOverlay from '~/components/pre-join/CPrejoinOverlay.vue'
 import type { DeviceState } from '~/typings/media.types'
 import { useI18n } from 'vue-i18n'
+import { useUserMediaStream } from '~/composables/media.composable'
 
 defineProps({
   videoDevices: {
