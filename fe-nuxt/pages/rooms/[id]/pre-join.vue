@@ -75,32 +75,35 @@ const screen = useScreen()
 
 <template>
   <main class="h-dvh w-dvw flex flex-col justify-center items-center">
-    <UCard v-if="screen.gt.sm">
-      <div class="flex flex-col gap-y-2 w-[50dvw] h-[60dvh]">
-        <div class="grow relative">
-          <div class="absolute h-full w-full">
-            <CPrejoinInput
-              v-model:audio="audio"
-              v-model:video="video"
-              :audio-devices="audioInputs"
-              :video-devices="videoInputs"
-              class="h-full w-full"
-            />
+    <!-- We want to use ClientOnly here to prevent hydration errors where the server renders it as desktop, but the user is using mobile -->
+    <ClientOnly>
+      <UCard v-if="screen.gt.sm">
+        <div class="flex flex-col gap-y-2 w-[50dvw] h-[60dvh]">
+          <div class="grow relative">
+            <div class="absolute h-full w-full">
+              <CPrejoinInput
+                v-model:audio="audio"
+                v-model:video="video"
+                :audio-devices="audioInputs"
+                :video-devices="videoInputs"
+                class="h-full w-full"
+              />
+            </div>
           </div>
+          <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
         </div>
-        <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
-      </div>
-    </UCard>
+      </UCard>
 
-    <CPrejoinInput
-      v-else
-      v-model:audio="audio"
-      v-model:video="video"
-      :audio-devices="audioInputs"
-      :video-devices="videoInputs"
-      class="h-dvh w-dvw"
-    >
-      <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
-    </CPrejoinInput>
+      <CPrejoinInput
+        v-else
+        v-model:audio="audio"
+        v-model:video="video"
+        :audio-devices="audioInputs"
+        :video-devices="videoInputs"
+        class="h-dvh w-dvw"
+      >
+        <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
+      </CPrejoinInput>
+    </ClientOnly>
   </main>
 </template>
