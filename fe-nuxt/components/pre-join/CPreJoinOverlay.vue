@@ -4,6 +4,7 @@ import { type PropType, computed } from 'vue'
 import CPrejoinDevicesDialog from '~/components/pre-join/CPrejoinDevicesModal.vue'
 import type { DeviceState } from '~/typings/media.types'
 import { useI18n } from 'vue-i18n'
+import CPrejoinDeviceToggle from '~/components/pre-join/CPrejoinDeviceToggle.vue'
 
 const video = defineModel('video', {
   type: Object as PropType<DeviceState>,
@@ -74,11 +75,19 @@ const { t } = useI18n()
 <template>
   <div class="flex flex-col justify-end">
     <div class="flex flex-row justify-center gap-4 items-center">
-      <!-- TODO add icon -->
-      <UToggle v-model="videoEnabled" />
+      <CPrejoinDeviceToggle
+        v-model="videoEnabled"
+        icon-enabled="i-ri-video-on-fill"
+        icon-disabled="i-ri-video-off-fill"
+        class="text-primary"
+      />
 
-      <!-- TODO add icon -->
-      <UToggle v-model="audioEnabled" />
+      <CPrejoinDeviceToggle
+        v-model="audioEnabled"
+        icon-enabled="i-ri-mic-fill"
+        icon-disabled="i-ri-mic-off-fill"
+        class="text-primary"
+      />
 
       <UButton
         variant="ghost"
