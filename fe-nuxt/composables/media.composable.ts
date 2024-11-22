@@ -55,21 +55,42 @@ export function useUserMediaStream(state: DeviceStates) {
   return stream
 }
 
-export function usePersistedDeviceConfig() {
+interface DeviceIdLists {
+  video: MaybeRef<Set<string>>
+  audio: MaybeRef<Set<string>>
+}
+
+export function usePersistedDeviceConfig(devices: DeviceIdLists) {
   const audioId = useLocalStorage('audioId', null)
   const audioEnabled = useLocalStorage('audioEnabled', false)
   const videoId = useLocalStorage('videoId', null)
   const videoEnabled = useLocalStorage('videoEnabled', false)
 
+  const safeAudioEnabled = computed({
+    get: () =>
+      audioEnabled.value && toValue(devices.audio).has(audioId.value ?? ''),
+    set: (value) => {
+      audioEnabled.value = value
+    },
+  })
+
+  const safeVideoEnabled = computed({
+    get: () =>
+      videoEnabled.value && toValue(devices.video).has(videoId.value ?? ''),
+    set: (value) => {
+      videoEnabled.value = value
+    },
+  })
+
   return reactive({
     audio: {
       id: audioId,
-      enabled: audioEnabled,
+      enabled: safeAudioEnabled,
     },
 
     video: {
       id: videoId,
-      enabled: videoEnabled,
+      enabled: safeVideoEnabled,
     },
   })
 }
