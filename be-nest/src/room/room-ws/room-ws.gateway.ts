@@ -15,6 +15,7 @@ import {
   RoomWsEventPayloadMap,
 } from '@webrtcpoc/common'
 import { RoomService } from 'src/room/room.service/room.service'
+import { URL } from 'url'
 
 function getRoomId(socket: Socket) {
   const urlString = socket.request.url
@@ -63,10 +64,14 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       [socket.id, roomId].join('/'),
     )
 
-    this.svc.addUser(roomId, {
+    const url = new URL(
+      `http://${process.env.HOST ?? 'localhost'}${socket.request.url}`,
+    )
+    const user = {
       id: socket.id,
-      name: socket.id,
-    })
+      name: url.searchParams.get('name'),
+    }
+    this.svc.addUser(roomId, user)
 
     emit(socket.broadcast, 'user_joined', this.svc.getUser(roomId, socket.id))
     emit(socket.nsp, 'user_list_synced', {
