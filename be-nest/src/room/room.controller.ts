@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpException,
@@ -22,11 +23,12 @@ export class RoomController {
   }
 
   @Post()
-  create() {
-    const roomId = this.svc.create()
+  create(@Body('name') bodyName: string) {
+    const { id, name } = this.svc.create(bodyName)
 
     return {
-      roomId,
+      roomId: id,
+      name,
     }
   }
 }

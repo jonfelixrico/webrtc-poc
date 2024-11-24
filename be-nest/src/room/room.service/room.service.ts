@@ -8,7 +8,10 @@ export class RoomService {
 
   create(name: string) {
     const id = nanoid()
-    this._rooms.set(id, new Room(id, name))
+    const room = new Room(id, name)
+    this._rooms.set(id, room)
+
+    return room
   }
 
   checkIfExists(roomId: string) {
