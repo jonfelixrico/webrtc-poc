@@ -3,10 +3,12 @@ import { io, type Socket } from 'socket.io-client'
 import { computed, markRaw, onBeforeMount, onBeforeUnmount, watch } from 'vue'
 import { useSocketStore } from '~/store/socket.store'
 import type { MaybeNull } from '~/typings/util.types'
+import { useLocalStorage } from '@vueuse/core'
 
 export function useSocketInit(roomId: string) {
   const store = useSocketStore()
   const logger = useLogger()
+  const name = useLocalStorage('name', '')
 
   onBeforeMount(() => {
     const socket = io({
@@ -18,6 +20,9 @@ export function useSocketInit(roomId: string) {
        */
       path: `/be/socket.io/room-${roomId}`,
       autoConnect: false,
+      query: {
+        name: name.value,
+      },
     })
 
     socket.once('connect', () => {
