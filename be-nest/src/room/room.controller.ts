@@ -3,6 +3,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  Head,
   HttpException,
   HttpStatus,
   Param,
@@ -17,7 +18,7 @@ import { RoomService } from 'src/room/room.service/room.service'
 export class RoomController {
   constructor(private svc: RoomService) {}
 
-  @Get(':id')
+  @Head(':id')
   checkIfExists(@Param('id') id: string) {
     if (this.svc.checkIfExists(id)) {
       return
