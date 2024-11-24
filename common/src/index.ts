@@ -36,6 +36,9 @@ export interface RoomWsEventPayloadMap {
   }
 }
 
+/**
+ * @deprecated Just inline this at the dependent
+ */
 export type RoomWsEventHandler<K extends keyof RoomWsEventPayloadMap> = (
   payload: RoomWsEventPayloadMap[K],
 ) => any
