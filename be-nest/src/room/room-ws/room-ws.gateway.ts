@@ -14,6 +14,7 @@ import {
   RoomWsCommandPayloadMap,
   RoomWsEventPayloadMap,
 } from '@webrtcpoc/common'
+import { RoomService } from 'src/room/room.service/room.service'
 
 function getRoomId(socket: Socket) {
   const urlString = socket.request.url
@@ -35,37 +36,22 @@ function emit<K extends keyof RoomWsEventPayloadMap>(
 
 @WebSocketGateway(/^room-(.+)/)
 export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
-  constructor(private logger: Logger) {}
-
-  private roomMembers: Record<string, Set<string>> = {}
-  private getMembers(roomId: string): RoomUser[] {
-    return Array.from(this.roomMembers[roomId] ?? []).map((id) => ({
-      id,
-    }))
-  }
-  private addMember(roomId: string, socket: Socket) {
-    let roomObj = this.roomMembers[roomId]
-    if (!roomObj) {
-      roomObj = new Set()
-      this.roomMembers[roomId] = roomObj
-    }
-
-    roomObj.add(socket.id)
-  }
+  constructor(
+    private logger: Logger,
+    private svc: RoomService,
+  ) {}
 
   handleDisconnect(socket: Socket) {
     const roomId = getRoomId(socket)
 
     this.logger.debug('Client has disconnected', [socket.id, roomId].join('/'))
 
-    const set = this.roomMembers[roomId]
-    set.delete(socket.id)
+    const user = this.svc.getUser(roomId, socket.id)
+    this.svc.removeUser(roomId, socket.id)
 
-    emit(socket.nsp, 'user_left', {
-      id: socket.id,
-    })
+    emit(socket.nsp, 'user_left', user)
     emit(socket.nsp, 'user_list_synced', {
-      users: this.getMembers(roomId),
+      users: this.svc.getUsers(roomId),
     })
   }
 
@@ -77,13 +63,14 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
       [socket.id, roomId].join('/'),
     )
 
-    this.addMember(roomId, socket)
-
-    emit(socket.broadcast, 'user_joined', {
+    this.svc.addUser(roomId, {
       id: socket.id,
+      name: socket.id,
     })
+
+    emit(socket.broadcast, 'user_joined', this.svc.getUser(roomId, socket.id))
     emit(socket.nsp, 'user_list_synced', {
-      users: this.getMembers(roomId),
+      users: this.svc.getUsers(roomId),
     })
   }
 
@@ -114,7 +101,7 @@ export class RoomWsGateway implements OnGatewayDisconnect, OnGatewayConnection {
   @SubscribeMessage('sync_user_list')
   handleSyncUserList(@ConnectedSocket() socket: Socket) {
     const roomId = getRoomId(socket)
-    const users = this.getMembers(roomId)
+    const users = this.svc.getUsers(roomId)
 
     emit(socket, 'user_list_synced', {
       users,
