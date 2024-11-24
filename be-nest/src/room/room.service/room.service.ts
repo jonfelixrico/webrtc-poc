@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { nanoid } from 'nanoid'
+import { Room } from 'src/room/room.class'
 
 @Injectable()
 export class RoomService {
-  // TODO use a DB instead of having an in-memory storage
-  private rooms = new Set<string>()
-
-  create() {
+  private _rooms: Map<string, Room> = new Map()
+  create(name: string) {
     const id = nanoid()
-    this.rooms.add(id)
-    return id
+    this._rooms.set(id, new Room(id, name))
   }
 
   checkIfExists(id: string) {
-    return this.rooms.has(id)
+    return this._rooms.has(id)
   }
 }
