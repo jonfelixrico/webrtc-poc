@@ -14,6 +14,10 @@ export class Room implements IRoom {
       .sort((a, b) => a.name.localeCompare(b.name))
   }
 
+  get userMap(): Record<string, RoomUser> {
+    return Object.fromEntries(this._users.entries())
+  }
+
   addUser(user: RoomUser) {
     if (this._users.has(user.id)) {
       throw new Error()
