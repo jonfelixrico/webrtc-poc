@@ -33,7 +33,7 @@ export class RoomService {
   }
 
   addMember(roomId: string, user: IRoomUser) {
-    this.getRoom(roomId).setUser(user)
+    this.getRoom(roomId).addUser(user)
   }
 
   removeMember(roomId: string, userId: string) {

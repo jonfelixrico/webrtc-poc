@@ -17,7 +17,11 @@ export class Room {
       .sort((a, b) => a.name.localeCompare(b.name))
   }
 
-  setUser(user: IRoomUser) {
+  addUser(user: IRoomUser) {
+    if (this._users.has(user.id)) {
+      throw new Error()
+    }
+
     this._users.set(user.id, user)
   }
 
