@@ -21,12 +21,17 @@ export class Room {
     this._users.set(user.id, user)
   }
 
-  patchUser(id: string, values: Partial<Omit<IRoomUser, 'id'>>) {
+  patchUser<K extends keyof IRoomUser>(
+    id: string,
+    key: K,
+    value: IRoomUser[K],
+  ) {
     const user = this._users.get(id)
-    this._users.set(id, {
-      ...user,
-      ...values,
-    })
+    if (!user) {
+      throw new Error()
+    }
+
+    user[key] = value
   }
 
   removeUser(id: string) {
