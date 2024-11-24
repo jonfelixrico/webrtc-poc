@@ -15,11 +15,11 @@ export class RoomService {
     return this._rooms.has(roomId)
   }
 
-  getUsers(roomId: string) {
-    return this._rooms.get(roomId)?.users
+  find(roomId: string) {
+    return this._rooms.get(roomId)
   }
 
-  private getRoom(roomId: string) {
+  private _getRoom(roomId: string) {
     const room = this._rooms.get(roomId)
     if (!room) {
       throw new Error()
@@ -29,15 +29,15 @@ export class RoomService {
   }
 
   setRoomName(roomId: string, name: string) {
-    this.getRoom(roomId).name = name
+    this._getRoom(roomId).name = name
   }
 
   addMember(roomId: string, user: IRoomUser) {
-    this.getRoom(roomId).addUser(user)
+    this._getRoom(roomId).addUser(user)
   }
 
   removeMember(roomId: string, userId: string) {
-    this.getRoom(roomId).removeUser(userId)
+    this._getRoom(roomId).removeUser(userId)
   }
 
   patchMember<K extends keyof Omit<IRoomUser, 'id'>>(
@@ -46,6 +46,10 @@ export class RoomService {
     key: K,
     value: IRoomUser[K],
   ) {
-    this.getRoom(roomId).patchUser(userId, key, value)
+    this._getRoom(roomId).patchUser(userId, key, value)
+  }
+
+  getUsers(roomId: string) {
+    return this._rooms.get(roomId)?.users
   }
 }
