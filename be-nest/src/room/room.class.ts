@@ -4,32 +4,32 @@ interface IRoomUser {
 }
 
 export class Room {
-  private users: Map<string, IRoomUser> = new Map()
+  private _users: Map<string, IRoomUser> = new Map()
 
   constructor(
     public readonly id: string,
     public name: string,
   ) {}
 
-  get usersArr(): IRoomUser[] {
-    return Array.from(this.users)
+  get users(): IRoomUser[] {
+    return Array.from(this._users)
       .map(([_, user]) => user)
       .sort((a, b) => a.name.localeCompare(b.name))
   }
 
   setUser(user: IRoomUser) {
-    this.users.set(user.id, user)
+    this._users.set(user.id, user)
   }
 
   patchUser(id: string, values: Partial<Omit<IRoomUser, 'id'>>) {
-    const user = this.users.get(id)
-    this.users.set(id, {
+    const user = this._users.get(id)
+    this._users.set(id, {
       ...user,
       ...values,
     })
   }
 
   removeUser(id: string) {
-    this.users.delete(id)
+    this._users.delete(id)
   }
 }
