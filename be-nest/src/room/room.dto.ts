@@ -10,5 +10,6 @@ export class RoomDto implements IRoom {
   @Type(() => RoomUserDto)
   @Expose()
   users: RoomUserDto[]
+
   @Expose() name: string
 }
