@@ -1,4 +1,4 @@
-interface IRoomUser {
+export interface IRoomUser {
   readonly id: string
   name: string
 }
