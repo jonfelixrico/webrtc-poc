@@ -6,6 +6,7 @@ export interface IRoomUser {
 export interface IRoom {
   users: IRoomUser[]
   name: string
+  id: string
 }
 
 export class Room implements IRoom {

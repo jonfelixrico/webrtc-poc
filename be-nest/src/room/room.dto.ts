@@ -7,6 +7,8 @@ export class RoomUserDto implements IRoomUser {
 }
 
 export class RoomDto implements IRoom {
+  @Expose() id: string
+
   @Type(() => RoomUserDto)
   @Expose()
   users: RoomUserDto[]
