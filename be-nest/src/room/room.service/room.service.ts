@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
+import { RoomUser } from '@webrtcpoc/common'
 import { nanoid } from 'nanoid'
-import { IRoomUser, Room } from 'src/room/room.class'
+import { Room } from 'src/room/room.class'
 
 @Injectable()
 export class RoomService {
@@ -35,7 +36,7 @@ export class RoomService {
     this._getRoom(roomId).name = name
   }
 
-  addMember(roomId: string, user: IRoomUser) {
+  addMember(roomId: string, user: RoomUser) {
     this._getRoom(roomId).addUser(user)
   }
 
@@ -43,11 +44,11 @@ export class RoomService {
     this._getRoom(roomId).removeUser(userId)
   }
 
-  patchMember<K extends keyof Omit<IRoomUser, 'id'>>(
+  patchMember<K extends keyof Omit<RoomUser, 'id'>>(
     roomId: string,
     userId: string,
     key: K,
-    value: IRoomUser[K],
+    value: RoomUser[K],
   ) {
     this._getRoom(roomId).patchUser(userId, key, value)
   }

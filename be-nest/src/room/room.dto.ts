@@ -1,12 +1,12 @@
+import { Room, RoomUser } from '@webrtcpoc/common'
 import { Expose, Type } from 'class-transformer'
-import { IRoom, IRoomUser } from 'src/room/room.class'
 
-export class RoomUserDto implements IRoomUser {
+export class RoomUserDto implements RoomUser {
   @Expose() id: string
   @Expose() name: string
 }
 
-export class RoomDto implements IRoom {
+export class RoomDto implements Room {
   @Expose() id: string
 
   @Type(() => RoomUserDto)

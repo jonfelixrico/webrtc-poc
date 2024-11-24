@@ -1,29 +1,20 @@
-export interface IRoomUser {
-  readonly id: string
-  name: string
-}
-
-export interface IRoom {
-  users: IRoomUser[]
-  name: string
-  id: string
-}
+import { Room as IRoom, RoomUser } from '@webrtcpoc/common'
 
 export class Room implements IRoom {
-  private _users: Map<string, IRoomUser> = new Map()
+  private _users: Map<string, RoomUser> = new Map()
 
   constructor(
     public readonly id: string,
     public name: string,
   ) {}
 
-  get users(): IRoomUser[] {
+  get users(): RoomUser[] {
     return Array.from(this._users)
       .map(([_, user]) => user)
       .sort((a, b) => a.name.localeCompare(b.name))
   }
 
-  addUser(user: IRoomUser) {
+  addUser(user: RoomUser) {
     if (this._users.has(user.id)) {
       throw new Error()
     }
@@ -31,11 +22,7 @@ export class Room implements IRoom {
     this._users.set(user.id, user)
   }
 
-  patchUser<K extends keyof IRoomUser>(
-    id: string,
-    key: K,
-    value: IRoomUser[K],
-  ) {
+  patchUser<K extends keyof RoomUser>(id: string, key: K, value: RoomUser[K]) {
     const user = this._users.get(id)
     if (!user) {
       throw new Error()
