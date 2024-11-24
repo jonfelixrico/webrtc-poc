@@ -3,7 +3,12 @@ export interface IRoomUser {
   name: string
 }
 
-export class Room {
+export interface IRoom {
+  users: IRoomUser[]
+  name: string
+}
+
+export class Room implements IRoom {
   private _users: Map<string, IRoomUser> = new Map()
 
   constructor(
