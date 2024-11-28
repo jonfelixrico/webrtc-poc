@@ -17,4 +17,6 @@ export default {
   },
 
   namePlaceholder: 'Your name',
+
+  aboutToJoinRoom: 'You are about to join {roomName}',
 }
