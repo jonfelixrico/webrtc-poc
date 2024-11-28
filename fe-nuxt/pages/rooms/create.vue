@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { useDevicesList } from '@vueuse/core'
+import { useDevicesList, useLocalStorage } from '@vueuse/core'
 import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
 import CPreCallUI from '~/components/pre-call/CPreCallUI.vue'
@@ -30,6 +30,8 @@ async function createRoom() {
 }
 
 const screen = useScreen()
+
+const userName = useLocalStorage('name', '')
 </script>
 
 <template>
@@ -47,22 +49,30 @@ const screen = useScreen()
               />
             </div>
           </div>
-          <UButton block @click="createRoom">{{
-            t('preCall.createRoom')
-          }}</UButton>
+
+          <div class="flex flex-row gap-x-2">
+            <UInput v-model="userName" placeholder="Your name" class="grow" />
+            <UButton @click="createRoom">{{ t('preCall.createRoom') }}</UButton>
+          </div>
         </div>
       </UCard>
 
-      <CPreCallUI
-        v-else
-        :audio-devices="audioInputs"
-        :video-devices="videoInputs"
-        class="h-dvh w-dvw"
-      >
-        <UButton block @click="createRoom">{{
-          t('preCall.createRoom')
-        }}</UButton>
-      </CPreCallUI>
+      <div v-else class="flex flex-col w-dvw h-dvh">
+        <div class="grow relative">
+          <div class="absolute h-full w-full">
+            <CPreCallUI
+              :audio-devices="audioInputs"
+              :video-devices="videoInputs"
+              class="h-full w-full"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-row gap-x-2 p-2">
+          <UInput v-model="userName" placeholder="Your name" class="grow" />
+          <UButton @click="createRoom">{{ t('preCall.createRoom') }}</UButton>
+        </div>
+      </div>
     </ClientOnly>
   </main>
 </template>
