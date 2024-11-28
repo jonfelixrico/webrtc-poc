@@ -5,6 +5,7 @@ import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
 import CPreCallUI from '~/components/pre-call/CPreCallUI.vue'
 import { useScreen } from '~/composables/tailwind.composable'
+import type { Room } from '@webrtcpoc/common'
 
 const { audioInputs, videoInputs } = useDevicesList({
   constraints: {
@@ -19,12 +20,12 @@ const { t } = useI18n()
 const router = useRouter()
 const roomStore = useRoomStore()
 async function createRoom() {
-  const { roomId } = await $fetch<{ roomId: string }>('/be/room', {
+  const { id } = await $fetch<Room>('/be/room', {
     method: 'POST',
   })
   roomStore.preJoinDone = true
   await router.push({
-    path: `/rooms/${roomId}`,
+    path: `/rooms/${id}`,
   })
 }
 
