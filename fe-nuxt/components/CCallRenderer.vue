@@ -21,24 +21,20 @@ const rtcStore = useWebRtcStore()
 <template>
   <!-- v-if is a quick-fix for now to avoid ...RendererSelf from throwing -->
   <CCallLayout v-if="selfId" v-slot="{ id }" v-bind="$attrs" :ids>
-    <template v-if="id === selfId">
-      <!-- TODO provide proper name -->
-      <CCallParticipantRendererSelf
-        class="h-full w-full"
-        :media-stream="msStore.mediaStream"
-        :user="roomStore.users[id]"
-      />
-    </template>
+    <CCallParticipantRendererSelf
+      v-if="id === selfId"
+      class="h-full w-full"
+      :media-stream="msStore.mediaStream"
+      :user="roomStore.users[id]"
+    />
 
     <!-- For peers -->
-    <template v-else>
-      <!-- TODO provide proper name -->
-      <CCallParticipantRendererPeer
-        :connection="rtcStore.connections.get(id)"
-        class="h-full w-full"
-        :user="roomStore.users[id]"
-      />
-    </template>
+    <CCallParticipantRendererPeer
+      v-else
+      :connection="rtcStore.connections.get(id)"
+      class="h-full w-full"
+      :user="roomStore.users[id]"
+    />
   </CCallLayout>
 
   <CCallAudioRenderer />
