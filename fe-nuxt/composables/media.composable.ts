@@ -10,12 +10,6 @@ export function useHasVideo(mediaStream: MaybeRef<MaybeNullish<MediaStream>>) {
   )
 }
 
-export function useHasAudio(mediaStream: MaybeRef<MaybeNullish<MediaStream>>) {
-  return computed(
-    () => (toValue(mediaStream)?.getAudioTracks()?.length ?? 0) > 0,
-  )
-}
-
 export interface DeviceStates {
   audio?: MaybeNullish<DeviceState>
   video?: MaybeNullish<DeviceState>
