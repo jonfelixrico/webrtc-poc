@@ -62,7 +62,11 @@ async function createRoom() {
           </div>
 
           <div class="flex flex-row gap-x-1">
-            <UInput v-model="userName" placeholder="Your name" class="grow" />
+            <UInput
+              v-model="userName"
+              :placeholder="t('preCall.namePlaceholder')"
+              class="grow"
+            />
             <UButton @click="createRoom">{{ t('preCall.createRoom') }}</UButton>
           </div>
         </div>
@@ -80,7 +84,11 @@ async function createRoom() {
         </div>
 
         <div class="flex flex-row gap-x-2 p-2">
-          <UInput v-model="userName" placeholder="Your name" class="grow" />
+          <UInput
+            v-model="userName"
+            :placeholder="t('preCall.namePlaceholder')"
+            class="grow"
+          />
           <UButton @click="createRoom">{{ t('preCall.createRoom') }}</UButton>
         </div>
       </div>

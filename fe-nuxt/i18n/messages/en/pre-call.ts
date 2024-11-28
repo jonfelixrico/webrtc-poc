@@ -15,4 +15,6 @@ export default {
     title: 'Edit Room Name',
     placeholder: 'Room name',
   },
+
+  namePlaceholder: 'Your name',
 }
