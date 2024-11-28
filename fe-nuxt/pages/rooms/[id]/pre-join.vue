@@ -95,13 +95,23 @@ const { data: roomData } = await useFetch<Room>(`/be/room/${route.params.id}`)
       </UCard>
 
       <div v-else class="flex flex-col h-dvh w-dvw">
+        <div v-if="roomData" class="text-center text-2xl p-1">
+          <i18n-t keypath="preCall.aboutToJoinRoom">
+            <template #roomName>
+              <span class="font-bold">
+                {{ roomData?.name }}
+              </span>
+            </template>
+          </i18n-t>
+        </div>
+
         <CPreCallUI
           :audio-devices="audioInputs"
           :video-devices="videoInputs"
           class="grow"
         />
 
-        <div class="flex flex-row p-1">
+        <div class="flex flex-row p-1 gap-x-1">
           <UInput
             v-model="userName"
             class="grow"
