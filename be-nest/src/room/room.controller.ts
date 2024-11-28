@@ -28,6 +28,18 @@ export class RoomController {
     throw new HttpException('Not found', HttpStatus.NOT_FOUND)
   }
 
+  @Get(':id')
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({ type: RoomDto })
+  find(@Param('id') id: string): RoomDto {
+    const room = this.svc.find(id)
+    if (!room) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+    }
+
+    return room
+  }
+
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({ type: RoomDto })
