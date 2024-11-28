@@ -6,6 +6,8 @@ import { useRouter } from 'vue-router'
 import CPreCallUI from '~/components/pre-call/CPreCallUI.vue'
 import { useScreen } from '~/composables/tailwind.composable'
 import type { Room } from '@webrtcpoc/common'
+import { ref } from 'vue'
+import { useFetch } from '#app'
 
 const { audioInputs, videoInputs } = useDevicesList({
   constraints: {
@@ -17,21 +19,27 @@ const { audioInputs, videoInputs } = useDevicesList({
 
 const { t } = useI18n()
 
+const screen = useScreen()
+
+const userName = useLocalStorage('name', '')
+
+const { data } = useFetch<{ name: string }>('/be/room/name')
+const roomName = ref<string>(data.value?.name ?? '')
+
 const router = useRouter()
 const roomStore = useRoomStore()
 async function createRoom() {
   const { id } = await $fetch<Room>('/be/room', {
     method: 'POST',
+    body: {
+      name: roomName.value,
+    },
   })
   roomStore.preJoinDone = true
   await router.push({
     path: `/rooms/${id}`,
   })
 }
-
-const screen = useScreen()
-
-const userName = useLocalStorage('name', '')
 </script>
 
 <template>
@@ -40,6 +48,12 @@ const userName = useLocalStorage('name', '')
     <ClientOnly>
       <UCard v-if="screen.gt.sm">
         <div class="flex flex-col gap-y-2 w-[50dvw] h-[60dvh]">
+          <div class="gap-x-1 flex flex-row items-center justify-center">
+            <span>{{ roomName }}</span>
+            <!-- TODO add an actual edit icon button -->
+            <UButton>Edit</UButton>
+          </div>
+
           <div class="grow relative">
             <div class="absolute h-full w-full">
               <CPreCallUI
@@ -50,7 +64,7 @@ const userName = useLocalStorage('name', '')
             </div>
           </div>
 
-          <div class="flex flex-row gap-x-2">
+          <div class="flex flex-row gap-x-1">
             <UInput v-model="userName" placeholder="Your name" class="grow" />
             <UButton @click="createRoom">{{ t('preCall.createRoom') }}</UButton>
           </div>
