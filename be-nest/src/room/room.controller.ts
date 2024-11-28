@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common'
 import { RoomDto } from 'src/room/room.dto'
 import { RoomService } from 'src/room/room.service/room.service'
+import { faker } from '@faker-js/faker'
 
 @Controller('room')
 export class RoomController {
@@ -37,6 +38,13 @@ export class RoomController {
       id,
       name,
       users: [],
+    }
+  }
+
+  @Get('name')
+  generateRandomName(): { name: string } {
+    return {
+      name: [faker.word.adjective(), faker.animal.type()].join('-'),
     }
   }
 }
