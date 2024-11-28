@@ -85,7 +85,7 @@ async function createRoom() {
           </div>
         </div>
 
-        <div class="flex flex-row gap-x-2 p-2">
+        <div class="flex flex-row gap-x-1 p-">
           <UInput
             v-model="userName"
             :placeholder="t('preCall.namePlaceholder')"
