@@ -22,7 +22,6 @@ function openModal() {
 <template>
   <div class="gap-x-1 flex flex-row items-center justify-center">
     <span>{{ model }}</span>
-    <!-- TODO add an actual edit icon button -->
     <UButton
       icon="i-material-symbols-edit-outline"
       variant="ghost"
