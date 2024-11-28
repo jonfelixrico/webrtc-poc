@@ -22,6 +22,7 @@ function emitValue() {
 </script>
 
 <template>
+  <!-- TODO i18nize -->
   <UModal>
     <UCard>
       <template #header> Edit Room Name </template>
