@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import { useHasVideo } from '~/composables/media.composable'
+import type { RoomUser } from '@webrtcpoc/common'
 
 const props = defineProps({
   connection: {
@@ -12,8 +13,8 @@ const props = defineProps({
     default: null,
   },
 
-  displayName: {
-    type: String,
+  user: {
+    type: Object as PropType<RoomUser>,
     required: true,
   },
 })
@@ -39,7 +40,7 @@ const { t } = useI18n()
   <div>
     <CCallParticipantLayout
       v-if="!isConnectionReady || !mediaStream"
-      :display-name
+      :display-name="user.name"
       class="h-full w-full"
     >
       <div v-if="!isConnectionReady" class="flex flex-row items-center gap-1">
@@ -61,7 +62,11 @@ const { t } = useI18n()
         class="h-full w-full"
       />
 
-      <CCallParticipantLayout v-else class="h-full w-full" :display-name />
+      <CCallParticipantLayout
+        v-else
+        class="h-full w-full"
+        :display-name="user.name"
+      />
     </template>
   </div>
 </template>
