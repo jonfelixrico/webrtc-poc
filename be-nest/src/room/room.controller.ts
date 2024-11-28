@@ -19,15 +19,6 @@ import { faker } from '@faker-js/faker'
 export class RoomController {
   constructor(private svc: RoomService) {}
 
-  @Head(':id')
-  checkIfExists(@Param('id') id: string) {
-    if (this.svc.checkIfExists(id)) {
-      return
-    }
-
-    throw new HttpException('Not found', HttpStatus.NOT_FOUND)
-  }
-
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
   @SerializeOptions({ type: RoomDto })
@@ -46,5 +37,26 @@ export class RoomController {
     return {
       name: [faker.word.adjective(), faker.animal.type()].join('-'),
     }
+  }
+
+  @Head(':id')
+  checkIfExists(@Param('id') id: string) {
+    if (this.svc.checkIfExists(id)) {
+      return
+    }
+
+    throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+  }
+
+  @Get(':id')
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({ type: RoomDto })
+  find(@Param('id') id: string): RoomDto {
+    const room = this.svc.find(id)
+    if (!room) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND)
+    }
+
+    return room
   }
 }
