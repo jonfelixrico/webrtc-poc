@@ -25,7 +25,6 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <!-- TODO i18nize -->
   <UModal>
     <UCard>
       <template #header>{{ t('preCall.roomNameEditModal.title') }}</template>
