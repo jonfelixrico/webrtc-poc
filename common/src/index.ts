@@ -12,10 +12,6 @@ export interface RoomWsCommandPayloadMap {
   sync_user_list: {}
 }
 
-export interface RoomUser {
-  id: string
-}
-
 export interface RoomWsEventPayloadMap {
   candidate_sent: {
     fromClientId: string
@@ -36,6 +32,20 @@ export interface RoomWsEventPayloadMap {
   }
 }
 
+/**
+ * @deprecated Just inline this at the dependent
+ */
 export type RoomWsEventHandler<K extends keyof RoomWsEventPayloadMap> = (
   payload: RoomWsEventPayloadMap[K],
 ) => any
+
+export interface RoomUser {
+  id: string
+  name: string
+}
+
+export interface Room {
+  id: string
+  name: string
+  users: RoomUser[]
+}
