@@ -73,6 +73,8 @@ async function createRoom() {
       </UCard>
 
       <div v-else class="flex flex-col w-dvw h-dvh">
+        <CPreCallRoomName v-model="roomName" class="p-2" />
+
         <div class="grow relative">
           <div class="absolute h-full w-full">
             <CPreCallUI
