@@ -7,6 +7,7 @@ import CPreCallUI from '~/components/pre-call/CPreCallUI.vue'
 import { useScreen } from '~/composables/tailwind.composable'
 import type { Room } from '@webrtcpoc/common'
 import { ref } from 'vue'
+import CPreCallRoomName from '~/components/pre-call/CPreCallRoomName.vue'
 import { useFetch } from '#app'
 
 const { audioInputs, videoInputs } = useDevicesList({
@@ -48,11 +49,7 @@ async function createRoom() {
     <ClientOnly>
       <UCard v-if="screen.gt.sm">
         <div class="flex flex-col gap-y-2 w-[50dvw] h-[60dvh]">
-          <div class="gap-x-1 flex flex-row items-center justify-center">
-            <span>{{ roomName }}</span>
-            <!-- TODO add an actual edit icon button -->
-            <UButton>Edit</UButton>
-          </div>
+          <CPreCallRoomName v-model="roomName" />
 
           <div class="grow relative">
             <div class="absolute h-full w-full">
