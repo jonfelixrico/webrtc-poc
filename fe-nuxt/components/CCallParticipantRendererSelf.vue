@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useLocalStorage } from '@vueuse/core'
 import { toRef, type PropType } from 'vue'
 import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
@@ -17,6 +18,8 @@ const props = defineProps({
 })
 
 const hasVideo = useHasVideo(toRef(props, 'mediaStream'))
+
+const userName = useLocalStorage('name', '')
 </script>
 
 <template>
@@ -31,5 +34,5 @@ const hasVideo = useHasVideo(toRef(props, 'mediaStream'))
     :media-stream
   />
 
-  <CCallParticipantLayout v-else :display-name />
+  <CCallParticipantLayout v-else :display-name="userName" />
 </template>
