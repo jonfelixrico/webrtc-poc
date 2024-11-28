@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useDevicesList, useLocalStorage } from '@vueuse/core'
-import { definePageMeta, navigateTo } from '#imports'
+import { definePageMeta, navigateTo, useFetch } from '#imports'
 import { useRoomStore } from '~/store/room.store'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import CPreCallUI from '~/components/pre-call/CPreCallUI.vue'
 import { useScreen } from '~/composables/tailwind.composable'
+import type { Room } from '@webrtcpoc/common'
 
 definePageMeta({
   middleware: [
@@ -39,18 +40,22 @@ const { audioInputs, videoInputs } = useDevicesList({
 
 const { t } = useI18n()
 
+const route = useRoute()
+
 const router = useRouter()
 const roomStore = useRoomStore()
 function joinCall() {
   roomStore.preJoinDone = true
   router.push({
-    path: `/rooms/${router.currentRoute.value.params.id}`,
+    path: `/rooms/${route.params.id}`,
   })
 }
 
 const screen = useScreen()
 
 const userName = useLocalStorage('name', '')
+
+const { data: roomData } = await useFetch<Room>(`/be/room/${route.params.id}`)
 </script>
 
 <template>
@@ -59,6 +64,15 @@ const userName = useLocalStorage('name', '')
     <ClientOnly>
       <UCard v-if="screen.gt.sm">
         <div class="flex flex-col gap-y-2 w-[50dvw] h-[60dvh]">
+          <div v-if="roomData" class="text-center text-2xl">
+            <i18n-t keypath="preCall.aboutToJoinRoom">
+              <template #roomName>
+                <span class="font-bold">
+                  {{ roomData?.name }}
+                </span>
+              </template>
+            </i18n-t>
+          </div>
           <div class="grow relative">
             <div class="absolute h-full w-full">
               <CPreCallUI
@@ -81,13 +95,23 @@ const userName = useLocalStorage('name', '')
       </UCard>
 
       <div v-else class="flex flex-col h-dvh w-dvw">
+        <div v-if="roomData" class="text-center text-2xl p-1">
+          <i18n-t keypath="preCall.aboutToJoinRoom">
+            <template #roomName>
+              <span class="font-bold">
+                {{ roomData?.name }}
+              </span>
+            </template>
+          </i18n-t>
+        </div>
+
         <CPreCallUI
           :audio-devices="audioInputs"
           :video-devices="videoInputs"
           class="grow"
         />
 
-        <div class="flex flex-row p-1">
+        <div class="flex flex-row p-1 gap-x-1">
           <UInput
             v-model="userName"
             class="grow"
