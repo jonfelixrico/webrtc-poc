@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { useDevicesList } from '@vueuse/core'
+import { useDevicesList, useLocalStorage } from '@vueuse/core'
 import { definePageMeta, navigateTo } from '#imports'
 import { useRoomStore } from '~/store/room.store'
 import { useRouter } from 'vue-router'
@@ -49,6 +49,8 @@ function joinCall() {
 }
 
 const screen = useScreen()
+
+const userName = useLocalStorage('name', '')
 </script>
 
 <template>
@@ -66,18 +68,34 @@ const screen = useScreen()
               />
             </div>
           </div>
-          <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
+
+          <div class="flex flex-row gap-x-1">
+            <UInput
+              v-model="userName"
+              class="grow"
+              :placeholder="t('preCall.namePlaceholder')"
+            />
+            <UButton @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
+          </div>
         </div>
       </UCard>
 
-      <CPreCallUI
-        v-else
-        :audio-devices="audioInputs"
-        :video-devices="videoInputs"
-        class="h-dvh w-dvw"
-      >
-        <UButton block @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
-      </CPreCallUI>
+      <div v-else class="flex flex-col h-dvh w-dvw">
+        <CPreCallUI
+          :audio-devices="audioInputs"
+          :video-devices="videoInputs"
+          class="grow"
+        />
+
+        <div class="flex flex-row p-1">
+          <UInput
+            v-model="userName"
+            class="grow"
+            :placeholder="t('preCall.namePlaceholder')"
+          />
+          <UButton @click="joinCall">{{ t('preCall.joinCall') }}</UButton>
+        </div>
+      </div>
     </ClientOnly>
   </main>
 </template>
