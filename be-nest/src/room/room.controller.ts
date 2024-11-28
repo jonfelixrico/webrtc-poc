@@ -19,6 +19,26 @@ import { faker } from '@faker-js/faker'
 export class RoomController {
   constructor(private svc: RoomService) {}
 
+  @Post()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({ type: RoomDto })
+  create(@Body('name') bodyName: string): RoomDto {
+    const { id, name } = this.svc.create(bodyName)
+
+    return {
+      id,
+      name,
+      users: [],
+    }
+  }
+
+  @Get('name')
+  generateRandomName(): { name: string } {
+    return {
+      name: [faker.word.adjective(), faker.animal.type()].join('-'),
+    }
+  }
+
   @Head(':id')
   checkIfExists(@Param('id') id: string) {
     if (this.svc.checkIfExists(id)) {
@@ -38,25 +58,5 @@ export class RoomController {
     }
 
     return room
-  }
-
-  @Post()
-  @UseInterceptors(ClassSerializerInterceptor)
-  @SerializeOptions({ type: RoomDto })
-  create(@Body('name') bodyName: string): RoomDto {
-    const { id, name } = this.svc.create(bodyName)
-
-    return {
-      id,
-      name,
-      users: [],
-    }
-  }
-
-  @Get('name')
-  generateRandomName(): { name: string } {
-    return {
-      name: [faker.word.adjective(), faker.animal.type()].join('-'),
-    }
   }
 }
