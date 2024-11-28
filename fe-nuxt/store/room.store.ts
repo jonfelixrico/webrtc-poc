@@ -1,12 +1,8 @@
+import type { RoomUser } from '@webrtcpoc/common'
 import { defineStore } from 'pinia'
 
 export interface RoomState {
-  users: Record<
-    string,
-    {
-      id: string
-    }
-  >
+  users: Record<string, RoomUser>
 
   preJoinDone: boolean
 }

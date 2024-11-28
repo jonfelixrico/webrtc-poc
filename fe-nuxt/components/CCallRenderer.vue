@@ -12,45 +12,29 @@ import CCallAudioRenderer from '~/components/CCallAudioRenderer.vue'
 const roomStore = useRoomStore()
 
 const selfId = useUserId()
-const ids = computed(() => {
-  const ids: string[] = ['self']
-
-  for (const id in roomStore.users) {
-    // User is already identified as the first item 'self'
-    if (selfId.value === id) {
-      continue
-    }
-
-    ids.push(id)
-  }
-
-  return ids
-})
+const ids = computed(() => Object.keys(roomStore.users).sort())
 
 const msStore = useMediaStreamStore()
 const rtcStore = useWebRtcStore()
 </script>
 
 <template>
-  <CCallLayout v-slot="{ id }" v-bind="$attrs" :ids>
-    <template v-if="id === 'self'">
-      <!-- TODO provide proper name -->
-      <CCallParticipantRendererSelf
-        class="h-full w-full"
-        display-name="Self"
-        :media-stream="msStore.mediaStream"
-      />
-    </template>
+  <!-- v-if is a quick-fix for now to avoid ...RendererSelf from throwing -->
+  <CCallLayout v-if="selfId" v-slot="{ id }" v-bind="$attrs" :ids>
+    <CCallParticipantRendererSelf
+      v-if="id === selfId"
+      class="h-full w-full"
+      :media-stream="msStore.mediaStream"
+      :user="roomStore.users[id]"
+    />
 
     <!-- For peers -->
-    <template v-else>
-      <!-- TODO provide proper name -->
-      <CCallParticipantRendererPeer
-        :connection="rtcStore.connections.get(id)"
-        class="h-full w-full"
-        :display-name="id"
-      />
-    </template>
+    <CCallParticipantRendererPeer
+      v-else
+      :connection="rtcStore.connections.get(id)"
+      class="h-full w-full"
+      :user="roomStore.users[id]"
+    />
   </CCallLayout>
 
   <CCallAudioRenderer />

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RoomUser } from '@webrtcpoc/common'
 import { toRef, type PropType } from 'vue'
 import CCallParticipantLayout from '~/components/CCallParticipantLayout.vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
@@ -10,8 +11,8 @@ const props = defineProps({
     default: null,
   },
 
-  displayName: {
-    type: String,
+  user: {
+    type: Object as PropType<RoomUser>,
     required: true,
   },
 })
@@ -31,5 +32,5 @@ const hasVideo = useHasVideo(toRef(props, 'mediaStream'))
     :media-stream
   />
 
-  <CCallParticipantLayout v-else :display-name />
+  <CCallParticipantLayout v-else :display-name="user.name" />
 </template>
