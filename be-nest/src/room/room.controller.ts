@@ -1,18 +1,25 @@
 import {
+  Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
+  Head,
   HttpException,
   HttpStatus,
   Param,
   Post,
+  SerializeOptions,
+  UseInterceptors,
 } from '@nestjs/common'
+import { RoomDto } from 'src/room/room.dto'
 import { RoomService } from 'src/room/room.service/room.service'
+import { faker } from '@faker-js/faker'
 
 @Controller('room')
 export class RoomController {
   constructor(private svc: RoomService) {}
 
-  @Get(':id')
+  @Head(':id')
   checkIfExists(@Param('id') id: string) {
     if (this.svc.checkIfExists(id)) {
       return
@@ -22,11 +29,22 @@ export class RoomController {
   }
 
   @Post()
-  create() {
-    const roomId = this.svc.create()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({ type: RoomDto })
+  create(@Body('name') bodyName: string): RoomDto {
+    const { id, name } = this.svc.create(bodyName)
 
     return {
-      roomId,
+      id,
+      name,
+      users: [],
+    }
+  }
+
+  @Get('name')
+  generateRandomName(): { name: string } {
+    return {
+      name: [faker.word.adjective(), faker.animal.type()].join('-'),
     }
   }
 }
