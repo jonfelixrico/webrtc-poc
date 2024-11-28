@@ -3,6 +3,7 @@ import { computed, reactive, toRef, type PropType } from 'vue'
 import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRendererVideo.vue'
 import { useI18n } from 'vue-i18n'
 import {
+  useHasVideo,
   usePersistedDeviceConfig,
   useUserMediaStream,
 } from '~/composables/media.composable'
@@ -46,6 +47,7 @@ const stream = useUserMediaStream(
     video,
   }),
 )
+const hasVideo = useHasVideo(stream)
 
 const { t } = useI18n()
 </script>
@@ -65,7 +67,7 @@ const { t } = useI18n()
       </div>
     </div>
 
-    <template v-if="stream">
+    <template v-if="stream && hasVideo">
       <!--
         The purpose of this div is for the gradient alone. I can't seem to make it appear if applied
         directly on the component or if applied on a div that wrapped the component
