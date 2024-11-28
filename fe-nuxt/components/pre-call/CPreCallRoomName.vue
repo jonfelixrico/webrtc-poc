@@ -23,6 +23,13 @@ function openModal() {
   <div class="gap-x-1 flex flex-row items-center justify-center">
     <span>{{ model }}</span>
     <!-- TODO add an actual edit icon button -->
-    <UButton @click="openModal">Edit</UButton>
+    <UButton
+      icon="i-material-symbols-edit-outline"
+      variant="ghost"
+      :ui="{ rounded: 'rounded-full' }"
+      size="xs"
+      color="gray"
+      @click="openModal"
+    />
   </div>
 </template>

@@ -32,7 +32,9 @@ function emitValue() {
 
       <template #footer>
         <div class="flex flex-row justify-end gap-x-1">
-          <UButton @click="modal.close">Cancel</UButton>
+          <UButton variant="outline" color="gray" @click="modal.close"
+            >Cancel</UButton
+          >
           <UButton @click="emitValue">Submit</UButton>
         </div>
       </template>
