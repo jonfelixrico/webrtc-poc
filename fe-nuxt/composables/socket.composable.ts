@@ -2,7 +2,7 @@ import { useLogger } from '~/composables/logger.composable'
 import { io, type Socket } from 'socket.io-client'
 import { computed, markRaw, onBeforeMount, onBeforeUnmount, watch } from 'vue'
 import { useSocketStore } from '~/store/socket.store'
-import type { MaybeNull } from '~/typings/util.types'
+import type { MaybeAsync, MaybeNull } from '~/typings/util.types'
 import { useLocalStorage } from '@vueuse/core'
 
 export function useSocketInit(roomId: string) {
@@ -63,7 +63,7 @@ export function onSocketAvailable(
 export function onSocketEvent(
   event: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  handler: (...args: any[]) => void | Promise<void>,
+  handler: (...args: any[]) => MaybeAsync<void>,
 ) {
   const socket = useSocket()
 
