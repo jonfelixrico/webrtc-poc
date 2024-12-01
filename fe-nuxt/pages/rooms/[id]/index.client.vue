@@ -9,7 +9,7 @@ import {
 import { useWebRtcStore } from '~/store/web-rtc.store'
 import CPeerConnectionManager from '~/components/CPeerConnectionManager.vue'
 import { useSocketInit } from '~/composables/socket.composable'
-import CCallToolbar from '~/components/CCallToolbar.vue'
+import CCallToolbar from '~/components/call/CCallToolbar.vue'
 import {
   useDescriptionHandlers,
   useJoinHandler,
