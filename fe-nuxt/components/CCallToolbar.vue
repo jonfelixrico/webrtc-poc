@@ -69,17 +69,17 @@ const { t } = useI18n()
     >
       <div class="flex flex-col items-center">
         <template v-if="status === 'enabled'">
-          <UIcon name="i-ri-mic-fill" class="w-7 h-7" />
+          <UIcon name="i-ri-mic-fill" class="icon-size" />
           {{ t('call.audioControl.mute') }}
         </template>
 
         <template v-else-if="status === 'disabled'">
-          <UIcon name="i-ri-mic-off-fill" class="w-7 h-7" />
+          <UIcon name="i-ri-mic-off-fill" class="icon-size" />
           {{ t('call.audioControl.unmute') }}
         </template>
 
         <template v-else-if="status === 'no_device'">
-          <UIcon name="i-ri-mic-line" class="w-7 h-7" />
+          <UIcon name="i-ri-mic-line" class="icon-size" />
           {{ t('call.audioControl.select') }}
         </template>
       </div>
@@ -93,17 +93,17 @@ const { t } = useI18n()
     >
       <div class="flex flex-col items-center">
         <template v-if="status === 'enabled'">
-          <UIcon name="i-ri-video-on-fill" class="w-7 h-7" />
+          <UIcon name="i-ri-video-on-fill" class="icon-size" />
           {{ t('call.videoControl.stop') }}
         </template>
 
         <template v-else-if="status === 'disabled'">
-          <UIcon name="i-ri-video-off-fill" class="w-7 h-7" />
+          <UIcon name="i-ri-video-off-fill" class="icon-size" />
           {{ t('call.videoControl.start') }}
         </template>
 
         <template v-else-if="status === 'no_device'">
-          <UIcon name="i-ri-video-on-line" class="w-7 h-7" />
+          <UIcon name="i-ri-video-on-line" class="icon-size" />
           {{ t('call.videoControl.select') }}
         </template>
       </div>
@@ -112,5 +112,7 @@ const { t } = useI18n()
 </template>
 
 <style lang="scss" scoped>
-@use "~/assets/css/call-toolbar.css";
+.icon-size {
+  @apply w-7 h-7;
+}
 </style>
