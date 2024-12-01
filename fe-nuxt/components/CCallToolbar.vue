@@ -3,7 +3,7 @@ import { useDevicesList } from '@vueuse/core'
 import { computed, reactive, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
-import CDeviceSelect from '~/components/CDeviceSelect.vue'
+import CDeviceSelect from '~/components/call/CDeviceSelect.vue'
 import { useI18n } from 'vue-i18n'
 import {
   usePersistedDeviceConfig,
