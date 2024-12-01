@@ -7,8 +7,8 @@ import {
   useUserDevices,
   useUserMediaStream,
 } from '~/composables/media.composable'
-import CDeviceSelectCamera from './call/CDeviceSelectCamera.vue'
-import CDeviceSelectMic from './call/CDeviceSelectMic.vue'
+import CDeviceSelectCamera from './CDeviceSelectCamera.vue'
+import CDeviceSelectMic from './CDeviceSelectMic.vue'
 
 const logger = useLogger()
 
