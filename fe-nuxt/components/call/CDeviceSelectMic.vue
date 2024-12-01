@@ -4,6 +4,7 @@ import {
   useUserDevices,
 } from '~/composables/media.composable'
 import { useI18n } from 'vue-i18n'
+import CDeviceSelect from './CDeviceSelect.vue'
 
 const devices = useUserDevices()
 const state = usePersistedDeviceConfig(devices)
@@ -16,7 +17,7 @@ const { t } = useI18n()
     v-slot="{ status }"
     v-model="state.audio.id"
     v-model:enabled="state.audio.enabled"
-    :devices="devices.video"
+    :devices="devices.audio.value"
   >
     <div class="flex flex-col items-center">
       <template v-if="status === 'enabled'">
