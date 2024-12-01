@@ -5,7 +5,9 @@ import type {
 import { useSocket, onSocketEvent } from '~/composables/socket.composable'
 import type { MaybeAsync } from '~/typings/util.types'
 
-type Handler<K extends keyof RoomWsEventPayloadMap> = (payload: RoomWsEventPayloadMap[K]) => MaybeAsync<void>
+type Handler<K extends keyof RoomWsEventPayloadMap> = (
+  payload: RoomWsEventPayloadMap[K],
+) => MaybeAsync<void>
 
 export const onAppSocketEvent: <K extends keyof RoomWsEventPayloadMap>(
   event: K,
