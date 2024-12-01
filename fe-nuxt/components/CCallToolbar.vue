@@ -3,10 +3,10 @@ import { useDevicesList } from '@vueuse/core'
 import { computed, reactive, watch } from 'vue'
 import { useMediaStreamStore } from '~/store/media-stream.store'
 import { useLogger } from '~/composables/logger.composable'
-import CDeviceSelect from '~/components/call/CDeviceSelect.vue'
+import CDeviceSelect from '~/components/CDeviceSelect.vue'
 import { useI18n } from 'vue-i18n'
 import {
-  usePersistedDeviceConfigSafe,
+  usePersistedDeviceConfig,
   useUserMediaStream,
 } from '~/composables/media.composable'
 
@@ -19,7 +19,7 @@ const { audioInputs, videoInputs } = useDevicesList({
   requestPermissions: true,
 })
 
-const state = usePersistedDeviceConfigSafe({
+const state = usePersistedDeviceConfig({
   audio: audioInputs,
   video: videoInputs,
 })
@@ -60,7 +60,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="flex flex-row gap-4 p-4">
+  <div class="flex flex-row gap-4 justify-center p-4">
     <CDeviceSelect
       v-slot="{ status }"
       v-model="audio.id"

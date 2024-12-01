@@ -69,7 +69,7 @@ interface DeviceLists {
   audio: MaybeRef<MediaDeviceInfo[]>
 }
 
-export function usePersistedDeviceConfigSafe(devices: DeviceLists) {
+export function usePersistedDeviceConfig(devices: DeviceLists) {
   const audioId = useLocalStorage('audioId', null)
   const audioEnabled = useLocalStorage('audioEnabled', false)
   const videoId = useLocalStorage('videoId', null)

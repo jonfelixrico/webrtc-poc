@@ -4,7 +4,7 @@ import CMediaStreamRendererVideo from '~/components/media-stream/CMediaStreamRen
 import { useI18n } from 'vue-i18n'
 import {
   useHasVideo,
-  usePersistedDeviceConfigSafe,
+  usePersistedDeviceConfig,
   useUserMediaStream,
 } from '~/composables/media.composable'
 import CPreCallControls from './CPreCallControls.vue'
@@ -21,7 +21,7 @@ const props = defineProps({
   },
 })
 
-const state = usePersistedDeviceConfigSafe({
+const state = usePersistedDeviceConfig({
   audio: toRef(props, 'audioDevices'),
   video: toRef(props, 'videoDevices'),
 })
