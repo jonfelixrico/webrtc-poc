@@ -110,3 +110,7 @@ const { t } = useI18n()
     </CDeviceSelect>
   </div>
 </template>
+
+<style lang="scss" scoped>
+@use "~/assets/css/call-toolbar.css";
+</style>
