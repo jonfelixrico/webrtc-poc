@@ -5,6 +5,7 @@ import {
   inject,
   provide,
   reactive,
+  shallowReadonly,
   toValue,
   type ComputedRef,
   type InjectionKey,
@@ -97,17 +98,19 @@ export function usePersistedDeviceConfig(devices: DeviceLists) {
     },
   })
 
-  return reactive({
-    audio: {
-      id: audioId,
-      enabled: safeAudioEnabled,
-    },
+  return shallowReadonly(
+    reactive({
+      audio: {
+        id: audioId,
+        enabled: safeAudioEnabled,
+      },
 
-    video: {
-      id: videoId,
-      enabled: safeVideoEnabled,
-    },
-  })
+      video: {
+        id: videoId,
+        enabled: safeVideoEnabled,
+      },
+    }),
+  )
 }
 
 interface UserDevices {
