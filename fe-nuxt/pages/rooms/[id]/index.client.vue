@@ -16,6 +16,7 @@ import {
 } from '~/composables/rtc-signaling-all.composable'
 import CCallRenderer from '~/components/CCallRenderer.vue'
 import { useRoomStore } from '~/store/room.store'
+import { provideUserDevices } from '~/composables/media.composable'
 
 definePageMeta({
   middleware: [
@@ -47,6 +48,7 @@ if (import.meta.client) {
   useJoinHandler()
   useDescriptionHandlers()
   useRoomMembersListener()
+  provideUserDevices()
 }
 </script>
 
