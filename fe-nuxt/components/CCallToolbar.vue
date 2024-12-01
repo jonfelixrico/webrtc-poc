@@ -12,6 +12,7 @@ import CDeviceSelectMic from './call/CDeviceSelectMic.vue'
 
 const logger = useLogger()
 
+// TODO best to move this as a composable, and somewhere higher up in the state to signify the importance
 const state = usePersistedDeviceConfig(useUserDevices())
 const stream = useUserMediaStream(state)
 const msStore = useMediaStreamStore()
