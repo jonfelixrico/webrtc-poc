@@ -2,15 +2,22 @@
 import { useI18n } from 'vue-i18n'
 import { useRoomStore } from '~/store/room.store'
 import { computed } from 'vue'
+import { useModal } from '#imports'
+import CParticipantsListModal from '~/components/call/CParticipantsListModal.vue'
 
 const { t } = useI18n()
 
 const store = useRoomStore()
 const count = computed(() => Object.keys(store.users).length)
+
+const modal = useModal()
+function openModal() {
+  modal.open(CParticipantsListModal)
+}
 </script>
 
 <template>
-  <UButton color="white" variant="ghost">
+  <UButton color="white" variant="ghost" @click="openModal">
     <div class="flex flex-col items-center relative">
       <!-- TODO fix the icon -->
       <UIcon name="i-mdi-account-multiple" class="icon-size" />
