@@ -9,6 +9,7 @@ import {
 } from '~/composables/media.composable'
 import CDeviceSelectCamera from './CDeviceSelectCamera.vue'
 import CDeviceSelectMic from './CDeviceSelectMic.vue'
+import CParticipantsListButton from '~/components/call/CParticipantsList.vue'
 
 const logger = useLogger()
 
@@ -27,8 +28,14 @@ watch(stream, (stream) => {
 </script>
 
 <template>
-  <div class="flex flex-row gap-4 justify-center p-4">
-    <CDeviceSelectMic />
-    <CDeviceSelectCamera />
+  <div class="grid grid-cols-3 gap-x-4 items-center">
+    <div class="flex flex-row gap-x-4 items-center">
+      <CDeviceSelectMic />
+      <CDeviceSelectCamera />
+    </div>
+
+    <div class="flex flex-row justify-center">
+      <CParticipantsListButton />
+    </div>
   </div>
 </template>
