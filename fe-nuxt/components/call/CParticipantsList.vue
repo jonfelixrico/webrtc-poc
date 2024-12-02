@@ -13,7 +13,7 @@ const count = computed(() => Object.keys(store.users).length)
   <UButton color="white" variant="ghost">
     <div class="flex flex-col items-center relative">
       <!-- TODO fix the icon -->
-      <UIcon name="i-ri-mic-fill" class="icon-size" />
+      <UIcon name="i-mdi-account-multiple" class="icon-size" />
       {{ t('call.participants') }}
 
       <div
