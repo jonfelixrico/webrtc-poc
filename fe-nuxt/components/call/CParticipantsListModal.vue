@@ -2,6 +2,7 @@
 import { useRoomStore } from '~/store/room.store'
 import { computed } from 'vue'
 import { useModal } from '#imports'
+import { useI18n } from 'vue-i18n'
 
 const store = useRoomStore()
 const users = computed(() =>
@@ -9,14 +10,15 @@ const users = computed(() =>
 )
 
 const modal = useModal()
+
+const { t } = useI18n()
 </script>
 
 <template>
   <UModal>
     <UCard>
       <template #header>
-        <!-- TODO i18nize -->
-        <div>Participants</div>
+        <div>{{ t('call.participants') }}</div>
       </template>
 
       <template #default>
@@ -30,8 +32,9 @@ const modal = useModal()
 
       <template #footer>
         <div class="flex flex-row justify-end gap-x-2">
-          <!-- TODO i18nize -->
-          <UButton @click="modal.close">Close</UButton>
+          <UButton color="primary" variant="outline" @click="modal.close">{{
+            t('common.dismiss')
+          }}</UButton>
         </div>
       </template>
     </UCard>
