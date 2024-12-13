@@ -10,6 +10,18 @@
       },
       "outputs": ["{projectRoot}/dist"],
       "cache": true
+    },
+
+    "start:dev:deps": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx start:dev @webrtcpoc/be-nest",
+          "nx watch --projects=@webrtcpoc/be-nest --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=@webrtcpoc/be-nest"
+        ]
+      },
+      "parallelism": true
     }
   }
 }
