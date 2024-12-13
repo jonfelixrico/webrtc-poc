@@ -3,7 +3,8 @@
   "sourceRoot": "fe-nuxt",
   "targets": {
     "build": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
+      "cache": true
     }
   }
 }
