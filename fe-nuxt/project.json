@@ -6,6 +6,18 @@
     "build": {
       "dependsOn": ["^build"],
       "cache": true
+    },
+
+    "dev:deep": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx dev @webrtcpoc/fe-nuxt",
+          "nx watch --projects=@webrtcpoc/fe-nuxt --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=@webrtcpoc/fe-nuxt"
+        ]
+      },
+      "parallelism": true
     }
   }
 }
