@@ -3,6 +3,8 @@ import { useI18n } from 'vue-i18n'
 import { useRoomStore } from '~/store/room.store'
 import { computed, ref } from 'vue'
 import { useUserId } from '~/composables/room-composables'
+import { useModal } from '#imports'
+import CUserEditModal from '~/components/call/CUserEditModal.vue'
 
 const { t } = useI18n()
 
@@ -13,6 +15,22 @@ const users = computed(() =>
 const appUserId = useUserId()
 
 const isModalOpen = ref(false)
+
+const modal = useModal()
+function openEditModal() {
+  if (!appUserId.value) {
+    return
+  }
+
+  const appUser = store.users[appUserId.value]
+  if (!appUser) {
+    return
+  }
+
+  modal.open(CUserEditModal, {
+    name: appUser.name,
+  })
+}
 </script>
 
 <template>
@@ -55,6 +73,7 @@ const isModalOpen = ref(false)
                 variant="ghost"
                 icon="i-tabler-dots-vertical"
                 class="rounded-full"
+                @click="openEditModal"
               />
             </div>
 
