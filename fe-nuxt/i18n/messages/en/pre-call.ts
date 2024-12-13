@@ -10,4 +10,13 @@ export default {
   cameraOff: 'Camera is off',
 
   createRoom: 'Create Room',
+
+  roomNameEditModal: {
+    title: 'Edit Room Name',
+    placeholder: 'Room name',
+  },
+
+  namePlaceholder: 'Your name',
+
+  aboutToJoinRoom: 'You are about to join {roomName}',
 }

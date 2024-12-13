@@ -1,18 +1,45 @@
 import {
+  Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
+  Head,
   HttpException,
   HttpStatus,
   Param,
   Post,
+  SerializeOptions,
+  UseInterceptors,
 } from '@nestjs/common'
+import { RoomDto } from 'src/room/room.dto'
 import { RoomService } from 'src/room/room.service/room.service'
+import { faker } from '@faker-js/faker'
 
 @Controller('room')
 export class RoomController {
   constructor(private svc: RoomService) {}
 
-  @Get(':id')
+  @Post()
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({ type: RoomDto })
+  create(@Body('name') bodyName: string): RoomDto {
+    const { id, name } = this.svc.create(bodyName)
+
+    return {
+      id,
+      name,
+      users: [],
+    }
+  }
+
+  @Get('name')
+  generateRandomName(): { name: string } {
+    return {
+      name: [faker.word.adjective(), faker.animal.type()].join('-'),
+    }
+  }
+
+  @Head(':id')
   checkIfExists(@Param('id') id: string) {
     if (this.svc.checkIfExists(id)) {
       return
@@ -21,12 +48,15 @@ export class RoomController {
     throw new HttpException('Not found', HttpStatus.NOT_FOUND)
   }
 
-  @Post()
-  create() {
-    const roomId = this.svc.create()
-
-    return {
-      roomId,
+  @Get(':id')
+  @UseInterceptors(ClassSerializerInterceptor)
+  @SerializeOptions({ type: RoomDto })
+  find(@Param('id') id: string): RoomDto {
+    const room = this.svc.find(id)
+    if (!room) {
+      throw new HttpException('Not found', HttpStatus.NOT_FOUND)
     }
+
+    return room
   }
 }
