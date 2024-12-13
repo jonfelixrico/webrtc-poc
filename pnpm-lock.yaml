@@ -9,7 +9,7 @@ importers:
   .:
     devDependencies:
       nx:
-        specifier: ^20.2.2
+        specifier: 20.2.2
         version: 20.2.2
 
   be-nest:
