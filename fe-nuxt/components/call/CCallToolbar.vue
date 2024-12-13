@@ -9,7 +9,7 @@ import {
 } from '~/composables/media.composable'
 import CDeviceSelectCamera from './CDeviceSelectCamera.vue'
 import CDeviceSelectMic from './CDeviceSelectMic.vue'
-import CParticipantsListButton from '~/components/call/CParticipantsList.vue'
+import CPartcipantsButton from '~/components/call/CParticipantsButton.vue'
 
 const logger = useLogger()
 
@@ -35,7 +35,7 @@ watch(stream, (stream) => {
     </div>
 
     <div class="flex flex-row justify-center">
-      <CParticipantsListButton />
+      <CPartcipantsButton />
     </div>
   </div>
 </template>
