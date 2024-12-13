@@ -1,23 +1,22 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import { useRoomStore } from '~/store/room.store'
-import { computed } from 'vue'
-import { useModal } from '#imports'
-import CParticipantsListModal from '~/components/call/CParticipantsListModal.vue'
+import { computed, ref } from 'vue'
+import { useUserId } from '~/composables/room-composables'
 
 const { t } = useI18n()
 
 const store = useRoomStore()
-const count = computed(() => Object.keys(store.users).length)
+const users = computed(() =>
+  Object.values(store.users).sort((a, b) => a.name.localeCompare(b.name)),
+)
+const appUserId = useUserId()
 
-const modal = useModal()
-function openModal() {
-  modal.open(CParticipantsListModal)
-}
+const isModalOpen = ref(false)
 </script>
 
 <template>
-  <UButton color="white" variant="ghost" @click="openModal">
+  <UButton color="white" variant="ghost" @click="isModalOpen = true">
     <div class="flex flex-col items-center relative">
       <!-- TODO fix the icon -->
       <UIcon name="i-mdi-account-multiple" class="icon-size" />
@@ -26,10 +25,56 @@ function openModal() {
       <div
         class="h-full w-full absolute z-10 flex flex-row justify-end items-start"
       >
-        {{ count }}
+        {{ users.length }}
       </div>
     </div>
   </UButton>
+
+  <UModal v-model="isModalOpen">
+    <UCard
+      :ui="{
+        body: {
+          padding: '',
+        },
+      }"
+    >
+      <template #header>
+        <div>{{ t('call.participants') }}</div>
+      </template>
+
+      <template #default>
+        <div class="flex flex-col">
+          <template v-for="(user, index) of users" :key="user.id">
+            <div class="flex flex-row py-4 px-8 items-center">
+              <div class="grow">
+                {{ user.name }}
+              </div>
+
+              <UButton
+                v-if="user.id === appUserId"
+                variant="ghost"
+                icon="i-tabler-dots-vertical"
+                class="rounded-full"
+              />
+            </div>
+
+            <UDivider v-if="index < users.length - 1" />
+          </template>
+        </div>
+      </template>
+
+      <template #footer>
+        <div class="flex flex-row justify-end gap-x-2">
+          <UButton
+            color="primary"
+            variant="outline"
+            @click="isModalOpen = false"
+            >{{ t('common.dismiss') }}</UButton
+          >
+        </div>
+      </template>
+    </UCard>
+  </UModal>
 </template>
 
 <style lang="scss" scoped>
