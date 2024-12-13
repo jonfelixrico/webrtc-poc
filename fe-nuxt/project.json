@@ -1,0 +1,9 @@
+{
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "fe-nuxt",
+  "targets": {
+    "build": {
+      "dependsOn": ["^build"]
+    }
+  }
+}
