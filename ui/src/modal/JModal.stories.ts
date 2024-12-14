@@ -41,7 +41,7 @@ type Story = StoryObj<typeof Component>
 type ExtendedStory<S extends StoryObj, T> = S &
   Partial<{
     argTypes: Partial<ArgTypes<T>>
-    arg: Partial<T>
+    args: Partial<T>
   }>
 
 export const Defualt: Story = {
@@ -95,6 +95,12 @@ export const Multi: ExtendedStory<
     modalC: {
       type: 'boolean',
     },
+  },
+
+  args: {
+    modalA: false,
+    modalB: false,
+    modalC: false,
   },
 
   render: (args) => ({

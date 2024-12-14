@@ -41,7 +41,7 @@ function hide() {
   model.value = false
 }
 
-function getZIndexStyle(offset: number = 0) {
+function getZIndexClass(offset: number = 0) {
   const idx = zIndex.value
 
   if (idx === undefined) {
@@ -58,7 +58,7 @@ function getZIndexStyle(offset: number = 0) {
       <div
         v-if="model"
         class="fixed inset-0 bg-black/10 w-full h-full"
-        :style="getZIndexStyle()"
+        :class="getZIndexClass()"
         @click.self="hide"
       />
     </Transition>
@@ -67,7 +67,7 @@ function getZIndexStyle(offset: number = 0) {
       <div
         v-if="model"
         class="fixed inset-0 w-full h-full flex flex-row justify-center items-center overflow-auto pointer-events-none"
-        :class="getZIndexStyle(1)"
+        :class="getZIndexClass(1)"
       >
         <div class="pointer-events-auto">
           <slot :hide />
