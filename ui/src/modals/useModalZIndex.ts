@@ -14,30 +14,58 @@ export function useModalZIndexManager() {
   provide(KEY, stack)
 }
 
-export function useModalZIndex() {
+export function useModalZIndexV2() {
   const stack = inject(KEY)
 
   const localKey = Symbol()
-  stack?.push(localKey)
 
-  const realIndex = computed(() => {
-    return stack?.findIndex((item) => localKey === item) ?? -1
+  const index = computed(() => {
+    const idx = stack?.findIndex((item) => localKey === item) ?? -1
+
+    if (idx === -1) {
+      return undefined
+    }
+
+    return idx
   })
 
-  onUnmounted(() => {
-    const idx = realIndex.value
-    if (!stack || idx === -1) {
+  function activate() {
+    if (!stack || stack.includes(localKey)) {
+      return
+    }
+
+    stack.push(localKey)
+  }
+
+  function deactivate() {
+    const idx = index.value
+    if (!stack || idx === undefined) {
       return
     }
 
     stack.splice(idx, 1)
-  })
+  }
+
+  return {
+    activate,
+    deactivate,
+    index,
+  }
+}
+
+export function useModalZIndex() {
+  const { activate, deactivate, index } = useModalZIndexV2()
+
+  activate()
+  onUnmounted(deactivate)
 
   return computed(() => {
-    if (realIndex.value === -1) {
+    const idx = index.value
+
+    if (idx === undefined) {
       return -1
     }
 
-    return realIndex.value + 10
+    return idx + 10
   })
 }
