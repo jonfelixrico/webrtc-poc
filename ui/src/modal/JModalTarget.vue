@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useModalZIndexManager } from '@/modals/useModalZIndex'
+import { useModalZIndexManager } from '@/modal/useModalZIndex'
 
 useModalZIndexManager()
 </script>

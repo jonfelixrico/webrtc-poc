@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useBodyScrollActions } from '@/body-scroll/useBodyScroll'
-import { useModalZIndex } from '@/modals/useModalZIndex'
+import { useModalZIndex } from '@/modal/useModalZIndex'
 import { onUnmounted, watch } from 'vue'
 
 const model = defineModel<boolean>()
