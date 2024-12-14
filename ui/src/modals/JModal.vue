@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import JModalOverlay from '@/modals/JModalOverlay.vue'
 
-const model = defineModel()
+const model = defineModel<boolean>()
 function hide() {
   model.value = false
 }
