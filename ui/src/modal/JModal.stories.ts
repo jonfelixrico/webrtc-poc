@@ -18,7 +18,11 @@ const meta: Meta<typeof Component> = {
         template: `
           <Target>
             <div class="w-full h-full">
-              Outer content
+              <div class="grid grid-cols-4 gap-2">
+                <div v-for="i in 80" :key="i" class="h-[25dvh] flex flex-row items-center justify-center bg-slate-200">
+                  {{ i + 1 }}
+                </div>
+              </div>
               <story />
             </div>
           </Target>
