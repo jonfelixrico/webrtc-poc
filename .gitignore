@@ -7,3 +7,4 @@ tmp
 vite.config.*.timestamp*
 
 storybook-static
+dist
