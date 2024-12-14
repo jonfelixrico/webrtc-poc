@@ -4,9 +4,17 @@
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {
-    ".": {
+    "default": {
       "import": "./index.mjs",
       "require": "./index.js"
+    },
+    "modal": {
+      "import": "./modal.mjs",
+      "types": "./modal/index.d.ts"
+    },
+    "utils": {
+      "import": "./utils.mjs",
+      "types": "./utils/index.d.ts"
     }
   }
 }
