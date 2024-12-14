@@ -1,11 +1,4 @@
-import {
-  computed,
-  inject,
-  InjectionKey,
-  onUnmounted,
-  provide,
-  reactive,
-} from 'vue'
+import { computed, inject, InjectionKey, provide, reactive } from 'vue'
 
 const KEY: InjectionKey<symbol[]> = Symbol('modal z-index')
 
