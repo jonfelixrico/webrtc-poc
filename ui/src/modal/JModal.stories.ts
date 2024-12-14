@@ -1,7 +1,7 @@
 import type { ArgTypes, Meta, StoryObj } from '@storybook/vue3'
 import Component from './JModal.vue'
 import Target from './JModalTarget.vue'
-import { useBodyScrollManager } from '@/body-scroll/useBodyScroll'
+import { useBodyScrollManager } from '@/utils/useBodyScroll'
 
 const meta: Meta<typeof Component> = {
   component: Component,

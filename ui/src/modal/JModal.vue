@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useBodyScrollActions } from '@/body-scroll/useBodyScroll'
+import { useBodyScrollActions } from '@/utils/useBodyScroll'
 import { useModalZIndex } from '@/modal/useModalZIndex'
 import { onUnmounted, watch } from 'vue'
 
