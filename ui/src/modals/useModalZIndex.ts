@@ -20,23 +20,24 @@ export function useModalZIndex() {
   const localKey = Symbol()
   stack?.push(localKey)
 
-  const index = computed(() => {
-    const initial = stack?.findIndex((item) => localKey === item) ?? -1
-    if (initial === -1) {
-      return -1
-    }
-
-    return initial + 10
+  const realIndex = computed(() => {
+    return stack?.findIndex((item) => localKey === item) ?? -1
   })
 
   onUnmounted(() => {
-    const idx = index.value
+    const idx = realIndex.value
     if (!stack || idx === -1) {
       return
     }
 
-    stack?.splice(idx, 1)
+    stack.splice(idx, 1)
   })
 
-  return index
+  return computed(() => {
+    if (realIndex.value === -1) {
+      return -1
+    }
+
+    return realIndex.value + 10
+  })
 }
