@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import Component from './JModalOverlay.vue'
 import Target from './JModalTarget.vue'
+import { useBodyScrollManager } from '@/body-scroll/useBodyScroll'
 
 const meta: Meta<typeof Component> = {
   component: Component,
@@ -9,12 +10,18 @@ const meta: Meta<typeof Component> = {
     (story) => {
       return {
         components: { story, Target },
+
+        setup() {
+          useBodyScrollManager()
+        },
+
         template: `
-          <Target />
-          <div class="w-full h-full">
-            Outer content
-            <story />
-          </div>
+          <Target>
+            <div class="w-full h-full">
+              Outer content
+              <story />
+            </div>
+          </Target>
         `,
       }
     },
@@ -49,6 +56,42 @@ export const Defualt: Story = {
         <div class="w-[20dvw] h-[20dvh] flex flex-row justify-center items-center bg-white">
           {{ args.default }}
         </div>
+      </Component>
+    `,
+  }),
+}
+
+export const Multiple: Story = {
+  argTypes: {
+    onHide: {
+      table: {
+        disable: true,
+      },
+    },
+
+    default: {
+      table: {
+        disable: true,
+      },
+    },
+  },
+
+  render: () => ({
+    components: {
+      Component,
+    },
+
+    template: `
+      <Component>
+        1
+      </Component>
+
+      <Component>
+        2
+      </Component>
+
+      <Component>
+        3
       </Component>
     `,
   }),
