@@ -20,11 +20,16 @@ const zIndex = useModalZIndex()
 <template>
   <Teleport to="[data-modal-target]" defer>
     <div
-      class="fixed inset-0 w-dvw h-dvh flex flex-row justify-center items-center bg-black/10"
+      class="fixed w-dvw h-dvh isolate"
       :class="`z-[${zIndex}]`"
       @click.self="hide"
     >
-      <slot />
+      <div class="fixed inset-0 z-10 bg-black/10 w-full h-full" />
+      <div
+        class="fixed inset-0 z-20 w-full h-full flex flex-row justify-center items-center overflow-auto"
+      >
+        <slot />
+      </div>
     </div>
   </Teleport>
 </template>
