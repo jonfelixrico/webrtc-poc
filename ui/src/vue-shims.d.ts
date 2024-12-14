@@ -1,6 +1,6 @@
+import { SFComponent } from '@/utils/vue-types'
+
 declare module '*.vue' {
-  import { DefineComponent } from 'vue'
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-  const component: DefineComponent<{}, {}, any>
+  const component: SFComponent
   export default component
 }
