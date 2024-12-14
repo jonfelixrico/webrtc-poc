@@ -10,7 +10,7 @@ function hide() {
 
 <template>
   <div
-    class="fixed inset-0 w-dvw h-dvh flex flex-row justify-center items-center"
+    class="fixed inset-0 w-dvw h-dvh flex flex-row justify-center items-center bg-black/10"
     @click.self="hide"
   >
     <slot :hide />
