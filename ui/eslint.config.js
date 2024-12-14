@@ -1,5 +1,5 @@
-const vue = require('eslint-plugin-vue');
-const baseConfig = require('../eslint.config.js');
+const vue = require('eslint-plugin-vue')
+const baseConfig = require('../eslint.config.js')
 
 module.exports = [
   ...baseConfig,
@@ -18,4 +18,4 @@ module.exports = [
       'vue/multi-word-component-names': 'off',
     },
   },
-];
+]
