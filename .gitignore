@@ -5,3 +5,5 @@ node_modules
 
 tmp
 vite.config.*.timestamp*
+
+storybook-static
