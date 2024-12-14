@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useBodyScrollActions } from '@/body-scroll/useBodyScroll'
-import { useModalZIndexV2 } from '@/modals/useModalZIndex'
+import { useModalZIndex } from '@/modals/useModalZIndex'
 import { onUnmounted, watch } from 'vue'
 
 const model = defineModel<boolean>()
 
-const { index: zIndex, ...modalZIndex } = useModalZIndexV2()
+const { index: zIndex, ...modalZIndex } = useModalZIndex()
 watch(
   model,
   (model) => {

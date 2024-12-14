@@ -53,7 +53,7 @@ function useModalZIndexBase() {
   }
 }
 
-export function useModalZIndexV2() {
+export function useModalZIndex() {
   const { index, ...actions } = useModalZIndexBase()
 
   const transformedIndex = computed(() => {
@@ -70,21 +70,4 @@ export function useModalZIndexV2() {
     ...actions,
     index: transformedIndex,
   }
-}
-
-export function useModalZIndex() {
-  const { activate, deactivate, index } = useModalZIndexBase()
-
-  activate()
-  onUnmounted(deactivate)
-
-  return computed(() => {
-    const idx = index.value
-
-    if (idx === undefined) {
-      return -1
-    }
-
-    return idx + 10
-  })
 }
