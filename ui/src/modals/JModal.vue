@@ -1,7 +1,18 @@
 <script setup lang="ts">
-import JModalBase from '@/modals/JModalBase.vue'
+const emit = defineEmits<{
+  hide: []
+}>()
+
+function hide() {
+  emit('hide')
+}
 </script>
 
 <template>
-  <JModalBase> Test </JModalBase>
+  <div
+    class="fixed inset-0 w-dvw h-dvh flex flex-row justify-center items-center bg-black/10"
+    @click.self="hide"
+  >
+    <slot />
+  </div>
 </template>
