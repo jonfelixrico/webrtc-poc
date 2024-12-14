@@ -20,11 +20,18 @@ export function useModalZIndex() {
   const localKey = Symbol()
   stack?.push(localKey)
 
-  const index = computed(() => stack?.findIndex((item) => localKey === item))
+  const index = computed(() => {
+    const initial = stack?.findIndex((item) => localKey === item) ?? -1
+    if (initial === -1) {
+      return -1
+    }
+
+    return initial + 10
+  })
 
   onUnmounted(() => {
     const idx = index.value
-    if (!stack || typeof idx === 'undefined' || idx === -1) {
+    if (!stack || idx === -1) {
       return
     }
 
