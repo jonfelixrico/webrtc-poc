@@ -1,0 +1,127 @@
+import type { ArgTypes, Meta, StoryObj } from '@storybook/vue3'
+import Component from './JModalV2.vue'
+import Target from './JModalTarget.vue'
+import { useBodyScrollManager } from '@/body-scroll/useBodyScroll'
+
+const meta: Meta<typeof Component> = {
+  component: Component,
+  argTypes: {},
+  decorators: [
+    (story) => {
+      return {
+        components: { story, Target },
+
+        setup() {
+          useBodyScrollManager()
+        },
+
+        template: `
+          <Target>
+            <div class="w-full h-full">
+              Outer content
+              <story />
+            </div>
+          </Target>
+        `,
+      }
+    },
+  ],
+  parameters: {
+    layout: 'fullscreen',
+  },
+}
+export default meta
+
+type Story = StoryObj<typeof Component>
+
+type ExtendedStory<S extends StoryObj, T> = S &
+  Partial<{
+    argTypes: Partial<ArgTypes<T>>
+    arg: Partial<T>
+  }>
+
+export const Defualt: Story = {
+  args: {
+    default: 'Content',
+    modelValue: false,
+  },
+
+  render: (args) => ({
+    setup() {
+      return {
+        args,
+      }
+    },
+
+    components: {
+      Component,
+    },
+
+    template: `
+      <Component @hide="args.hide" :modelValue="args.modelValue">
+        <div class="w-[20dvw] h-[20dvh] flex flex-row justify-center items-center bg-white">
+          {{ args.default }}
+        </div>
+      </Component>
+    `,
+  }),
+}
+
+export const Multi: ExtendedStory<
+  Story,
+  { modalA: boolean; modalB: boolean; modalC: boolean }
+> = {
+  argTypes: {
+    default: {
+      table: { disable: true },
+    },
+
+    modelValue: {
+      table: { disable: true },
+    },
+
+    modalA: {
+      type: 'boolean',
+    },
+
+    modalB: {
+      type: 'boolean',
+    },
+
+    modalC: {
+      type: 'boolean',
+    },
+  },
+
+  render: (args) => ({
+    setup() {
+      return {
+        args,
+      }
+    },
+
+    components: {
+      Component,
+    },
+
+    template: `
+      <Component @hide="args.hide" :modelValue="args.modalA">
+        <div class="w-[20dvw] h-[20dvh] flex flex-row justify-center items-center bg-white">
+          A
+        </div>
+      </Component>
+
+      <Component @hide="args.hide" :modelValue="args.modalB">
+        <div class="w-[20dvw] h-[20dvh] flex flex-row justify-center items-center bg-white">
+          B
+        </div>
+      </Component>
+
+      <Component @hide="args.hide" :modelValue="args.modalC">
+        <div class="w-[20dvw] h-[20dvh] flex flex-row justify-center items-center bg-white">
+          C
+        </div>
+      </Component>
+    `,
+  }),
+}

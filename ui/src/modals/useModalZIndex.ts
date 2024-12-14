@@ -14,7 +14,7 @@ export function useModalZIndexManager() {
   provide(KEY, stack)
 }
 
-export function useModalZIndexV2() {
+function useModalZIndexBase() {
   const stack = inject(KEY)
 
   const localKey = Symbol()
@@ -53,8 +53,27 @@ export function useModalZIndexV2() {
   }
 }
 
+export function useModalZIndexV2() {
+  const { index, ...actions } = useModalZIndexBase()
+
+  const transformedIndex = computed(() => {
+    const val = index.value
+
+    if (val === undefined) {
+      return undefined
+    }
+
+    return (val + 1) * 5
+  })
+
+  return {
+    ...actions,
+    index: transformedIndex,
+  }
+}
+
 export function useModalZIndex() {
-  const { activate, deactivate, index } = useModalZIndexV2()
+  const { activate, deactivate, index } = useModalZIndexBase()
 
   activate()
   onUnmounted(deactivate)
