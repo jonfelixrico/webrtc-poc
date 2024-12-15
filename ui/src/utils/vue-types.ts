@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 
-import { DefineComponent } from 'vue'
+import { DefineComponent, ExtractPropTypes } from 'vue'
 
 export type SFComponent = DefineComponent<{}, {}, any>
 
@@ -28,3 +28,6 @@ type PrefixKeysWithOn<T extends {}> = {
 export type ExtractEmitTypes<T extends SFComponent> = PrefixKeysWithOn<
   ExtractEmitsValue<Exclude<T['emits'], undefined>>
 >
+
+export type ExtractPropAndEmitTypes<T extends SFComponent> =
+  ExtractEmitTypes<T> & ExtractPropTypes<T>
