@@ -5,23 +5,26 @@ import { DefineComponent } from 'vue'
 
 export type SFComponent = DefineComponent<{}, {}, any>
 
-type ExtractEmitsValueType = string[] | ThisType<void>
+type ExtractEmitsValueType = string[] | {}
 type ExtractEmitsValue<T extends ExtractEmitsValueType> = T extends string[]
   ? {
-      [K in T[number]]: (...args: any[]) => void
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+      [K in T[number]]: T[number] extends Function
+        ? (...args: any[]) => void
+        : never
     }
-  : T extends ThisType<void>
+  : T extends {}
   ? {
-      [K in keyof T]: T[K]
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+      [K in keyof T]: T[K] extends Function ? T[K] : never
     }
   : never
 
-type ToOnFormat<T extends string> = `on${Capitalize<T>}`
-
-type PrefixWithOn<T extends {}> = {
-  [K in keyof T as ToOnFormat<K extends string ? K : never>]: T[K]
+type PrefixStringWithOn<T extends string> = `on${Capitalize<T>}`
+type PrefixKeysWithOn<T extends {}> = {
+  [K in keyof T as PrefixStringWithOn<K extends string ? K : never>]: T[K]
 }
 
-type ExtractEmits<T extends SFComponent> = PrefixWithOn<
+export type ExtractEmitTypes<T extends SFComponent> = PrefixKeysWithOn<
   ExtractEmitsValue<Exclude<T['emits'], undefined>>
 >
