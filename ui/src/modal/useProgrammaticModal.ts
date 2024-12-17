@@ -7,7 +7,7 @@ interface ModalEntry {
   onHide: () => void
 }
 
-export interface ProgrammaticModalActions {
+interface ProgrammaticModalActions {
   open<T extends SFComponent>(
     component: T,
     options: {
@@ -52,6 +52,9 @@ export function useProgrammaticModalOpen() {
   return actions.open
 }
 
+/**
+ * @private
+ */
 export function useProgrammaticModalState() {
   const state = inject(STATE_KEY)
   if (!state) {
