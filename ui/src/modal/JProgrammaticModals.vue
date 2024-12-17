@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import JProgrammaticModal from '@/modal/JProgrammaticModal.vue'
-import { useProvideModalControl } from '@/modal/useModalControl'
+import JProgrammaticModalContainer from '@/modal/JProgrammaticModalContainer.vue'
 import { useProvideModalOpen } from '@/modal/useModalOpen'
 import { ExtractPropAndEmitTypes, SFComponent } from '@/utils/vue-types'
 import { computed, reactive } from 'vue'
@@ -36,7 +35,7 @@ useProvideModalOpen({
 </script>
 
 <template>
-  <JProgrammaticModal
+  <JProgrammaticModalContainer
     v-for="{ id, component, toBind, onHide } in asArray"
     :key="id"
     :dialog-comp="component"
