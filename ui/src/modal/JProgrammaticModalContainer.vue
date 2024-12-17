@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProvideModalControl } from '@/modal/useModalControl'
+import { useProvideModal } from '@/modal/useModal'
 import { SFComponent } from '@/utils/vue-types'
 import { computed, onMounted, PropType, ref } from 'vue'
 
@@ -53,13 +53,15 @@ const model = computed({
   },
 })
 
-useProvideModalControl({
+useProvideModal({
   close: () => {
     model.value = false
   },
+
+  state: model,
 })
 </script>
 
 <template>
-  <component :is="dialogComponent" v-model="model" v-bind="toBind" />
+  <component :is="dialogComponent" v-bind="toBind" />
 </template>
