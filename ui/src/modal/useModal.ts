@@ -5,20 +5,26 @@ interface Values {
   state: Ref<boolean>
 }
 
-const KEY: InjectionKey<Values> = Symbol('programmatic modal state')
+const INJECTION_KEY: InjectionKey<Values> = Symbol('programmatic modal state')
 
+/**
+ * @private
+ */
 export function useProvideModal(state: Values) {
-  provide(KEY, state)
+  provide(INJECTION_KEY, state)
 }
 
+/**
+ * @private
+ */
 export function useModalState() {
-  const injected = inject(KEY)
+  const injected = inject(INJECTION_KEY)
 
   return injected?.state
 }
 
 export function useModalActions() {
-  const injected = inject(KEY)
+  const injected = inject(INJECTION_KEY)
   if (!injected) {
     throw new Error()
   }
