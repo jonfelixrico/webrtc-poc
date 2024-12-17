@@ -4,7 +4,7 @@ import { SFComponent } from '@/utils/vue-types'
 import { computed, onMounted, PropType, ref } from 'vue'
 
 defineProps({
-  dialogComp: {
+  dialogComponent: {
     type: Object as PropType<SFComponent>,
     required: true,
   },
@@ -61,5 +61,5 @@ useProvideModalControl({
 </script>
 
 <template>
-  <component :is="dialogComp" v-model="model" v-bind="toBind" />
+  <component :is="dialogComponent" v-model="model" v-bind="toBind" />
 </template>

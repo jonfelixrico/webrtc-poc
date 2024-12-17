@@ -38,7 +38,7 @@ useProvideModalOpen({
   <JProgrammaticModalContainer
     v-for="{ id, component, toBind, onHide } in asArray"
     :key="id"
-    :dialog-comp="component"
+    :dialog-component="component"
     :to-bind
     @hide="onHide"
   />
