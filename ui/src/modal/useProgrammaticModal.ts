@@ -43,7 +43,7 @@ export function useProvideProgrammaticModalManager() {
   })
 }
 
-export function useProgrammaticModal() {
+export function useProgrammaticModalOpen() {
   const actions = inject(ACTIONS_KEY)
   if (!actions) {
     throw new Error('no modal open provided')
