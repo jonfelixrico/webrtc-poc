@@ -1,0 +1,42 @@
+<script setup lang="ts">
+import JProgrammaticModal from '@/modal/JProgrammaticModal.vue'
+import { ExtractPropAndEmitTypes, SFComponent } from '@/utils/vue-types'
+import { computed, reactive } from 'vue'
+
+interface ModalEntry<T extends SFComponent = SFComponent> {
+  component: T
+  toBind: ExtractPropAndEmitTypes<T>
+  onHide: () => void
+}
+
+const modals: Map<symbol, ModalEntry> = reactive(new Map())
+const asArray = computed(() => {
+  const entries = Array.from(modals.entries())
+  return entries.map(([id, value]) => ({
+    id,
+    ...value,
+  }))
+})
+
+function open<T extends SFComponent>(
+  component: T,
+  options: { toBind?: ExtractPropAndEmitTypes<T> },
+) {
+  const id = Symbol()
+  modals.set(id, {
+    component,
+    toBind: options?.toBind ?? {},
+    onHide: () => modals.delete(id),
+  })
+}
+</script>
+
+<template>
+  <JProgrammaticModal
+    v-for="{ id, component, toBind, onHide } in asArray"
+    :key="id"
+    :dialog-comp="component"
+    :to-bind
+    @hide="onHide"
+  />
+</template>
