@@ -1,10 +1,12 @@
 import { ExtractPropAndEmitTypes, SFComponent } from '@/utils/vue-types'
-import { inject, InjectionKey, provide, reactive, readonly } from 'vue'
+import { inject, InjectionKey, markRaw, provide, reactive, ref } from 'vue'
 
 interface ModalEntry {
   component: SFComponent
   toBind: ExtractPropAndEmitTypes<SFComponent>
-  onHide: () => void
+  onContainerMount: () => void
+  state: boolean
+  setState: (val: boolean) => void
 }
 
 interface ProgrammaticModalActions {
@@ -34,11 +36,33 @@ export function useProvideProgrammaticModalManager() {
       options: { toBind?: ExtractPropAndEmitTypes<T> },
     ) {
       const id = Symbol()
-      modals.set(id, {
-        component,
-        toBind: options?.toBind ?? {},
-        onHide: () => modals.delete(id),
-      })
+
+      const state = ref(false)
+      function setState(value: boolean) {
+        if (value || !state.value) {
+          return
+        }
+
+        state.value = false
+        setTimeout(() => {
+          modals.delete(id)
+        }, 100)
+      }
+
+      function onContainerMount() {
+        setTimeout(() => state.value, 100)
+      }
+
+      modals.set(
+        id,
+        reactive({
+          component,
+          toBind: markRaw(options?.toBind ?? {}),
+          state,
+          setState: markRaw(setState),
+          onContainerMount: markRaw(onContainerMount),
+        }),
+      )
     },
   })
 }
@@ -61,5 +85,5 @@ export function useProgrammaticModalState() {
     throw new Error('no modal state provided')
   }
 
-  return readonly(state)
+  return state
 }

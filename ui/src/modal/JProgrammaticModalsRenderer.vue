@@ -16,10 +16,19 @@ const asArray = computed(() => {
 
 <template>
   <JProgrammaticModalContainer
-    v-for="{ id, component, toBind, onHide } in asArray"
+    v-for="{
+      id,
+      component,
+      toBind,
+      onContainerMount,
+      state: localState,
+      setState: setLocalState,
+    } in asArray"
     :key="id"
+    v-bind="toBind"
+    :model-value="localState"
     :dialog-component="component"
-    :to-bind
-    @hide="onHide"
+    @update:model-value="setLocalState"
+    @vnode-mounted="onContainerMount"
   />
 </template>
