@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import JProgrammaticModal from '@/modal/JProgrammaticModal.vue'
+import { useProvideModalControl } from '@/modal/useModalControl'
+import { useProvideModalOpen } from '@/modal/useModalOpen'
 import { ExtractPropAndEmitTypes, SFComponent } from '@/utils/vue-types'
 import { computed, reactive } from 'vue'
 
@@ -18,17 +20,19 @@ const asArray = computed(() => {
   }))
 })
 
-function open<T extends SFComponent>(
-  component: T,
-  options: { toBind?: ExtractPropAndEmitTypes<T> },
-) {
-  const id = Symbol()
-  modals.set(id, {
-    component,
-    toBind: options?.toBind ?? {},
-    onHide: () => modals.delete(id),
-  })
-}
+useProvideModalOpen({
+  open<T extends SFComponent>(
+    component: T,
+    options: { toBind?: ExtractPropAndEmitTypes<T> },
+  ) {
+    const id = Symbol()
+    modals.set(id, {
+      component,
+      toBind: options?.toBind ?? {},
+      onHide: () => modals.delete(id),
+    })
+  },
+})
 </script>
 
 <template>
