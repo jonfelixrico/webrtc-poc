@@ -1,9 +1,34 @@
 <script setup lang="ts">
 import { useBodyScrollActions } from '@/utils/useBodyScroll'
 import { useModalZIndex } from '@/modal/useModalZIndex'
-import { onUnmounted, watch } from 'vue'
+import { computed, onUnmounted, watch } from 'vue'
+import { useModalState } from '@/modal/useModal'
 
-const model = defineModel<boolean>()
+const props = defineProps({
+  modelValue: Boolean,
+})
+const emit = defineEmits<{
+  'update:modelValue': [boolean]
+}>()
+
+const injectedState = useModalState()
+
+const model = computed({
+  /*
+   * If injectedState has a value then that means that this is likely a programmatic modal.
+   * Programmatic modals use provide/inject as the modelValue.
+   */
+
+  get: () => injectedState?.value ?? props.modelValue,
+  set: (value) => {
+    if (injectedState) {
+      injectedState.value = value
+      return
+    }
+
+    emit('update:modelValue', value)
+  },
+})
 
 const { index: zIndex, ...modalZIndex } = useModalZIndex()
 watch(
