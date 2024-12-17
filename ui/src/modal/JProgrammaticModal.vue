@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useProvideModalControl } from '@/modal/useModalControl'
 import { SFComponent } from '@/utils/vue-types'
-import { computed, PropType, provide, ref } from 'vue'
+import { computed, onMounted, PropType, ref } from 'vue'
 
 defineProps({
   dialogComp: {
@@ -19,7 +19,19 @@ const emit = defineEmits<{
   hide: []
 }>()
 
+function delay(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
 const state = ref(true)
+
+onMounted(async () => {
+  await delay(100)
+  state.value = true
+})
+
 const model = computed({
   get: () => state.value,
 
@@ -34,9 +46,9 @@ const model = computed({
 
     state.value = false
     if (!newValue) {
-      setTimeout(() => {
+      delay(100).then(() => {
         emit('hide')
-      }, 100)
+      })
     }
   },
 })
