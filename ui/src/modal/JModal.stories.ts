@@ -1,6 +1,6 @@
 import type { ArgTypes, Meta, StoryObj } from '@storybook/vue3'
 import Component from './JModal.vue'
-import Target from './JModalTarget.vue'
+import Renderer from './JModalsRenderer.vue'
 import { useBodyScrollManager } from '@/utils/useBodyScroll'
 import { useZIndexManager } from '@/utils/useZIndex'
 
@@ -10,7 +10,7 @@ const meta: Meta<typeof Component> = {
   decorators: [
     (story) => {
       return {
-        components: { story, Target },
+        components: { story, Renderer },
 
         setup() {
           useBodyScrollManager()
@@ -18,7 +18,7 @@ const meta: Meta<typeof Component> = {
         },
 
         template: `
-          <Target />
+          <Renderer />
           <div class="w-full h-full">
             <div class="grid grid-cols-4 gap-2">
               <div v-for="i in 80" :key="i" class="h-[25dvh] flex flex-row items-center justify-center bg-slate-200">

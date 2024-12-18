@@ -1,8 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
-import Target from './JModalTarget.vue'
+import Renderer from './JModalsRenderer.vue'
 import { useBodyScrollManager } from '@/utils/useBodyScroll'
 import { useModalActions, useProvideModalManager } from './useModalManager'
-import Renderer from './JProgrammaticModalsRenderer.vue'
 import DemoModal from './DemoModal.storybook.vue'
 import { useZIndexManager } from '@/utils/useZIndex'
 
@@ -10,7 +9,7 @@ const meta: Meta = {
   decorators: [
     (story) => {
       return {
-        components: { story, Target, Renderer },
+        components: { story, Renderer },
 
         setup() {
           useBodyScrollManager()
@@ -19,7 +18,6 @@ const meta: Meta = {
         },
 
         template: `
-          <Target />
           <story />  
           <Renderer />
         `,

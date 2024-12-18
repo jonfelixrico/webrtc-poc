@@ -15,6 +15,12 @@ const asArray = computed(() => {
 </script>
 
 <template>
+  <div
+    data-modal-target
+    class="fixed onset-0 isolate z-[100]"
+    v-bind="$attrs"
+  />
+
   <JProgrammaticModalContainer
     v-for="{
       id,
