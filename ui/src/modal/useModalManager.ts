@@ -73,13 +73,13 @@ export function useProvideModalManager() {
   provide(ACTIONS_KEY, useActions(modals))
 }
 
-export function useProgrammaticModalOpen() {
+export function useModalActions() {
   const actions = inject(ACTIONS_KEY)
   if (!actions) {
     throw new Error('no modal open provided')
   }
 
-  return actions.open
+  return actions
 }
 
 /**

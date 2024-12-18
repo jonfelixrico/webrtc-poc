@@ -1,10 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3'
 import Target from './JModalTarget.vue'
 import { useBodyScrollManager } from '@/utils/useBodyScroll'
-import {
-  useProgrammaticModalOpen,
-  useProvideModalManager,
-} from './useModalManager'
+import { useModalActions, useProvideModalManager } from './useModalManager'
 import Renderer from './JProgrammaticModalsRenderer.vue'
 import DemoModal from './DemoModal.storybook.vue'
 import { useZIndexManager } from '@/utils/useZIndex'
@@ -45,7 +42,7 @@ export const Defualt: Story = {
 
   render: () => ({
     setup() {
-      const open = useProgrammaticModalOpen()
+      const { open } = useModalActions()
       function openModal() {
         open(DemoModal)
       }
