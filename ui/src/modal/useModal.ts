@@ -59,6 +59,9 @@ export function useProvideModalManagerState() {
   return state
 }
 
+/**
+ * @private
+ */
 export const ModalPlugin: Plugin = {
   install: (app) => {
     app.provide(STATE_KEY, reactive(new Map()))

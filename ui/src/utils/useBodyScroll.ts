@@ -32,6 +32,9 @@ export function useBodyScrollActions() {
   }
 }
 
+/**
+ * @private
+ */
 export const BodyScrollPlugin: Plugin = {
   install: (app) => {
     const references = reactive(new Set<symbol>())

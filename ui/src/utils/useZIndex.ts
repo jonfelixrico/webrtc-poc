@@ -2,6 +2,9 @@ import { computed, inject, InjectionKey, Plugin, reactive } from 'vue'
 
 const KEY: InjectionKey<symbol[]> = Symbol('z-index')
 
+/**
+ * @private
+ */
 export const ZIndexPlugin: Plugin = {
   install: (app) => {
     const stack: symbol[] = reactive([])
