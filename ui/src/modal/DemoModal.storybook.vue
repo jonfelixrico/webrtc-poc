@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import JModal from '@/modal/JModal.vue'
-import { useModalActions } from '@/modal/useModalManager'
+import { useModalActions } from '@/modal/useModal'
 import DemoModal from '@/modal/DemoModal.storybook.vue'
 
 const { open } = useModalActions()

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useProvideModal } from '@/modal/useModal'
+import { useProvideLocalModal } from '@/modal/useLocalModal'
 import { SFComponent } from '@/utils/vue-types'
 import { PropType } from 'vue'
 
@@ -19,7 +19,7 @@ const model = defineModel<boolean>({
   default: false,
 })
 
-useProvideModal({
+useProvideLocalModal({
   close: () => {
     model.value = false
   },

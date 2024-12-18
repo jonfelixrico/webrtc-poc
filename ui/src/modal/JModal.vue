@@ -2,7 +2,7 @@
 import { useBodyScrollActions } from '@/utils/useBodyScroll'
 import { useZIndex } from '@/utils/useZIndex'
 import { computed, onUnmounted, watch } from 'vue'
-import { useModalState } from '@/modal/useModal'
+import { useLocalModalState } from '@/modal/useLocalModal'
 
 const props = defineProps({
   modelValue: Boolean,
@@ -11,7 +11,7 @@ const emit = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
-const injectedState = useModalState()
+const injectedState = useLocalModalState()
 
 const model = computed({
   /*
