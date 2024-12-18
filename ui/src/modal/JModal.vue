@@ -12,14 +12,6 @@ const emit = defineEmits<{
 }>()
 
 const localModal = useInternalLocalModalProps()
-async function doHousekeeping() {
-  if (!localModal) {
-    return
-  }
-
-  await nextTick()
-  localModal.emitDismissDone()
-}
 
 const model = computed({
   /*
@@ -87,10 +79,10 @@ function getZIndexClass(offset: number = 0) {
 
 <template>
   <Teleport to="[data-modal-target]" defer>
-    <Transition name="backdrop" @after-leave="doHousekeeping">
+    <Transition name="backdrop" @after-leave="localModal?.emitDismissDone">
       <div
         v-if="model"
-        class="fixed inset-0 bg-black/10 w-full h-full"
+        class="fixed inset-0 bg-black/10 w-full h-full ease-in-out transition-opacity duration-300"
         :class="getZIndexClass()"
         @click.self="hide"
       />
@@ -99,7 +91,7 @@ function getZIndexClass(offset: number = 0) {
     <Transition name="content">
       <div
         v-if="model"
-        class="fixed inset-0 w-full h-full flex flex-row justify-center items-center overflow-auto pointer-events-none"
+        class="fixed inset-0 w-full h-full flex flex-row justify-center items-center overflow-auto pointer-events-none ease-in transition duration-300"
         :class="getZIndexClass(1)"
       >
         <div class="pointer-events-auto">
@@ -111,19 +103,9 @@ function getZIndexClass(offset: number = 0) {
 </template>
 
 <style lang="scss" scoped>
-.backdrop-enter-active,
-.backdrop-leave-active {
-  transition: opacity 0.5s ease;
-}
-
 .backdrop-enter-from,
 .backdrop-leave-to {
   opacity: 0;
-}
-
-.content-enter-active,
-.content-leave-active {
-  transition: transform 0.5s ease;
 }
 
 .content-enter-from,
