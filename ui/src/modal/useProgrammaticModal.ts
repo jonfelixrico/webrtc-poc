@@ -46,13 +46,13 @@ export function useProvideProgrammaticModalManager() {
         state.value = false
         setTimeout(() => {
           modals.delete(id)
-        }, 100)
+        }, 500)
       }
 
       function onContainerMount() {
         setTimeout(() => {
           state.value = true
-        }, 100)
+        }, 500)
       }
 
       modals.set(
