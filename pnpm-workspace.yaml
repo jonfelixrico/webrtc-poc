@@ -2,3 +2,4 @@ packages:
   - be-nest
   - fe-nuxt
   - common
+  - ui
