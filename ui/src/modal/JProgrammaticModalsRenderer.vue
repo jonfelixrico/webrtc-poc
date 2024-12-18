@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import JProgrammaticModalContainer from '@/modal/JProgrammaticModalContainer.vue'
 import { useProgrammaticModalState } from '@/modal/useProgrammaticModal'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
 const state = useProgrammaticModalState()
 
@@ -29,6 +29,6 @@ const asArray = computed(() => {
     :model-value="localState"
     :dialog-component="component"
     @update:model-value="setLocalState"
-    @vnode-mounted="onContainerMount"
+    @vue:mounted="onContainerMount"
   />
 </template>

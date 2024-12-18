@@ -50,7 +50,9 @@ export function useProvideProgrammaticModalManager() {
       }
 
       function onContainerMount() {
-        setTimeout(() => state.value, 100)
+        setTimeout(() => {
+          state.value = true
+        }, 100)
       }
 
       modals.set(
