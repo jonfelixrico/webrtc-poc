@@ -82,7 +82,7 @@ function getZIndexClass(offset: number = 0) {
     <Transition name="backdrop" @after-leave="localModal?.emitDismissDone">
       <div
         v-if="model"
-        class="fixed inset-0 bg-black/10 w-full h-full ease-in-out transition-opacity duration-300"
+        class="fixed inset-0 bg-black/10 w-full h-full ease-in-out transition-opacity duration-200"
         :class="getZIndexClass()"
         @click.self="hide"
       />
@@ -91,7 +91,7 @@ function getZIndexClass(offset: number = 0) {
     <Transition name="content">
       <div
         v-if="model"
-        class="fixed inset-0 w-full h-full flex flex-row justify-center items-center overflow-auto pointer-events-none ease-in transition duration-300"
+        class="fixed inset-0 w-full h-full flex flex-row justify-center items-center overflow-auto pointer-events-none ease-in transition duration-100"
         :class="getZIndexClass(1)"
       >
         <div class="pointer-events-auto">
