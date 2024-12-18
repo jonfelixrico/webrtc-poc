@@ -1,12 +1,11 @@
 import { ExtractPropAndEmitTypes, SFComponent } from '@/utils/vue-types'
-import { inject, InjectionKey, markRaw, provide, reactive, ref } from 'vue'
+import { inject, InjectionKey, markRaw, provide, reactive, Ref, ref } from 'vue'
 
 interface ModalEntry {
   component: SFComponent
   toBind: ExtractPropAndEmitTypes<SFComponent>
-  onContainerMount: () => void
-  state: boolean
-  setState: (val: boolean) => void
+  model: Ref<boolean>
+  delete: () => void
 }
 type ModalMap = Map<symbol, ModalEntry>
 
@@ -33,32 +32,17 @@ function useActions(modals: ModalMap) {
     ) {
       const id = Symbol()
 
-      const state = ref(false)
-      function setState(value: boolean) {
-        if (value || !state.value) {
-          return
-        }
-
-        state.value = false
-        setTimeout(() => {
-          modals.delete(id)
-        }, 500)
-      }
-
-      function onContainerMount() {
-        setTimeout(() => {
-          state.value = true
-        }, 500)
+      function deleteEntry() {
+        modals.delete(id)
       }
 
       modals.set(
         id,
-        reactive({
-          component: markRaw(component),
-          toBind: markRaw(options?.toBind ?? {}),
-          state,
-          setState: markRaw(setState),
-          onContainerMount: markRaw(onContainerMount),
+        markRaw({
+          component,
+          toBind: options?.toBind ?? {},
+          model: ref(false),
+          delete: deleteEntry,
         }),
       )
     },

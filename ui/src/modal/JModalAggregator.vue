@@ -21,19 +21,16 @@ const asArray = computed(() => {
   />
 
   <JProgModal
-    v-for="{
-      id,
-      component,
-      toBind,
-      onContainerMount,
-      state: localState,
-      setState: setLocalState,
-    } in asArray"
+    v-for="{ id, component, toBind, model, delete: deleteFn } in asArray"
     :key="id"
     v-bind="toBind"
-    :model-value="localState"
+    :model-value="model.value"
     :dialog-component="component"
-    @update:model-value="setLocalState"
-    @vue:mounted="onContainerMount"
+    :delete="deleteFn"
+    @update:model-value="
+      (value) => {
+        model.value = value
+      }
+    "
   />
 </template>

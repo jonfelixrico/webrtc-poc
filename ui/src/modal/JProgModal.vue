@@ -4,9 +4,9 @@ import {
   useProvideLocalModalProps,
 } from '@/modal/useLocalModal'
 import { SFComponent } from '@/utils/vue-types'
-import { PropType } from 'vue'
+import { nextTick, onMounted, PropType } from 'vue'
 
-defineProps({
+const props = defineProps({
   dialogComponent: {
     type: Object as PropType<SFComponent>,
     required: true,
@@ -15,6 +15,11 @@ defineProps({
   toBind: {
     type: Object,
     default: () => ({}),
+  },
+
+  delete: {
+    type: Function as PropType<() => void>,
+    required: true,
   },
 })
 
@@ -29,7 +34,13 @@ useProvideLocalModalProps({
 })
 
 useProvideInternalLocalModalProps({
-  state: model,
+  model,
+  delete: props.delete,
+})
+
+onMounted(async () => {
+  await nextTick()
+  model.value = true
 })
 </script>
 

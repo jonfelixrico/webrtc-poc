@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useBodyScrollActions } from '@/utils/useBodyScroll'
 import { useZIndex } from '@/utils/useZIndex'
-import { computed, onUnmounted, watch } from 'vue'
+import { computed, nextTick, onUnmounted, watch } from 'vue'
 import { useInternalLocalModalProps } from '@/modal/useLocalModal'
 
 const props = defineProps({
@@ -12,6 +12,13 @@ const emit = defineEmits<{
 }>()
 
 const localModal = useInternalLocalModalProps()
+async function doHousekeeping() {
+  if (!localModal) {
+    return
+  }
+
+  localModal.delete()
+}
 
 const model = computed({
   /*
@@ -19,10 +26,10 @@ const model = computed({
    * Programmatic modals use provide/inject as the modelValue.
    */
 
-  get: () => localModal?.state.value ?? props.modelValue,
+  get: () => localModal?.model.value ?? props.modelValue,
   set: (value) => {
     if (localModal) {
-      localModal.state.value = value
+      localModal.model.value = value
       return
     }
 
@@ -79,7 +86,7 @@ function getZIndexClass(offset: number = 0) {
 
 <template>
   <Teleport to="[data-modal-target]" defer>
-    <Transition name="backdrop">
+    <Transition name="backdrop" @after-leave="doHousekeeping">
       <div
         v-if="model"
         class="fixed inset-0 bg-black/10 w-full h-full"
