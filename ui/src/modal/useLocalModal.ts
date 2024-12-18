@@ -1,35 +1,45 @@
 import { inject, InjectionKey, provide, Ref } from 'vue'
 
-interface Values {
-  close: () => void
+interface InternalProps {
   state: Ref<boolean>
 }
 
-const INJECTION_KEY: InjectionKey<Values> = Symbol('programmatic modal state')
+const INTERNAL_PROPS_KEY: InjectionKey<InternalProps> = Symbol(
+  'internal local modal props',
+)
 
 /**
  * @private
  */
-export function useProvideLocalModal(state: Values) {
-  provide(INJECTION_KEY, state)
+export function useProvideInternalLocalModalProps(props: InternalProps) {
+  provide(INTERNAL_PROPS_KEY, props)
 }
 
 /**
  * @private
  */
-export function useLocalModalState() {
-  const injected = inject(INJECTION_KEY)
+export function useInternalLocalModalProps() {
+  return inject(INTERNAL_PROPS_KEY)
+}
 
-  return injected?.state
+interface Props {
+  close: () => void
+}
+
+const PROPS_KEY: InjectionKey<Props> = Symbol('public local modal props')
+
+/**
+ * @private
+ */
+export function useProvideLocalModalProps(props: Props) {
+  provide(PROPS_KEY, props)
 }
 
 export function useLocalModalActions() {
-  const injected = inject(INJECTION_KEY)
+  const injected = inject(PROPS_KEY)
   if (!injected) {
-    throw new Error()
+    throw new Error('local modal props not provided')
   }
-
-  const { close } = injected
 
   return {
     close,

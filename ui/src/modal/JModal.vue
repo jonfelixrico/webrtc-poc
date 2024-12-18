@@ -2,7 +2,7 @@
 import { useBodyScrollActions } from '@/utils/useBodyScroll'
 import { useZIndex } from '@/utils/useZIndex'
 import { computed, onUnmounted, watch } from 'vue'
-import { useLocalModalState } from '@/modal/useLocalModal'
+import { useInternalLocalModalProps } from '@/modal/useLocalModal'
 
 const props = defineProps({
   modelValue: Boolean,
@@ -11,7 +11,7 @@ const emit = defineEmits<{
   'update:modelValue': [boolean]
 }>()
 
-const injectedState = useLocalModalState()
+const localModal = useInternalLocalModalProps()
 
 const model = computed({
   /*
@@ -19,10 +19,10 @@ const model = computed({
    * Programmatic modals use provide/inject as the modelValue.
    */
 
-  get: () => injectedState?.value ?? props.modelValue,
+  get: () => localModal?.state.value ?? props.modelValue,
   set: (value) => {
-    if (injectedState) {
-      injectedState.value = value
+    if (localModal) {
+      localModal.state.value = value
       return
     }
 
