@@ -1,20 +1,20 @@
 {
   "name": "@webrtcpoc/ui",
   "version": "0.0.1",
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     "modal": {
-      "import": "./modal.mjs",
-      "types": "./modal/index.d.ts"
+      "import": "./dist/modal.mjs",
+      "types": "./dist/modal/index.d.ts"
     },
     "utils": {
-      "import": "./utils.mjs",
-      "types": "./utils/index.d.ts"
+      "import": "./dist/utils.mjs",
+      "types": "./dist/utils/index.d.ts"
     },
     "default": {
-      "import": "./index.mjs",
-      "require": "./index.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.mjs"
     }
   }
 }
