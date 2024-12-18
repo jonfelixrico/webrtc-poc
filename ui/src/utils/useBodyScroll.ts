@@ -24,7 +24,7 @@ export function useBodyScrollActions() {
     references?.delete(localKey)
   }
 
-  onBeforeUnmount(hide)
+  onBeforeUnmount(show)
 
   return {
     hide,
@@ -38,9 +38,9 @@ export const BodyScrollPlugin: Plugin = {
     app.provide(KEY, references)
 
     watch(
-      references,
-      (references) => {
-        if (references.size) {
+      () => references.size,
+      (size) => {
+        if (size) {
           document.body.classList.add(OVERFLOW_HIDDEN)
           console.debug('Activated body overflow-hidden')
         } else {
