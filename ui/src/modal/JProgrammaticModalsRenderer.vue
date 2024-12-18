@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import JProgrammaticModalContainer from '@/modal/JProgrammaticModalContainer.vue'
-import { useProgrammaticModalState } from '@/modal/useModalManager'
+import { useProvideModalManagerState } from '@/modal/useModalManager'
 import { computed } from 'vue'
 
-const state = useProgrammaticModalState()
+const state = useProvideModalManagerState()
 
 const asArray = computed(() => {
   const entries = Array.from(state.entries())

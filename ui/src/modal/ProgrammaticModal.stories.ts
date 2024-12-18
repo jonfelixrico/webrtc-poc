@@ -3,7 +3,7 @@ import Target from './JModalTarget.vue'
 import { useBodyScrollManager } from '@/utils/useBodyScroll'
 import {
   useProgrammaticModalOpen,
-  useProvideProgrammaticModalManager,
+  useProvideModalManager,
 } from './useModalManager'
 import Renderer from './JProgrammaticModalsRenderer.vue'
 import DemoModal from './DemoModal.storybook.vue'
@@ -17,7 +17,7 @@ const meta: Meta = {
 
         setup() {
           useBodyScrollManager()
-          useProvideProgrammaticModalManager()
+          useProvideModalManager()
           useZIndexManager()
         },
 

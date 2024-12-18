@@ -25,7 +25,7 @@ const ACTIONS_KEY: InjectionKey<ProgrammaticModalActions> = Symbol(
   'programmatic modal open',
 )
 
-function useModalManagerActions(modals: ModalMap) {
+function useActions(modals: ModalMap) {
   const actions = {
     open<T extends SFComponent>(
       component: T,
@@ -67,10 +67,10 @@ function useModalManagerActions(modals: ModalMap) {
   return actions
 }
 
-export function useProvideProgrammaticModalManager() {
+export function useProvideModalManager() {
   const modals: ModalMap = reactive(new Map())
   provide(STATE_KEY, modals)
-  provide(ACTIONS_KEY, useModalManagerActions(modals))
+  provide(ACTIONS_KEY, useActions(modals))
 }
 
 export function useProgrammaticModalOpen() {
@@ -85,7 +85,7 @@ export function useProgrammaticModalOpen() {
 /**
  * @private
  */
-export function useProgrammaticModalState() {
+export function useProvideModalManagerState() {
   const state = inject(STATE_KEY)
   if (!state) {
     throw new Error('no modal state provided')
