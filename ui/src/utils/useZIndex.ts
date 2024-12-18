@@ -1,8 +1,8 @@
 import { computed, inject, InjectionKey, provide, reactive } from 'vue'
 
-const KEY: InjectionKey<symbol[]> = Symbol('modal z-index')
+const KEY: InjectionKey<symbol[]> = Symbol('z-index')
 
-export function useModalZIndexManager() {
+export function useZIndexManager() {
   const stack: symbol[] = reactive([])
   provide(KEY, stack)
 }
@@ -46,7 +46,7 @@ function useModalZIndexBase() {
   }
 }
 
-export function useModalZIndex() {
+export function useZIndex() {
   const { index, ...actions } = useModalZIndexBase()
 
   const transformedIndex = computed(() => {

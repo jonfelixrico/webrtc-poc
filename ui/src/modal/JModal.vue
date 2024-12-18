@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useBodyScrollActions } from '@/utils/useBodyScroll'
-import { useModalZIndex } from '@/modal/useModalZIndex'
+import { useZIndex } from '@/utils/useZIndex'
 import { computed, onUnmounted, watch } from 'vue'
 import { useModalState } from '@/modal/useModal'
 
@@ -30,7 +30,7 @@ const model = computed({
   },
 })
 
-const { index: zIndex, ...modalZIndex } = useModalZIndex()
+const { index: zIndex, ...modalZIndex } = useZIndex()
 watch(
   model,
   (model) => {

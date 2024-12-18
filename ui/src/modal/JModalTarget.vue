@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useModalZIndexManager } from '@/modal/useModalZIndex'
+import { useZIndexManager } from '@/utils/useZIndex'
 
-useModalZIndexManager()
+useZIndexManager()
 </script>
 
 <template>
