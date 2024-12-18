@@ -2,7 +2,7 @@ import { inject, InjectionKey, provide, Ref } from 'vue'
 
 interface InternalProps {
   model: Ref<boolean>
-  delete: () => void
+  emitDismissDone: () => void
 }
 
 const INTERNAL_PROPS_KEY: InjectionKey<InternalProps> = Symbol(

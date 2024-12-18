@@ -35,7 +35,7 @@ useProvideLocalModalProps({
 
 useProvideInternalLocalModalProps({
   model,
-  delete: props.delete,
+  emitDismissDone: props.delete,
 })
 
 onMounted(async () => {
