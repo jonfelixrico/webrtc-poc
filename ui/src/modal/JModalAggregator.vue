@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import JProgrammaticModalContainer from '@/modal/JProgrammaticModalContainer.vue'
+import JProgModal from '@/modal/JProgModal.vue'
 import { useProvideModalManagerState } from '@/modal/useModal'
 import { computed } from 'vue'
 
@@ -20,7 +20,7 @@ const asArray = computed(() => {
     v-bind="$attrs"
   />
 
-  <JProgrammaticModalContainer
+  <JProgModal
     v-for="{
       id,
       component,
