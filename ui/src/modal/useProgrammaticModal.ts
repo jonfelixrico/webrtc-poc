@@ -12,7 +12,7 @@ interface ModalEntry {
 interface ProgrammaticModalActions {
   open<T extends SFComponent>(
     component: T,
-    options: {
+    options?: {
       toBind?: ExtractPropAndEmitTypes<T>
     },
   ): void
@@ -33,7 +33,7 @@ export function useProvideProgrammaticModalManager() {
   provide(ACTIONS_KEY, {
     open<T extends SFComponent>(
       component: T,
-      options: { toBind?: ExtractPropAndEmitTypes<T> },
+      options?: { toBind?: ExtractPropAndEmitTypes<T> },
     ) {
       const id = Symbol()
 
