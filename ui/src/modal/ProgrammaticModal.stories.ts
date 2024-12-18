@@ -32,7 +32,7 @@ export default meta
 
 type Story = StoryObj
 
-export const Defualt: Story = {
+export const Default: Story = {
   args: {
     default: 'Content',
     modelValue: false,

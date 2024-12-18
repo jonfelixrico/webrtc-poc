@@ -45,7 +45,7 @@ type ExtendedStory<S extends StoryObj, T> = S &
     args: Partial<T>
   }>
 
-export const Defualt: Story = {
+export const Default: Story = {
   args: {
     default: 'Content',
     modelValue: false,
