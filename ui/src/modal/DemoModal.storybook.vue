@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import JModal from '@/modal/JModal.vue'
-import { useProgrammaticModalOpen } from '@/modal/useProgrammaticModal'
+import { useProgrammaticModalOpen } from '@/modal/useModalManager'
 import DemoModal from '@/modal/DemoModal.storybook.vue'
 
 const open = useProgrammaticModalOpen()

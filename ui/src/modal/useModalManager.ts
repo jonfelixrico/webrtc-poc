@@ -8,6 +8,7 @@ interface ModalEntry {
   state: boolean
   setState: (val: boolean) => void
 }
+type ModalMap = Map<symbol, ModalEntry>
 
 interface ProgrammaticModalActions {
   open<T extends SFComponent>(
@@ -18,19 +19,14 @@ interface ProgrammaticModalActions {
   ): void
 }
 
-const STATE_KEY: InjectionKey<Map<symbol, ModalEntry>> = Symbol(
-  'programmatic modal state',
-)
+const STATE_KEY: InjectionKey<ModalMap> = Symbol('programmatic modal state')
 
 const ACTIONS_KEY: InjectionKey<ProgrammaticModalActions> = Symbol(
   'programmatic modal open',
 )
 
-export function useProvideProgrammaticModalManager() {
-  const modals: Map<symbol, ModalEntry> = reactive(new Map())
-  provide(STATE_KEY, modals)
-
-  provide(ACTIONS_KEY, {
+function useModalManagerActions(modals: ModalMap) {
+  const actions = {
     open<T extends SFComponent>(
       component: T,
       options?: { toBind?: ExtractPropAndEmitTypes<T> },
@@ -66,7 +62,15 @@ export function useProvideProgrammaticModalManager() {
         }),
       )
     },
-  })
+  }
+
+  return actions
+}
+
+export function useProvideProgrammaticModalManager() {
+  const modals: ModalMap = reactive(new Map())
+  provide(STATE_KEY, modals)
+  provide(ACTIONS_KEY, useModalManagerActions(modals))
 }
 
 export function useProgrammaticModalOpen() {

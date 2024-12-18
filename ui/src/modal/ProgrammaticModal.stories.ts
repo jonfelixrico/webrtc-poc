@@ -4,7 +4,7 @@ import { useBodyScrollManager } from '@/utils/useBodyScroll'
 import {
   useProgrammaticModalOpen,
   useProvideProgrammaticModalManager,
-} from './useProgrammaticModal'
+} from './useModalManager'
 import Renderer from './JProgrammaticModalsRenderer.vue'
 import DemoModal from './DemoModal.storybook.vue'
 import { useZIndexManager } from '@/utils/useZIndex'

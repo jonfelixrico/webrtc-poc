@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import JProgrammaticModalContainer from '@/modal/JProgrammaticModalContainer.vue'
-import { useProgrammaticModalState } from '@/modal/useProgrammaticModal'
-import { computed, watch } from 'vue'
+import { useProgrammaticModalState } from '@/modal/useModalManager'
+import { computed } from 'vue'
 
 const state = useProgrammaticModalState()
 
