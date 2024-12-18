@@ -1,10 +1,12 @@
-import { computed, inject, InjectionKey, provide, reactive } from 'vue'
+import { computed, inject, InjectionKey, Plugin, reactive } from 'vue'
 
 const KEY: InjectionKey<symbol[]> = Symbol('z-index')
 
-export function useZIndexManager() {
-  const stack: symbol[] = reactive([])
-  provide(KEY, stack)
+export const ZIndexPlugin: Plugin = {
+  install: (app) => {
+    const stack: symbol[] = reactive([])
+    app.provide(KEY, stack)
+  },
 }
 
 function useModalZIndexBase() {

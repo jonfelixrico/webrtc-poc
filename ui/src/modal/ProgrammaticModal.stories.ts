@@ -1,21 +1,13 @@
-import type { Meta, StoryObj } from '@storybook/vue3'
+import { type Meta, type StoryObj } from '@storybook/vue3'
 import Renderer from './JModalAggregator.vue'
-import { useBodyScrollManager } from '@/utils/useBodyScroll'
-import { useModalActions, useProvideModalManager } from './useModal'
+import { useModalActions } from './useModal'
 import DemoModal from './DemoModal.storybook.vue'
-import { useZIndexManager } from '@/utils/useZIndex'
 
 const meta: Meta = {
   decorators: [
     (story) => {
       return {
         components: { story, Renderer },
-
-        setup() {
-          useBodyScrollManager()
-          useProvideModalManager()
-          useZIndexManager()
-        },
 
         template: `
           <story />  

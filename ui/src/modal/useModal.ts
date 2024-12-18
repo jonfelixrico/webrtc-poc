@@ -1,5 +1,5 @@
 import { ExtractPropAndEmitTypes, SFComponent } from '@/utils/vue-types'
-import { inject, InjectionKey, markRaw, provide, reactive, Ref, ref } from 'vue'
+import { inject, InjectionKey, markRaw, reactive, Ref, ref, Plugin } from 'vue'
 
 interface ModalEntry {
   component: SFComponent
@@ -9,20 +9,7 @@ interface ModalEntry {
 }
 type ModalMap = Map<symbol, ModalEntry>
 
-interface ProgrammaticModalActions {
-  open<T extends SFComponent>(
-    component: T,
-    options?: {
-      toBind?: ExtractPropAndEmitTypes<T>
-    },
-  ): void
-}
-
 const STATE_KEY: InjectionKey<ModalMap> = Symbol('programmatic modal state')
-
-const ACTIONS_KEY: InjectionKey<ProgrammaticModalActions> = Symbol(
-  'programmatic modal open',
-)
 
 function useActions(modals: ModalMap) {
   const actions = {
@@ -51,19 +38,13 @@ function useActions(modals: ModalMap) {
   return actions
 }
 
-export function useProvideModalManager() {
-  const modals: ModalMap = reactive(new Map())
-  provide(STATE_KEY, modals)
-  provide(ACTIONS_KEY, useActions(modals))
-}
-
 export function useModalActions() {
-  const actions = inject(ACTIONS_KEY)
-  if (!actions) {
+  const state = inject(STATE_KEY)
+  if (!state) {
     throw new Error('no modal open provided')
   }
 
-  return actions
+  return useActions(state)
 }
 
 /**
@@ -76,4 +57,10 @@ export function useProvideModalManagerState() {
   }
 
   return state
+}
+
+export const ModalPlugin: Plugin = {
+  install: (app) => {
+    app.provide(STATE_KEY, reactive(new Map()))
+  },
 }

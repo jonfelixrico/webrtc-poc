@@ -1,8 +1,6 @@
-import type { ArgTypes, Meta, StoryObj } from '@storybook/vue3'
+import { setup, type ArgTypes, type Meta, type StoryObj } from '@storybook/vue3'
 import Component from './JModal.vue'
 import Renderer from './JModalAggregator.vue'
-import { useBodyScrollManager } from '@/utils/useBodyScroll'
-import { useZIndexManager } from '@/utils/useZIndex'
 
 const meta: Meta<typeof Component> = {
   component: Component,
@@ -11,11 +9,6 @@ const meta: Meta<typeof Component> = {
     (story) => {
       return {
         components: { story, Renderer },
-
-        setup() {
-          useBodyScrollManager()
-          useZIndexManager()
-        },
 
         template: `
           <Renderer />

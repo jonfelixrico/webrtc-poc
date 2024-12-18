@@ -2,7 +2,7 @@ import {
   inject,
   InjectionKey,
   onBeforeUnmount,
-  provide,
+  Plugin,
   reactive,
   watch,
 } from 'vue'
@@ -10,27 +10,6 @@ import {
 const KEY: InjectionKey<Set<symbol>> = Symbol('body scroll')
 
 const OVERFLOW_HIDDEN = 'overflow-hidden'
-
-export function useBodyScrollManager() {
-  const references = reactive(new Set<symbol>())
-  provide(KEY, references)
-
-  watch(
-    references,
-    (references) => {
-      if (references.size) {
-        document.body.classList.add(OVERFLOW_HIDDEN)
-        console.debug('Activated body overflow-hidden')
-      } else {
-        document.body.classList.remove(OVERFLOW_HIDDEN)
-        console.debug('Deactivated body overflow-hidden')
-      }
-    },
-    {
-      immediate: true,
-    },
-  )
-}
 
 export function useBodyScrollActions() {
   const references = inject(KEY)
@@ -51,4 +30,27 @@ export function useBodyScrollActions() {
     hide,
     show,
   }
+}
+
+export const BodyScrollPlugin: Plugin = {
+  install: (app) => {
+    const references = reactive(new Set<symbol>())
+    app.provide(KEY, references)
+
+    watch(
+      references,
+      (references) => {
+        if (references.size) {
+          document.body.classList.add(OVERFLOW_HIDDEN)
+          console.debug('Activated body overflow-hidden')
+        } else {
+          document.body.classList.remove(OVERFLOW_HIDDEN)
+          console.debug('Deactivated body overflow-hidden')
+        }
+      },
+      {
+        immediate: true,
+      },
+    )
+  },
 }
