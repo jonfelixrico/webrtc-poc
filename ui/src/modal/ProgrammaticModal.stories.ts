@@ -7,6 +7,7 @@ import {
 } from './useProgrammaticModal'
 import Renderer from './JProgrammaticModalsRenderer.vue'
 import DemoModal from './DemoModal.storybook.vue'
+import { useZIndexManager } from '@/utils/useZIndex'
 
 const meta: Meta = {
   decorators: [
@@ -17,13 +18,13 @@ const meta: Meta = {
         setup() {
           useBodyScrollManager()
           useProvideProgrammaticModalManager()
+          useZIndexManager()
         },
 
         template: `
-          <Target>
-            <story />  
-            <Renderer />
-          </Target>
+          <Target />
+          <story />  
+          <Renderer />
         `,
       }
     },
