@@ -1,4 +1,12 @@
-export * from './utils'
-export * from './modal'
+import { ModalPlugin } from '@/modal/useModal'
+import { BodyScrollPlugin } from '@/utils/useBodyScroll'
+import { ZIndexPlugin } from '@/utils/useZIndex'
+import { Plugin } from 'vue'
 
-export * from './installer'
+export const UiPlugin: Plugin = {
+  install: (app) => {
+    app.use(ZIndexPlugin)
+    app.use(BodyScrollPlugin)
+    app.use(ModalPlugin)
+  },
+}
