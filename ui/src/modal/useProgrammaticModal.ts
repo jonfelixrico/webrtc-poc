@@ -56,7 +56,7 @@ export function useProvideProgrammaticModalManager() {
       modals.set(
         id,
         reactive({
-          component,
+          component: markRaw(component),
           toBind: markRaw(options?.toBind ?? {}),
           state,
           setState: markRaw(setState),
