@@ -4,7 +4,6 @@ import { useProvideModalManagerState } from '@/modal/useModal'
 import { computed } from 'vue'
 
 const state = useProvideModalManagerState()
-
 const asArray = computed(() => {
   const entries = Array.from(state.entries())
   return entries.map(([id, value]) => ({

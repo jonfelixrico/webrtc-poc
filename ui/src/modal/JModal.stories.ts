@@ -1,6 +1,6 @@
 import type { ArgTypes, Meta, StoryObj } from '@storybook/vue3'
 import Component from './JModal.vue'
-import Renderer from './JModalsRenderer.vue'
+import Renderer from './JModalAggregator.vue'
 import { useBodyScrollManager } from '@/utils/useBodyScroll'
 import { useZIndexManager } from '@/utils/useZIndex'
 
