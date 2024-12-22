@@ -80,7 +80,7 @@ function hide() {
       <div
         v-if="model"
         class="fixed inset-0 bg-black/10 w-full h-full ease-in-out transition-opacity duration-200"
-        :style="{ zIndex }"
+        :style="{ zIndex: zIndex ?? 0 }"
         @click.self="hide"
       />
     </Transition>
@@ -89,7 +89,7 @@ function hide() {
       <div
         v-if="model"
         class="fixed inset-0 w-full h-full flex flex-row justify-center items-center overflow-auto pointer-events-none ease-in transition duration-100"
-        :style="{ zIndex: zIndex + 1 }"
+        :style="{ zIndex: (zIndex ?? 0) + 1 }"
       >
         <div class="pointer-events-auto">
           <slot :hide />
