@@ -29,5 +29,15 @@
         "staticStorybookTargetName": "static-storybook"
       }
     }
-  ]
+  ],
+  "targetDefaults": {
+    "build*": {
+      "cache": true,
+      "dependsOn": ["^build"]
+    },
+
+    "dev*": {
+      "dependsOn": ["^build"]
+    }
+  }
 }
