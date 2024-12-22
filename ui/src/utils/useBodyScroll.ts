@@ -43,7 +43,7 @@ export const BodyScrollPlugin: Plugin = {
     watch(
       () => references.size,
       (size) => {
-        if (!document.body) {
+        if (!document?.body) {
           return
         }
 
