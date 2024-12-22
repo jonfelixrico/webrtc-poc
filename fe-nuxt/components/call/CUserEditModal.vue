@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, useModal } from '#imports'
+import { JModal } from '@webrtcpoc/ui/modal'
 
 const props = defineProps<{
   name: string
