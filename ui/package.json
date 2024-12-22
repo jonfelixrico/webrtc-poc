@@ -12,6 +12,9 @@
       "import": "./dist/utils.mjs",
       "types": "./dist/utils/index.d.ts"
     },
+    "./style.css": {
+      "import": "./dist/style.css"
+    },
     ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.mjs"
