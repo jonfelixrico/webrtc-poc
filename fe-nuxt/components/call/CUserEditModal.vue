@@ -31,8 +31,8 @@ function submit() {
         </template>
 
         <template #footer>
-          <div class="flex flex-row justify-end">
-            <UButton @click="hide">Cancel</UButton>
+          <div class="flex flex-row justify-end gap-x-2">
+            <UButton variant="outline" @click="hide">Cancel</UButton>
             <UButton type="submit" :disabled="model.length === 0">Save</UButton>
           </div>
         </template>
