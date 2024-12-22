@@ -5,6 +5,7 @@ import { computed, ref } from 'vue'
 import { useUserId } from '~/composables/room-composables'
 import { useModal } from '#imports'
 import CUserEditModal from '~/components/call/CUserEditModal.vue'
+import { JModal } from '@webrtcpoc/ui/modal'
 
 const { t } = useI18n()
 
@@ -48,7 +49,7 @@ function openEditModal() {
     </div>
   </UButton>
 
-  <UModal v-model="isModalOpen">
+  <JModal v-model="isModalOpen">
     <UCard
       :ui="{
         body: {
@@ -93,7 +94,7 @@ function openEditModal() {
         </div>
       </template>
     </UCard>
-  </UModal>
+  </JModal>
 </template>
 
 <style lang="scss" scoped>
