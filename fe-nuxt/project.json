@@ -1,4 +1,5 @@
 {
+  "name": "fe-nuxt",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "fe-nuxt",
@@ -14,7 +15,7 @@
       "options": {
         "commands": [
           "nx dev @webrtcpoc/fe-nuxt",
-          "nx watch --projects=@webrtcpoc/fe-nuxt --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=@webrtcpoc/fe-nuxt"
+          "nx watch --projects=fe-nuxt --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=fe-nuxt"
         ]
       },
       "parallelism": true

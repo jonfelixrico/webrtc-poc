@@ -1,5 +1,5 @@
 {
-  "name": "@webrtcpoc/ui",
+  "name": "ui",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "ui/src",
   "projectType": "library",
