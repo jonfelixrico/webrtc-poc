@@ -1,25 +1,23 @@
 {
+  "name": "be-nest",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "be-nest",
   "targets": {
     "build": {
-      "dependsOn": ["^build"],
       "executor": "nx:run-script",
       "options": {
         "script": "build"
       },
-      "outputs": ["{projectRoot}/dist"],
-      "cache": true
+      "outputs": ["{projectRoot}/dist"]
     },
 
     "dev:deep": {
-      "dependsOn": ["^build"],
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx dev @webrtcpoc/be-nest",
-          "nx watch --projects=@webrtcpoc/be-nest --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=@webrtcpoc/be-nest"
+          "nx dev be-nest",
+          "nx watch --projects=be-nest --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=be-nest"
         ]
       },
       "parallelism": true
