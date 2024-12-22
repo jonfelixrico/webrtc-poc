@@ -3,9 +3,8 @@ import { useI18n } from 'vue-i18n'
 import { useRoomStore } from '~/store/room.store'
 import { computed, ref } from 'vue'
 import { useUserId } from '~/composables/room-composables'
-import { useModal } from '#imports'
 import CUserEditModal from '~/components/call/CUserEditModal.vue'
-import { JModal } from '@webrtcpoc/ui/modal'
+import { JModal, useModalActions } from '@webrtcpoc/ui/modal'
 
 const { t } = useI18n()
 
@@ -17,7 +16,7 @@ const appUserId = useUserId()
 
 const isModalOpen = ref(false)
 
-const modal = useModal()
+const modal = useModalActions()
 function openEditModal() {
   if (!appUserId.value) {
     return

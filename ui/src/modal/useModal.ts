@@ -1,4 +1,4 @@
-import { BindTypes } from '@/utils/vue-types'
+import type { BindTypes } from '@/utils/vue-types'
 import {
   inject,
   InjectionKey,

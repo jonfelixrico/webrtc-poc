@@ -1,5 +1,5 @@
-import { Component } from 'vue'
-import { ComponentEmit, ComponentProps } from 'vue-component-type-helpers'
+import type { Component } from 'vue'
+import type { ComponentEmit, ComponentProps } from 'vue-component-type-helpers'
 
 type PrefixWithOn<T extends string> = `on${Capitalize<T>}`
 type EmitToEmitBindNotation<T> = T extends (
