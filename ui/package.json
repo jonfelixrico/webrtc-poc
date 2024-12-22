@@ -4,15 +4,15 @@
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
-    "modal": {
+    "./modal": {
       "import": "./dist/modal.mjs",
       "types": "./dist/modal/index.d.ts"
     },
-    "utils": {
+    "./utils": {
       "import": "./dist/utils.mjs",
       "types": "./dist/utils/index.d.ts"
     },
-    "default": {
+    ".": {
       "import": "./dist/index.mjs",
       "require": "./dist/index.mjs"
     }
