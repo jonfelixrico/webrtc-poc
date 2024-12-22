@@ -1,9 +1,18 @@
-import { ExtractPropAndEmitTypes, SFComponent } from '@/utils/vue-types'
-import { inject, InjectionKey, markRaw, reactive, Ref, ref, Plugin } from 'vue'
+import { BindTypes } from '@/utils/vue-types'
+import {
+  inject,
+  InjectionKey,
+  markRaw,
+  reactive,
+  Ref,
+  ref,
+  Plugin,
+  Component,
+} from 'vue'
 
 interface ModalEntry {
-  component: SFComponent
-  toBind: ExtractPropAndEmitTypes<SFComponent>
+  component: Component
+  toBind: Record<string, unknown>
   model: Ref<boolean>
   delete: () => void
 }
@@ -13,9 +22,9 @@ const STATE_KEY: InjectionKey<ModalMap> = Symbol('programmatic modal state')
 
 function useActions(modals: ModalMap) {
   const actions = {
-    open<T extends SFComponent>(
+    open<T extends Component>(
       component: T,
-      options?: { toBind?: ExtractPropAndEmitTypes<T> },
+      options?: { toBind?: BindTypes<T> },
     ) {
       const id = Symbol()
 
