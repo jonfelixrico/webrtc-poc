@@ -19,7 +19,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx dev @webrtcpoc/be-nest",
+          "nx dev be-nest",
           "nx watch --projects=be-nest --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=be-nest"
         ]
       },
