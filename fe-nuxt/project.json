@@ -3,13 +3,7 @@
   "projectType": "application",
   "sourceRoot": "fe-nuxt",
   "targets": {
-    "build": {
-      "dependsOn": ["^build"],
-      "cache": true
-    },
-
     "dev:deep": {
-      "dependsOn": ["^build"],
       "executor": "nx:run-commands",
       "options": {
         "commands": [
