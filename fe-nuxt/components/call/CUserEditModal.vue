@@ -18,7 +18,7 @@ const modal = useModal()
 </script>
 
 <template>
-  <UModal>
+  <JModal>
     <form @submit.prevent="submit">
       <UCard>
         <template #header> Edit User </template>
@@ -35,5 +35,5 @@ const modal = useModal()
         </template>
       </UCard>
     </form>
-  </UModal>
+  </JModal>
 </template>
