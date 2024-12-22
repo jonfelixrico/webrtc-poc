@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, useModal } from '#imports'
-import { JModal } from '@webrtcpoc/ui/modal'
+import { ref } from '#imports'
+import { JModal, useLocalModalActions } from '@webrtcpoc/ui/modal'
 
 const props = defineProps<{
   name: string
@@ -11,15 +11,17 @@ const model = ref(props.name)
 const emit = defineEmits<{
   submit: [string]
 }>()
+
+const modal = useLocalModalActions()
+
 function submit() {
   emit('submit', model.value)
+  modal.close()
 }
-
-const modal = useModal()
 </script>
 
 <template>
-  <JModal>
+  <JModal v-slot="{ hide }">
     <form @submit.prevent="submit">
       <UCard>
         <template #header> Edit User </template>
@@ -30,7 +32,7 @@ const modal = useModal()
 
         <template #footer>
           <div class="flex flex-row justify-end">
-            <UButton @click="modal.close">Cancel</UButton>
+            <UButton @click="hide">Cancel</UButton>
             <UButton type="submit" :disabled="model.length === 0">Save</UButton>
           </div>
         </template>
