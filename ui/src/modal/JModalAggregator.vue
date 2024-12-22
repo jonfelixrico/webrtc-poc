@@ -28,7 +28,7 @@ const asArray = computed(() => {
     :dialog-component="component"
     :delete="deleteFn"
     @update:model-value="
-      (value) => {
+      (value: boolean) => {
         model.value = value
       }
     "
