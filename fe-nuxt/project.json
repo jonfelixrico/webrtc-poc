@@ -14,7 +14,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx dev @webrtcpoc/fe-nuxt",
+          "nx dev fe-nuxt",
           "nx watch --projects=fe-nuxt --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=fe-nuxt"
         ]
       },
