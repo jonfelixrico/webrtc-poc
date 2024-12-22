@@ -28,7 +28,9 @@ function openEditModal() {
   }
 
   modal.open(CUserEditModal, {
-    name: appUser.name,
+    toBind: {
+      name: appUser.name,
+    },
   })
 }
 </script>
