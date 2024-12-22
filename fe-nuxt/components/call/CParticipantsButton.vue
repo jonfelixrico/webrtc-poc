@@ -65,7 +65,7 @@ function openEditModal() {
       <template #default>
         <div class="flex flex-col">
           <template v-for="(user, index) of users" :key="user.id">
-            <div class="flex flex-row py-4 px-8 items-center">
+            <div class="flex flex-row py-4 px-8 items-center gap-x-4">
               <div class="grow">
                 {{ user.name }}
               </div>

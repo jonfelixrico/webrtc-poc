@@ -10,6 +10,9 @@ const props = defineProps({
 const emit = defineEmits<{
   'update:modelValue': [boolean]
 }>()
+defineOptions({
+  inheritAttrs: false,
+})
 
 const localModal = useInternalLocalModalProps()
 
@@ -91,7 +94,7 @@ function hide() {
         class="fixed inset-0 w-full h-full flex flex-row justify-center items-center overflow-auto pointer-events-none ease-in transition duration-100"
         :style="{ zIndex: (zIndex ?? 0) + 1 }"
       >
-        <div class="pointer-events-auto">
+        <div class="pointer-events-auto shadow-lg" v-bind="$attrs">
           <slot :hide />
         </div>
       </div>
