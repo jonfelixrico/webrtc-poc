@@ -38,6 +38,10 @@
 
     "dev*": {
       "dependsOn": ["^build"]
+    },
+
+    "test*": {
+      "dependsOn": ["^build"]
     }
   }
 }
