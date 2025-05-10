@@ -8,7 +8,7 @@ import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin'
 
 export default defineConfig({
   root: __dirname,
-  cacheDir: '../node_modules/.vite/ui',
+  cacheDir: '../node_modules/.vite/@webrtcpoc/ui',
   plugins: [
     vue(),
     nxViteTsPaths(),

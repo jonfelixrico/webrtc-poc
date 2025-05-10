@@ -1,33 +1,23 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+import type { Component } from 'vue'
+import type { ComponentEmit, ComponentProps } from 'vue-component-type-helpers'
 
-import { DefineComponent, ExtractPropTypes } from 'vue'
-
-export type SFComponent = DefineComponent<{}, {}, any>
-
-type ExtractEmitsValueType = string[] | {}
-type ExtractEmitsValue<T extends ExtractEmitsValueType> = T extends string[]
-  ? {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-      [K in T[number]]: T[number] extends Function
-        ? (...args: any[]) => void
-        : never
-    }
-  : T extends {}
-  ? {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-      [K in keyof T]: T[K] extends Function ? T[K] : never
-    }
+type PrefixWithOn<T extends string> = `on${Capitalize<T>}`
+type EmitToEmitBindNotation<T> = T extends (
+  event: infer E,
+  ...args: infer A
+) => infer R
+  ? { [K in E & string as PrefixWithOn<K>]: (...args: A) => R }
   : never
 
-type PrefixStringWithOn<T extends string> = `on${Capitalize<T>}`
-type PrefixKeysWithOn<T extends {}> = {
-  [K in keyof T as PrefixStringWithOn<K extends string ? K : never>]: T[K]
-}
-
-export type ExtractEmitTypes<T extends SFComponent> = PrefixKeysWithOn<
-  ExtractEmitsValue<Exclude<T['emits'], undefined>>
+export type BindTypes<T extends Component> = Partial<
+  ComponentProps<T> &
+    /*
+     * We can't use ComponentEmit as is because it produces a type of something like
+     * (event: 'foo', ...args: any[]): void && (event: 'bar', ...args: any[]): void;
+     * which produces { foo: (...args: any[]) => void), bar: (...args: any[]) => void) }.
+     *
+     * BindTypes are intended to be v-binded into a component; emits in v-binds are prefixed with
+     * `on*`, e.g. `onFoo`, `onBar`. EmitToEmitBindNotation does this conversion for us.
+     */
+    EmitToEmitBindNotation<ComponentEmit<T>>
 >
-
-export type ExtractPropAndEmitTypes<T extends SFComponent> =
-  ExtractEmitTypes<T> & ExtractPropTypes<T>

@@ -10,6 +10,18 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
   ],
 
+  tailwindcss: {
+    config: {
+      content: [
+        /*
+         * We want to include this to tell the FE app's tailwind to also generate the classes
+         * for the stuff used in the @webrtcpoc/ui library.
+         */
+        './node_modules/@webrtcpoc/ui/dist/**',
+      ],
+    },
+  },
+
   i18n: {
     locales: [
       {

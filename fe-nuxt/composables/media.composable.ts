@@ -1,6 +1,16 @@
 import { useUserMedia } from '#imports'
-import { useLocalStorage } from '@vueuse/core'
-import { computed, reactive, toValue, type MaybeRef } from 'vue'
+import { useDevicesList, useLocalStorage } from '@vueuse/core'
+import {
+  computed,
+  inject,
+  provide,
+  reactive,
+  shallowReadonly,
+  toValue,
+  type ComputedRef,
+  type InjectionKey,
+  type MaybeRef,
+} from 'vue'
 import type { DeviceState } from '~/typings/media.types'
 import type { MaybeNullish } from '~/typings/util.types'
 
@@ -88,15 +98,48 @@ export function usePersistedDeviceConfig(devices: DeviceLists) {
     },
   })
 
-  return reactive({
-    audio: {
-      id: audioId,
-      enabled: safeAudioEnabled,
-    },
+  return shallowReadonly(
+    reactive({
+      audio: {
+        id: audioId,
+        enabled: safeAudioEnabled,
+      },
 
-    video: {
-      id: videoId,
-      enabled: safeVideoEnabled,
+      video: {
+        id: videoId,
+        enabled: safeVideoEnabled,
+      },
+    }),
+  )
+}
+
+interface UserDevices {
+  audio: ComputedRef<MediaDeviceInfo[]>
+  video: ComputedRef<MediaDeviceInfo[]>
+}
+const IK_USER_DEVICES_LIST: InjectionKey<UserDevices> = Symbol('devices list')
+
+export function provideUserDevices() {
+  const { audioInputs, videoInputs } = useDevicesList({
+    constraints: {
+      audio: true,
+      video: true,
     },
+    requestPermissions: true,
   })
+
+  provide(IK_USER_DEVICES_LIST, {
+    audio: audioInputs,
+    video: videoInputs,
+  })
+}
+
+export function useUserDevices() {
+  const injected = inject(IK_USER_DEVICES_LIST)
+
+  if (!injected) {
+    throw new Error('Device list not injected')
+  }
+
+  return injected
 }

@@ -3,12 +3,11 @@ import {
   useProvideInternalLocalModalProps,
   useProvideLocalModalProps,
 } from '@/modal/useLocalModal'
-import { SFComponent } from '@/utils/vue-types'
-import { nextTick, onMounted, PropType } from 'vue'
+import { Component, nextTick, onMounted, PropType } from 'vue'
 
 const props = defineProps({
   dialogComponent: {
-    type: Object as PropType<SFComponent>,
+    type: Object as PropType<Component>,
     required: true,
   },
 

@@ -43,6 +43,10 @@ export const BodyScrollPlugin: Plugin = {
     watch(
       () => references.size,
       (size) => {
+        if (!document?.body) {
+          return
+        }
+
         if (size) {
           document.body.classList.add(OVERFLOW_HIDDEN)
           console.debug('Activated body overflow-hidden')

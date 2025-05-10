@@ -43,6 +43,6 @@ export function useLocalModalActions() {
   }
 
   return {
-    close,
+    close: injected.close,
   }
 }

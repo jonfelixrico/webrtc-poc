@@ -10,6 +10,9 @@ const props = defineProps({
 const emit = defineEmits<{
   'update:modelValue': [boolean]
 }>()
+defineOptions({
+  inheritAttrs: false,
+})
 
 const localModal = useInternalLocalModalProps()
 
@@ -65,25 +68,22 @@ onUnmounted(bodyScroll.show)
 function hide() {
   model.value = false
 }
-
-function getZIndexClass(offset: number = 0) {
-  const idx = zIndex.value
-
-  if (idx === undefined) {
-    return
-  }
-
-  return `z-[${idx + offset}]`
-}
 </script>
 
 <template>
   <Teleport to="[data-modal-target]" defer>
     <Transition name="backdrop" @after-leave="localModal?.emitDismissDone">
+      <!-- 
+        NOTE: We didnt't rely on dynamic tailwind classes here (e.g. z-[${zIndex}]) because tailwind
+        does not generate the classes for "dynamic" classnames such as the example above.
+
+        We CAN make this work by using safelist in the tailwind config, but tailwind itself
+        doesn't recommend this approach.
+      -->
       <div
         v-if="model"
         class="fixed inset-0 bg-black/10 w-full h-full ease-in-out transition-opacity duration-200"
-        :class="getZIndexClass()"
+        :style="{ zIndex: zIndex ?? 0 }"
         @click.self="hide"
       />
     </Transition>
@@ -92,9 +92,9 @@ function getZIndexClass(offset: number = 0) {
       <div
         v-if="model"
         class="fixed inset-0 w-full h-full flex flex-row justify-center items-center overflow-auto pointer-events-none ease-in transition duration-100"
-        :class="getZIndexClass(1)"
+        :style="{ zIndex: (zIndex ?? 0) + 1 }"
       >
-        <div class="pointer-events-auto">
+        <div class="pointer-events-auto shadow-lg" v-bind="$attrs">
           <slot :hide />
         </div>
       </div>

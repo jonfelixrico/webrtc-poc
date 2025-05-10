@@ -1,9 +1,18 @@
-import { ExtractPropAndEmitTypes, SFComponent } from '@/utils/vue-types'
-import { inject, InjectionKey, markRaw, reactive, Ref, ref, Plugin } from 'vue'
+import type { BindTypes } from '@/utils/vue-types'
+import {
+  inject,
+  InjectionKey,
+  markRaw,
+  reactive,
+  Ref,
+  ref,
+  Plugin,
+  Component,
+} from 'vue'
 
 interface ModalEntry {
-  component: SFComponent
-  toBind: ExtractPropAndEmitTypes<SFComponent>
+  component: Component
+  toBind: Record<string, unknown>
   model: Ref<boolean>
   delete: () => void
 }
@@ -11,31 +20,37 @@ type ModalMap = Map<symbol, ModalEntry>
 
 const STATE_KEY: InjectionKey<ModalMap> = Symbol('programmatic modal state')
 
-function useActions(modals: ModalMap) {
-  const actions = {
-    open<T extends SFComponent>(
-      component: T,
-      options?: { toBind?: ExtractPropAndEmitTypes<T> },
-    ) {
-      const id = Symbol()
+function useOpen(modals: ModalMap) {
+  function open<T extends Component>(
+    component: T,
+    options?: { toBind?: BindTypes<T> },
+  ) {
+    const id = Symbol()
 
-      function deleteEntry() {
-        modals.delete(id)
-      }
+    function deleteEntry() {
+      modals.delete(id)
+    }
 
-      modals.set(
-        id,
-        markRaw({
-          component,
-          toBind: options?.toBind ?? {},
-          model: ref(false),
-          delete: deleteEntry,
-        }),
-      )
-    },
+    const model = ref(false)
+
+    modals.set(
+      id,
+      markRaw({
+        component,
+        toBind: options?.toBind ?? {},
+        model,
+        delete: deleteEntry,
+      }),
+    )
+
+    return {
+      close: () => {
+        model.value = false
+      },
+    }
   }
 
-  return actions
+  return open
 }
 
 export function useModalActions() {
@@ -44,7 +59,10 @@ export function useModalActions() {
     throw new Error('no modal open provided')
   }
 
-  return useActions(state)
+  const open = useOpen(state)
+  return {
+    open,
+  }
 }
 
 /**

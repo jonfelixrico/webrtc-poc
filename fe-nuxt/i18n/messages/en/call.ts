@@ -12,4 +12,6 @@ export default {
   },
 
   waitingForConnection: 'Waiting for connection',
+
+  participants: 'Participants',
 }
